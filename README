@@ -1,0 +1,8 @@
+C++の参考書を執筆する環境の構築テスト
+
+TODO:
+
+1. 原稿はgitで管理 - done
+2. 原稿はmarkdownで書いてpandocでビルドして目的のフォーマットにする - done
+3. 原稿中のサンプルコードをgrepしてC++コンパイラーでチェック - work in progress
+
