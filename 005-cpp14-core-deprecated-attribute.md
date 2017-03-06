@@ -47,7 +47,7 @@ class [[deprecated]] template_name<void> { }
 
 deprecated属性が指定された名前やエンティティを使うと、C++コンパイラーは警告メッセージを出す。
 
-deprecated属性には、文字列を付け加えることができる。これはC++装によっては警告メッセージに含まれるかもしれない。
+deprecated属性には、文字列を付け加えることができる。これはC++実装によっては警告メッセージに含まれるかもしれない。
 
 ~~~cpp
 [[deprecated("Use of f() is deprecated. Use f(int option) instead.")]] void f() ;
