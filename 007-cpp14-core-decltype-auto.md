@@ -205,21 +205,23 @@ autoは便利で大抵の場合はうまく行くが暗黙の型の変換が入�
 ~~~cpp
 // int ( int & )
 auto f( int & ref )
-{
-    return ref ;
-}
+{ return ref ; }
 ~~~
 
 なぜならば、戻り値の型は式の型から変化してintになってしまうからだ。ここでdecltype(auto)を使うと、
 
 ~~~cpp
-// int ( int & )
-auto f( int & ref )
-{
-    return ref ;
-}
+// int & ( int & )
+decltype(auto) f( int & ref )
+{ return ref ; }
 ~~~
 
 式の型をそのまま使ってくれる。
+
+ラムダ式にdelctype(auto)を使う場合は以下のように書く。
+
+~~~c++
+[]() -> decltype(auto) { return 0 ; } ;
+~~~
 
 decltype(auto)は主に関数の戻り地の型推定で式の型をそのまま推定してくれるようにするために追加された機能だ。その利用にはC++の型システムの深い理解が必要になる。
