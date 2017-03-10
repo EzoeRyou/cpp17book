@@ -229,7 +229,7 @@ template < typename T, typename U >
 constexpr bool is_same_v = std::is_same<T, U>::value ;
 
 is_pointer_v<int> ;
-is_same< int, int > ;
+is_same_v< int, int > ;
 ~~~
 
 標準ライブラリでは従来のtraitsライブラリを変数テンプレートでラップした_v版を用意している。
