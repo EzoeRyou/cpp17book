@@ -66,6 +66,4 @@ auto sum( unsigned int i )
 }
 ~~~
 
-機能テストマクロは__cpp_decltype_auto。値は201304。
-
-機能テストマクロがこの名前になっている理由は、次の機能を参照。
+機能テストマクロは__cpp_return_type_deduction。値は201304。

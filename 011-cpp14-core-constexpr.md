@@ -21,4 +21,6 @@ constexpr int f( int x )
 }
 ~~~
 
+機能テストマクロは__cpp_constexpr, 値は201304。
 
+C++11のconstexpr関数に対応しているがC++14のconstexpr関数に対応していないC++実装では、__cpp_constexprマクロの値は200704になる。

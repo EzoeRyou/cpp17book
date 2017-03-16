@@ -45,3 +45,5 @@ struct closure_object
     }
 } ;
 ~~~
+
+機能テストマクロは__cpp_generic_lambdas, 値は201304。

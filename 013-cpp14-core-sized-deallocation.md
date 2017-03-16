@@ -36,3 +36,5 @@ int main()
     auto u2 = std::make_unique<double>(0.0) ;
 }
 ~~~
+
+機能テストマクロは__cpp_sized_deallocation, 値は201309。

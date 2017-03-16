@@ -234,3 +234,4 @@ is_same_v< int, int > ;
 
 C++の標準ライブラリでは従来のtraitsライブラリを変数テンプレートでラップした_v版を用意している。
 
+機能テストマクロは__cpp_variable_templates, 値は201304。
