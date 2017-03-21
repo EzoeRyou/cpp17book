@@ -25,6 +25,6 @@ book : index.html
 
 
 index.html : *.md style.css
-	pandoc -s --toc --toc-depth=6 --mathjax -o index.html -H style.css  pandoc_title_block *.md
+	pandoc -s --toc --toc-depth=6 --mathjax -o index.html -H style.css  pandoc_title_block *-*.md
 
 .PHONY : all book clean test test-tool texttest cpptest retest
