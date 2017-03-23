@@ -6,13 +6,20 @@
 
 ~~~cpp
 // 変数
-[[deprecated]] int variable_name ;
+// どちらでもよい
+[[deprecated]] int variable_name1 { } ;
+int variable_name2 [[deprecated]] { }
 
 // typedef名
-[[deprecated]] typedef int typedef_name ;
+[[deprecated]] typedef int typedef_name1 ;
+typedef int typedef_name2 [[deprecated]] ;
+using typedef_name3 [[deprecated]] = int ;
 
 // 関数
-[[deprecated]] void function_name() { }
+// メンバー関数も同じ文法
+// どちらでもよい
+[[deprecated]] void function_name1() { }
+void function_name2 [[deprecated]] { }
 
 
 // クラス
@@ -30,8 +37,6 @@ enum class [[deprecated]] enum_name
 enumerator_name [[deprecated]] = 42
 } ;
 
-// エイリアス宣言によるtypedef名
-using typedef_name2 [[deprecated]] = int ;
 
 // 名前空間
 namespace [[deprecated]] namespace_name { int x ; }
