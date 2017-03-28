@@ -7,7 +7,7 @@
 ~~~cpp
 void do_something( int *, int * ) ;
 
-void f)
+void f()
 {
     int x[5] ;
     char reserved[1024] = { } ;

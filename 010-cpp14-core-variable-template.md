@@ -105,7 +105,7 @@ T variable { } ;
 int main()
 {
     variable<int> = 42 ;
-    variable<dobule = 1.0 ;
+    variable<double> = 1.0 ;
 }
 ~~~
 
