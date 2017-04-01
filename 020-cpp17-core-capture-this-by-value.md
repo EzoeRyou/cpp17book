@@ -119,6 +119,7 @@ public :
 *thisをコピーキャプチャーした場合、thisキーワードはコピーされたオブジェクトへのポインターになる。
 
 
+~~~cpp
 struct X
 {
    int data = 42 ;
