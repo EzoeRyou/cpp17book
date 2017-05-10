@@ -266,6 +266,8 @@ distance( Iterator first, Iterator last )
 
 ### 超上級者向け解説
 
+constexpr ifはテンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
+
 constexpr ifによって選択されない文はdiscarded statementとなる。discarded statementはテンプレートの実体化の際に実体化されなくなる。
 
 ~~~cpp
@@ -309,6 +311,75 @@ void f( T x )
         !#$%^&*()_+ ;
 }
 ~~~
+
+constexpr ifはテンプレートの実体化を条件付きで抑制するだけだ。条件付きコンパイルではない。
+
+~~~cpp
+template < typename T >
+void f()
+{
+    if constexpr ( std::is_same_v<T, int> )
+    {
+        // 常にコンパイルエラー
+        static_assert( false ) ;
+    }
+}
+~~~
+
+このコードは常にコンパイルエラーになる。なぜならば、static_assert( false ) はテンプレートに依存しておらず、テンプレートの宣言を解釈するときに、依存名ではないから、そのまま解釈される。
+
+このようなことをしたければ、最初からstatic_assertのオペランドに式を書けばよい。
+
+~~~cpp
+template < typename T >
+void f()
+{
+    static_assert( std::is_same_v<T, int> ) ;
+
+    if ( constexpr ( std::is_same_v<T, int> )
+    {
+    }
+}
+~~~
+
+もし、どうしてもconstexpr文の条件に会うときにだけstatic_assertが使いたい場合もある。これは、constexpr ifをネストしたりしていて、その内容を全部static_assertに書くのが冗長な場合だ。
+
+~~~cpp
+template < typename T >
+void f()
+{
+    if constexpr ( E1 )
+        if constexpr ( E2 )
+            if constexpr ( E3 )
+            {
+                // E1 && E2 && E3のときにコンパイルエラーにしたい
+                // 実際には常にコンパイルエラー
+                static_assert( false ) ;
+            }
+}
+~~~
+
+現実には、E1, E2, E3は複雑な式なので、static_assert( E1 && E2 && E3 )と書くのは冗長だ。同じ内容を二度書くのは間違いの元だ。
+
+このような場合、static_assertのオペランドをテンプレート引数に依存するようにすると、constexpr ifの条件に会うときにだけ発動するstatic_assertが書ける。
+
+~~~cpp
+template  <typename ... >
+using false_t = false ;
+
+template < typename T >
+void f()
+{
+    if constexpr ( E1 )
+        if constexpr ( E2 )
+            if constepxr ( E3 )
+            {
+                static_assert( false_t<T> ) ;
+            }
+}
+~~~
+
+このようにfalse_tを使うことで、static_assertをテンプレート引数Tに依存させる。その結果、static_assertの発動をテンプレートの実体化まで遅延させることができる。
 
 constexpr ifは非テンプレートコードでも書くことができるが、その場合は普通のif文と同じだ。
 
