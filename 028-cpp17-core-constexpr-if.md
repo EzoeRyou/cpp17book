@@ -266,7 +266,7 @@ distance( Iterator first, Iterator last )
 
 ### 超上級者向け解説
 
-constexpr ifはテンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
+constexpr ifは、実はコンパイル時条件分岐ではない。テンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
 
 constexpr ifによって選択されない文はdiscarded statementとなる。discarded statementはテンプレートの実体化の際に実体化されなくなる。
 
@@ -302,9 +302,9 @@ discarded statementは実体化されないだけで、もちろんテンプレ�
 template < typename T >
 void f( T x )
 {
-    // エラー、名前yは宣言されていない
+    // エラー、名前gは宣言されていない
     if constexpr ( false )
-        y.get() ; 
+        g() ; 
 
     // エラー、文法違反
     if constexpr ( false )
@@ -312,7 +312,7 @@ void f( T x )
 }
 ~~~
 
-constexpr ifはテンプレートの実体化を条件付きで抑制するだけだ。条件付きコンパイルではない。
+何度も説明しているように、constexpr ifはテンプレートの実体化を条件付きで抑制するだけだ。条件付きコンパイルではない。
 
 ~~~cpp
 template < typename T >
