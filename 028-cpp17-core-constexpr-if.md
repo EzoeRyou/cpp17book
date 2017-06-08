@@ -446,14 +446,9 @@ template < std::size_t I  >
 constexpr std::size_t factorial()
 {
     if constexpr ( I == 1 )
-    {
-        return 1 ;
-    }
+    { return 1 ; }
     else
-    {
-
-        return I * factorial<I-1>() ;
-    }
+    { return I * factorial<I-1>() ; }
 }
 ~~~
 
