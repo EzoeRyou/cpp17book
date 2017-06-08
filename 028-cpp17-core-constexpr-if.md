@@ -264,6 +264,8 @@ distance( Iterator first, Iterator last )
 }
 ~~~
 
+
+
 ### 超上級者向け解説
 
 constexpr ifは、実はコンパイル時条件分岐ではない。テンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
@@ -382,5 +384,80 @@ void f()
 このようにfalse_tを使うことで、static_assertをテンプレート引数Tに依存させる。その結果、static_assertの発動をテンプレートの実体化まで遅延させることができる。
 
 constexpr ifは非テンプレートコードでも書くことができるが、その場合は普通のif文と同じだ。
+
+### constexpr ifでは解決できない問題
+
+constexpr ifは条件付きコンパイルではなく、条件付きテンプレート実体化の抑制なので、最初の問題の解決には使えない。例えば以下のコードはエラーになる
+
+~~~c++
+// do_true_thingの宣言
+void do_true_thing() ;
+
+// do_false_thingの宣言は存在しない
+
+void f( bool runtime_value )
+{
+    if ( true )
+        do_true_thing() ;
+    else
+        do_false_thing() ; // エラー
+}
+~~~
+
+理由は、名前do_false_thingは非依存名なのでテンプレートの宣言時に解決されるからだ。
+
+### constexpr ifで解決できる問題
+
+constexpr ifは依存名が関わる場合で、テンプレートの実体化がエラーになる場合に、実体化を抑制させることができる。
+
+例えば、特定の型に対して特別な操作をしたい場合。
+
+~~~cpp
+struct X
+{
+    int get_value() ;
+} ;
+
+template < typename T >
+void f(T t)
+{
+    
+    int value{} ;
+
+    // Tの型がXならば特別な処理を行いたい
+    if constexpr ( std::is_same<T, X>{} )
+    {
+        value = t.get_value() ;
+    }
+    else
+    {
+        value = static_cast<int>(t) ;
+    }
+}
+~~~
+
+もしconstexpr ifがなければ、Tの型がXではないときもt.get_value()という式が実体化され、エラーとなる。
+
+再帰的なテンプレートの特殊化をやめさせたいとき
+
+~~~cpp
+// factorial<N>はNの階乗を返す
+template < std::size_t I  >
+constexpr std::size_t factorial()
+{
+    if constexpr ( I == 1 )
+    {
+        return 1 ;
+    }
+    else
+    {
+
+        return I * factorial<I-1>() ;
+    }
+}
+~~~
+
+もしconstexpr ifがなければ、factorial<N-1>が永遠に実体化されコンパイル時ループが停止しない。
+
 
 機能テストマクロは__cpp_if_constexpr, 値は201606。
