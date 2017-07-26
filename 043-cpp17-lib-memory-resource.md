@@ -1,4 +1,4 @@
-## メモリーリソース : 動的ストレージ確保ライブラリ
+# メモリーリソース : 動的ストレージ確保ライブラリ
 
 ヘッダーファイル\<memory_resource\>で定義されているメモリーリソースは、動的ストレージを確保するためのC++17で追加されたライブラリだ。その特徴は以下の通り。
 
@@ -7,7 +7,7 @@
 + ポリモーフィックな振る舞いを可能にするアロケーター
 + 標準で提供される様々な特性を持ったメモリーリソースの実装
 
-### メモリーリソース
+## メモリーリソース
 
 メモリーリソースはアロケーターに変わる新しいメモリ確保と解放のためのインターフェースとしての抽象クラスだ。コンパイル時に挙動を変える静的ポリモーフィズム設計のアロケーターと違い、メモリーリソースは実行時に挙動を変える動的ポリモーフィズム設計となっている。
 
@@ -44,7 +44,7 @@ private:
 
 クラスmemory_resourceはstd::pmr名前空間スコープのなかにある。
 
-#### メモリーリソースの使い方
+### メモリーリソースの使い方
 
 memory_resourceを使うのは簡単だ。memory_resourceのオブジェクトを確保したら、メンバー関数allocate( bytes, alignment )でストレージを確保する。メンバー関数deallocate( p, bytes, alignment )でストレージを解放する。
 
@@ -87,7 +87,7 @@ void f( std::pmr::memory_resource * a, std::pmr::memory_resource * b )
 }
 ~~~
 
-#### メモリーリソースの作り方
+### メモリーリソースの作り方
 
 独自のメモリーアロケーターをmemory_resouceのインターフェースに合わせて作るには、memory_resourceから派生した上で、do_allocate, do_deallocate, do_is_equalの3つのprivate純粋virtualメンバー関数をオーバーライドする。必要に応じてデストラクターもオーバーライドする。
 
@@ -152,7 +152,7 @@ do_allocateはmallocでストレージを確保し、do_deallocateはfreeでス�
 
 do_is_equalは、malloc_resourceでさえあればどのオブジェクトから確保されたストレージであっても解放できるので、*thisがmalloc_resourceであるかどうかをdynamic_castで確認している。
 
-### polymorphic_allocator : 動的ポリモーフィズムを実現するアロケーター
+## polymorphic_allocator : 動的ポリモーフィズムを実現するアロケーター
 
 std::pmr::polymorphic_allocatorはメモリーリソースを動的ポリモーフィズムとして振る舞うアロケーターにするためのライブラリだ。
 
@@ -208,7 +208,7 @@ class polymorphic_allocator ;
 
 テンプレート実引数にはstd::allocator\<T\>と同じく、確保する型を与える。
 
-#### コンストラクター
+### コンストラクター
 
 ~~~c++
 polymorphic_allocator() noexcept;
@@ -232,11 +232,11 @@ int main()
 後は通常のあロケーターと同じように振る舞う。
 
 
-### プログラム全体で使われるメモリーリソースの取得
+## プログラム全体で使われるメモリーリソースの取得
 
 C++17では、プログラム全体で使われるメモリーリソースへのポインターを取得することができる。
 
-#### new_delete_resource()
+### new_delete_resource()
 
 ~~~c++
 memory_resource* new_delete_resource() noexcept ;
@@ -251,7 +251,7 @@ int main()
 }
 ~~~
 
-#### null_memory_resource()
+### null_memory_resource()
 
 ~~~c++
 memory_resource* null_memory_resource() noexcept ;
@@ -262,7 +262,7 @@ memory_resource* null_memory_resource() noexcept ;
 
 このメモリーリソースは、ストレージの確保に失敗した場合のコードをテストする目的で使える。
 
-#### デフォルトリソース
+### デフォルトリソース
 
 ~~~c++
 memory_resource* set_default_resource(memory_resource* r) noexcept ;
@@ -291,7 +291,7 @@ int main()
 }
 ~~~
 
-### 標準ライブラリのメモリーリソース
+## 標準ライブラリのメモリーリソース
 
 標準ライブラリはメモリーリソースの実装として、プールリソースとモノトニックリソースを提供している。このメモリーリソースの詳細は後に解説するが、ここではそのための事前知識として、汎用的なメモリーアロケーター一般の解説をする。
 
@@ -367,11 +367,11 @@ public :
 } ;
 ~~~
 
-### プールリソース
+## プールリソース
 
 プールリソースはC++17の標準ライブラリが提供しているメモリーリソースの実装だ。synchronized_pool_resourcceとunsynchronized_pool_resourceの二つがある。
 
-#### アルゴリズム
+### アルゴリズム
 
 プールリソースは以下のような特徴を持つ。
 
@@ -463,7 +463,7 @@ class pool_resource : public memory_resource
 
 
 
-#### synchronized/unsynchronized_pool_resource
+### synchronized/unsynchronized_pool_resource
 
 プールリソースには、synchronized_pool_resourceとunsynchronized_pool_resourceがある。どちらもクラス名以外は同じように使える。ただし、synchronized_pool_resourceは複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、unsynchronized_pool_resourceは同期を行わない。unsyncrhonized_pool_resourceは複数のスレッドから同時に呼び出すことはできない。
 
@@ -496,7 +496,7 @@ class unsynchronized_pool_resource : public memory_resource
 }
 ~~~
 
-#### pool_options
+### pool_options
 
 pool_optionsはプールリソースの挙動を指定するためのクラスで、以下のように定義されてる。
 
@@ -518,7 +518,7 @@ max_blocks_per_chunkは、上流メモリーリソースからプールのチャ
 
 largest_required_pool_blockはプール機構によって確保される最大のストレージのサイズだ。この値より大きなサイズのストレージを確保しようとすると、上流メモリーストレージから直接確保される。この値がゼロか、実装の上限よりも大きい場合、実装の上限が使われる。実装は指定よりも大きい値を使うこともできる。
 
-#### プールリソースのコンストラクター
+### プールリソースのコンストラクター
 
 プールリソースの根本的なコンストラクターは以下の通り。synchronizedとunsynchronizedどちらも同じだ。
 
@@ -537,9 +537,9 @@ explicit pool_resource(const pool_options& opts)
 pool_optionsとmemory_resource *を指定する。指定しない場合はデフォルト値が使われる。
 
 
-#### プールリソースのメンバー関数
+### プールリソースのメンバー関数
 
-##### release()
+#### release()
 
 ~~~c++
 void release();
@@ -559,7 +559,7 @@ int main()
 }
 ~~~
 
-##### upstream_resource()
+#### upstream_resource()
 
 ~~~c++
 memory_resource* upstream_resource() const;
@@ -567,7 +567,7 @@ memory_resource* upstream_resource() const;
 
 構築時に渡した上流メモリーリソースへのポインターを返す。
 
-##### options()
+#### options()
 
 ~~~c++
 pool_options options() const;
@@ -575,7 +575,7 @@ pool_options options() const;
 
 構築時に渡したpool_optionsオブジェクトと同じ値を返す。
 
-### モノトニックバッファーリソース
+## モノトニックバッファーリソース
 
 モノトニックバッファーリソースはC++17で標準ライブラリに追加されたメモリーリソースの実装だ。クラス名はmonotonic_buffer_resource。
 
@@ -619,7 +619,7 @@ public :
 
 このように、基本的な実装としては、do_allocateはポインターを加算して管理するだけだ。なぜならば解放処理がいらないため、個々のストレージ片を管理するためのデータ構造を構築する必要がない。do_deallocateはなにもしない。デストラクターはストレージ全体を解放する。
 
-#### アルゴリズム
+### アルゴリズム
 
 モノトニックバッファーリソースは以下のような特徴を持つ。
 
@@ -661,7 +661,7 @@ int main()
 
 +   メモリーリソースが破棄されると確保されたすべてのストレージも解放される。明示的にdeallocateを呼ばなくてもよい。
 
-#### コンストラクター
+### コンストラクター
 
 モノトニックバッファーリソースには以下のコンストラクターがある。
 
@@ -709,9 +709,9 @@ monotonic_buffer_resource(void *buffer, size_t buffer_size)
 
 初期バッファーは先頭アドレスをvoid *型で渡し、そのサイズをsize_t型で渡す。
 
-#### その他の捜査
+### その他の捜査
 
-##### release()
+#### release()
 
 ~~~c++
 void release() ;
@@ -733,7 +733,7 @@ int main()
 }
 ~~~
 
-##### upstream_resource()
+#### upstream_resource()
 
 ~~~c++
 memory_resource* upstream_resource() const;
