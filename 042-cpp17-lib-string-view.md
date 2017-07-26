@@ -1,8 +1,8 @@
-## string_view : 文字列ラッパー
+# string_view : 文字列ラッパー
 
 string_viewは、文字型(char, wchar_t, char16_t, char32_t)の連続した配列で表現された文字列に対する共通の文字列ビューを提供する。文字列は所有しない。
 
-### 使い方
+## 使い方
 
 連続した文字型の配列を使った文字列の表現方法には様々ある。C++では最も基本的な文字列の表現方法として、null終端された文字型の配列がある。
 
@@ -75,7 +75,7 @@ int main()
 ~~~
 
 
-### basic_string_view
+## basic_string_view
 
 std::stringがstd::basic_string\< CharT, Traits \>に対するstd::basic_string<char>であるように、std::string_viewも、その実態はstd::basic_string_viewの特殊化へのtypedef名だ。
 
@@ -96,7 +96,7 @@ using wstring_view = basic_string_view<wchar_t>;
 
 
 
-### 文字列の所有、非所有
+## 文字列の所有、非所有
 
 string_viewは文字列を所有しない。所有というのは、文字列を表現するストレージの確保と破棄に責任を持つということだ。所有しないことの意味を説明するために、まず文字列を所有するライブラリについて説明する。
 
@@ -190,7 +190,7 @@ std::string_view get_string()
 }
 ~~~
 
-### string_viewの構築
+## string_viewの構築
 string_viewの構築には4種類ある。
 
 + デフォルト構築
@@ -198,7 +198,7 @@ string_viewの構築には4種類ある。
 + 文字方の配列へのポインターと文字数
 + 文字列クラスからの変換関数
 
-#### デフォルト構築
+### デフォルト構築
 
 ~~~c++
 constexpr basic_string_view() noexcept;
@@ -214,7 +214,7 @@ int main()
 }
 ~~~
 
-#### null終端された文字型の配列へのポインター
+### null終端された文字型の配列へのポインター
 
 ~~~c++
 constexpr basic_string_view(const charT* str);
@@ -229,7 +229,7 @@ int main()
 }
 ~~~
 
-#### 文字型へのポインターと文字数
+### 文字型へのポインターと文字数
 
 ~~~c++
 constexpr basic_string_view(const charT* str, size_type len);
@@ -247,7 +247,7 @@ int main()
 }
 ~~~
 
-### 文字列クラスからの変換関数
+## 文字列クラスからの変換関数
 
 他の文字列クラスからstring_viewを作るには、変換関数を使う。string_viewのコンストラクターは使わない。
 
@@ -291,7 +291,7 @@ int main()
 ~~~
 
 
-### string_viewの操作
+## string_viewの操作
 
 string_viewは既存の標準ライブラリのstringとほぼ同じ操作性を提供している。例えばイテレーターを取ることができるし、operator []で要素にアクセスできるし、size()で要素数が返るし、find()で検索もできる。
 
@@ -364,7 +364,7 @@ int main()
 
 string_vieはstringとほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。
 
-#### remove_prefix/remove_suffix : 先頭、末尾の要素の削除
+### remove_prefix/remove_suffix : 先頭、末尾の要素の削除
 
 string_viewは先頭と末尾からn個の要素を削除するメンバー関数を提供している。
 
@@ -394,7 +394,7 @@ int main()
 
 このメンバー関数は既存のstd::stringにも追加されている。
 
-### ユーザー定義リテラル
+## ユーザー定義リテラル
 
 std::stringとstd::string_viewにはユーザー定義リテラルが追加されている。
 
