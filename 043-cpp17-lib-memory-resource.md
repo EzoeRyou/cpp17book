@@ -709,7 +709,7 @@ monotonic_buffer_resource(void *buffer, size_t buffer_size)
 
 初期バッファーは先頭アドレスをvoid *型で渡し、そのサイズをsize_t型で渡す。
 
-### その他の捜査
+### その他の操作
 
 #### release()
 
