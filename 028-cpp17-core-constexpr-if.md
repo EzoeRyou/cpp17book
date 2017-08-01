@@ -338,7 +338,7 @@ void f()
 {
     static_assert( std::is_same_v<T, int> ) ;
 
-    if ( constexpr ( std::is_same_v<T, int> )
+    if constexpr ( std::is_same_v<T, int> )
     {
     }
 }
