@@ -51,7 +51,7 @@ C++17では、上のようなそびえ立つクソのようなコードを書か
 // 文字列を処理する関数
 void process_string( std::string const & str ) ;
 
-#ifndef __cpp_rvalue_references
+#ifdef __cpp_rvalue_references
 // 文字列をムーブして処理してよい実装の関数
 // C++コンパイラーがrvalueリファレンスを実装していない場合はコンパイルされない
 void process_string( std::string && str ) ;
