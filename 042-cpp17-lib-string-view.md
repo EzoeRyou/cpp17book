@@ -67,7 +67,7 @@ int main()
     // OK
     process_string( "hello" ) ;
     // OK
-    process_string( "hello", 5 ) ;
+    process_string( { "hello", 5 } ) ;
 
     std::string str( "hello" ) ;
     process_string( str ) ;
