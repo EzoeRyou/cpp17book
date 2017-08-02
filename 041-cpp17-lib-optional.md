@@ -343,7 +343,7 @@ int main()
 }
 ~~~
 
-### optionalとstd::nullpotとの比較
+### optionalとstd::nulloptとの比較
 
 optionalとstd::nulloptとの比較は、std::nulloptが値を持っていないoptionalとして扱われる。
 
