@@ -5,7 +5,7 @@ C++17では、属性名前空間にusingディレクティブのような記述�
 ~~~c++
 
 // [[extention::foo, extention::bar]]と同じ
-[ using extention : foo, bar ]] int x ;
+[[ using extention : foo, bar ]] int x ;
 ~~~
 
 属性トークンには、属性名前空間をつけることができる。これにより、独自拡張の属性トークンの名前の衝突を避けることができる。
