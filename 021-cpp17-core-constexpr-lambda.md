@@ -11,7 +11,7 @@ int main()
 }
 ~~~
 
-constexprの条件を満たす　ラムダ式はコンパイル時定数を必要とする場所で使うことができる。例えばconstexpr変数や配列の添字やstatic_assertなどだ。
+constexprの条件を満たすラムダ式はコンパイル時定数を必要とする場所で使うことができる。例えばconstexpr変数や配列の添字やstatic_assertなどだ。
 
 ~~~cpp
 int main()
