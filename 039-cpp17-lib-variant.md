@@ -21,10 +21,10 @@ int main()
 
     // intが入っているか確認
     // falseを返す
-    bool has_int = std::hold_alternative<int>( x ) ;
+    bool has_int = std::holds_alternative<int>( x ) ;
     // std::stringが入っているか確認
     // trueを返す
-    bool has_string = std::hold_alternative<std::string> ( x ) ;
+    bool has_string = std::holds_alternative<std::string> ( x ) ;
 
     // 入っている値を得る
     // "hello"
