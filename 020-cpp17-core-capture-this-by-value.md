@@ -36,8 +36,8 @@ struct X
    void f()
    {
         // thisはポインターのキャプチャー
-        // dataはthisポインターを
-        [this]{ data = 1 ; }() ;
+        // dataはthisポインターを辿る。
+        [this]{ data = 1 ; }() ;
 
         // this->dataは1
 
@@ -56,14 +56,14 @@ struct X
 ~~~
 
 最初のラムダ式で生成されるクロージャーオブジェクトは以下のようなものだ。
-~~~c++
+~~~cpp
 class closure_object
 {
     X * this_ptr ;
 
 public :
-    closure_object( X * this )
-        : this(this) { }
+    closure_object( X * this_ptr )
+        : this_ptr(this_ptr) { }
 
     void operator () const
     {
@@ -76,7 +76,7 @@ public :
 
 
 
-~~~c++
+~~~cpp
 class closure_object
 {
     X this_obj ;
@@ -97,7 +97,7 @@ public :
 
 これはC++の文法に従っていないのでやや苦しいコード例だが、コピーキャプチャーされた値を変更しようとしているためエラーとなる。
 
-~~~c++
+~~~cpp
 class closure_object
 {
     X this_obj ;
@@ -150,7 +150,7 @@ struct X
 
     auto f()
     {
-        return [ tmp = *this ] { return this->data ; } ;
+        return [ tmp = *this ] { return tmp.data ; } ;
     }
 } ;
 ~~~
