@@ -701,11 +701,11 @@ variantの同一性の比較のためには、variantのテンプレート実引
 
 variant v, wの同一性の比較は、v == w の場合、以下のように行われる。
 
-1. v.index() != v.indexならば、false
+1. v.index() != w.index()ならば、false
 2. それ以外の場合、v.value_less_by_exception()ならば、true
 3. それ以外の場合、get\<i\>(v) == get\<i\>(w)。ただしiはv.index()
 
-二つのvariantが別の型を保持している場合は等しくない。ともに値なしの状態であれば等しい。それ以外は保持している。
+二つのvariantが別の型を保持している場合は等しくない。ともに値なしの状態であれば等しい。それ以外は保持している値同士が比較される。
 
 ~~~cpp
 int main()
@@ -755,7 +755,7 @@ variant v, wの大小比較は、v \< w の場合、以下のように行われ�
 1. w.valueless_by_exception()ならば、false
 2. それ以外の場合、v.valueless_by_exception()ならば、true
 3. それ以外の場合、v.index() \< w.index()ならば、true
-4. それ以外の場合、v.index \> w.index()ならば、false
+4. それ以外の場合、v.index() \> w.index()ならば、false
 5. それ以外の場合、get\<i\>(v) \< get\<i\>(w)。ただしiはv.index()
 
 値なしのvariantは最も小さいとみなされる。インデックスの小さいほうが小さいとみなされる。どちらも同じ型の値があるのであれば、値同士の比較となる。
@@ -792,7 +792,7 @@ constexpr bool operator<(const variant<Types...>& v, const variant<Types...>& w)
         return true ;
     else if ( v.index() < w.index() )
         return true ;
-    else if ( v.index > w.index() )
+    else if ( v.index() > w.index() )
         return false ;
     else
         return std::visit( []( auto && a, auto && b ){ return a < b ; }, v, w ) ;
