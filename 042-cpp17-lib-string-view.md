@@ -71,6 +71,10 @@ int main()
 
     std::string str( "hello" ) ;
     process_string( str ) ;
+
+    string_type st{5, "hello"} ;
+
+    process_string( st ) ;
 }
 ~~~
 
