@@ -107,7 +107,7 @@ int main()
     std::any a ;
 
     // 型XをX(1, 2)で構築した結果の値を保持する
-    a.emplace( 1, 2 ) ;
+    a.emplace<X>( 1, 2 ) ;
 }
 ~~~
 
