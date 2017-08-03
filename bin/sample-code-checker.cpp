@@ -116,7 +116,7 @@ bool compile_check_clang( std::string const & file_name )
 bool compile_check( std::string const & file_name )
 {
     return
-        compile_check_gcc( file_name ) ;
+        compile_check_gcc( file_name )
             &&
         compile_check_clang( file_name ) ;
 }
