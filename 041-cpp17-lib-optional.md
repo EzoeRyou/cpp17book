@@ -62,7 +62,7 @@ int main()
 {
     // int型の値を保持するかしないoptional
     using a = std::optional<int> ;
-    // double型の値を保持するかしないottional
+    // double型の値を保持するかしないoptional
     using b = std::optional<double> ;
 }
 ~~~
@@ -293,7 +293,7 @@ int main()
 
     // true
     // どちらも値を保持しないoptional
-    bool b1 a == b ;
+    bool b1 = a == b ;
 
     a = 0 ;
 
@@ -346,9 +346,6 @@ int main()
 ### optionalとstd::nulloptとの比較
 
 optionalとstd::nulloptとの比較は、std::nulloptが値を持っていないoptionalとして扱われる。
-
-~~~cpp
-~~~
 
 ### optional\<T\>とTの比較
 
