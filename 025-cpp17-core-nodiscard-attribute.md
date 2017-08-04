@@ -41,7 +41,7 @@ enum struct error_code
 } ;
 
 // 失敗するかもしれない処理
-int do_something_that_may_fail()
+error_code do_something_that_may_fail()
 {
     // 処理
 
@@ -59,7 +59,7 @@ int do_something_on_no_error() ;
 int main()
 {
     // エラーを確認していない
-    do_soemthing() ;
+    do_something_that_may_fail() ;
 
     // エラーがない前提で次の処理をしようとする
     do_something_on_no_error() ;
