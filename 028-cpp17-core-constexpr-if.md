@@ -281,7 +281,7 @@ struct X
 template < typename T >
 int f(T x)
 {
-    if constexpr ( std::is_same_v<T, std::decay_t<X> > )
+    if constexpr ( std::is_same_v<std::decay_t<T>, X > )
         return x.get() ;
     else
         return x ;
