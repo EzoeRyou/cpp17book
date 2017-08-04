@@ -26,7 +26,7 @@ int main()
         x ;
         y ;
         ref ;
-        val ;
+        x2 ;
     } ;
 }
 ~~~~
