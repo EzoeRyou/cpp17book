@@ -32,7 +32,7 @@ long double function_namel() ;  // l
 
 ある関数の効果が実装定義(implementation-defined)である場合、その効果はC++標準規格で定義されず、C++実装はどのように実装してもよいという意味だ。
 
-## 陪ラゲル多項式(Associated Laguerre polynomials)
+## ラゲール陪多項式(Associated Laguerre polynomials)
 
 ~~~c++
 double      assoc_laguerre(unsigned n, unsigned m, double x);
@@ -40,7 +40,7 @@ float       assoc_laguerref(unsigned n, unsigned m, float x);
 long double assoc_laguerrel(unsigned n, unsigned m, long double x);
 ~~~
 
-効果：実引数n, m, xに対する陪ラゲル多項式(Associated Laguerre polynomials)を計算する。
+効果：実引数n, m, xに対するラゲール陪多項式(Associated Laguerre polynomials)を計算する。
 
 戻り値：
 
@@ -55,7 +55,7 @@ $n$をn、$m$をm、$x$をxとする。
 
 注意：n \>= 128 もしくは m \>= 128 のときの関数呼び出しの効果は実装定義である。
 
-## 陪ルジャンドル関数(Associated Legendre functions) {#sf.cmath.assoc_legendre}
+## ルジャンドル陪関数(Associated Legendre functions) {#sf.cmath.assoc_legendre}
 
 ~~~c++
 double      assoc_legendre(unsigned l, unsigned m, double x);
@@ -63,7 +63,7 @@ float       assoc_legendref(unsigned l, unsigned m, float x);
 long double assoc_legendrel(unsigned l, unsigned m, long double x);
 ~~~
 
-効果：実引数l, m, xに対する 陪ルジャンドル関数(Associated Legendre functions)を計算する。
+効果：実引数l, m, xに対するルジャンドル陪関数(Associated Legendre functions)を計算する。
 
 戻り値：
 
@@ -405,7 +405,7 @@ $n$をn、$x$をxとする。
 
 注意：n \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-## ラゲル多項式(Laguerre polynomials)
+## ラゲール多項式(Laguerre polynomials)
 
 ~~~c++
 double       laguerre(unsigned n, double x);
@@ -413,7 +413,7 @@ float        laguerref(unsigned n, float x);
 long double  laguerrel(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対するラゲル多項式(Laguerre polynomials)を計算する。
+効果：実引数n, xに対するラゲール多項式(Laguerre polynomials)を計算する。
 
 戻り値：
 
@@ -491,7 +491,7 @@ $$
 
 $x$をxとする。
 
-## 第一種球面ベッセル関数(Spherical Bessel functions of the first kind)
+## 第一種球ベッセル関数(Spherical Bessel functions of the first kind)
 
 ~~~c++
 double       sph_bessel(unsigned n, double x);
@@ -499,7 +499,7 @@ float        sph_besself(unsigned n, float x);
 long double  sph_bessell(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対する第一種球面ベッセル関数(Spherical Bessel functions of the first kind)を計算する。
+効果：実引数n, xに対する第一種球ベッセル関数(Spherical Bessel functions of the first kind)を計算する。
 
 戻り値：
 
@@ -514,7 +514,7 @@ $$
 [第一種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
 
-## 球面陪ルジャンドル関数(Spherical associated Legendre functions)
+## 球面ルジャンドル陪関数(Spherical associated Legendre functions)
 
 ~~~c++
 double       sph_legendre(unsigned l, unsigned m, double theta);
@@ -522,7 +522,7 @@ float        sph_legendref(unsigned l, unsigned m, float theta);
 long double  sph_legendrel(unsigned l, unsigned m, long double theta);
 ~~~
 
-効果：実引数l, m, theta(thetaの単位はラジアン)に対する 球面陪ルジャンドル関数(Spherical associated Legendre functions)を計算する。
+効果：実引数l, m, theta(thetaの単位はラジアン)に対する球面ルジャンドル陪関数(Spherical associated Legendre functions)、またの名を球面調和関数(Spherical harmonics)を計算する。
 
 戻り値：
 
@@ -549,9 +549,9 @@ $l$をl、$m$をm、$\theta$をthetaとする。
 注意：l \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 
-[陪ルジャンドル関数](#sf.cmath.assoc_legendre)も参照。
+[ルジャンドル陪関数](#sf.cmath.assoc_legendre)も参照。
 
-## 球面ノイマン関数(Spherical Neumann functions)
+## 球ノイマン関数(Spherical Neumann functions)
 
 ~~~c++
 double       sph_neumann(unsigned n, double x);
@@ -559,7 +559,7 @@ float        sph_neumannf(unsigned n, float x);
 long double  sph_neumannl(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対する球面ノイマン関数(Spherical Neumann functions)、またの名を第二種球面ベッセル関数(Spherical Bessel functions of the second kind)を計算する。
+効果：実引数n, xに対する球ノイマン関数(Spherical Neumann functions)、またの名を第二種球ベッセル関数(Spherical Bessel functions of the second kind)を計算する。
 
 戻り値：
 
