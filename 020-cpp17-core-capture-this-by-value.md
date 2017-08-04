@@ -65,7 +65,7 @@ public :
     closure_object( X * this_ptr )
         : this_ptr(this_ptr) { }
 
-    void operator () const
+    void operator () () const
     {
         this_ptr->data = 1 ;
     }
@@ -86,9 +86,9 @@ public :
     closure_object( X const & this_obj )
         : this_obj(this_obj) { }
 
-    void operator () const
+    void operator () () const
     {
-        this_ptr->data = 1 ;
+        this_ptr->data = 2 ;
     }
 } ;
 ~~~
@@ -107,7 +107,7 @@ public :
     closure_object( X const & this_obj )
         : this_obj(this_obj) { }
 
-    void operator ()
+    void operator () ()
     {
         this_ptr->data = 2 ;
     }
