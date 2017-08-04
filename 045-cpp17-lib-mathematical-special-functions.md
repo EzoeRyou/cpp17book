@@ -511,10 +511,10 @@ $$
 
 注意： n \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-[第一種円柱ベッセル関数][#sf.cmath.cyl_bessel_j]も参照。
+[第一種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
 
-##　球面陪ルジャンドル関数(Spherical associated Legendre functions)
+## 球面陪ルジャンドル関数(Spherical associated Legendre functions)
 
 ~~~c++
 double       sph_legendre(unsigned l, unsigned m, double theta);
