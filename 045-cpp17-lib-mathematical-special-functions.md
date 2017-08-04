@@ -101,7 +101,7 @@ $$
 
 $x$をx、$y$をyとする。
 
-## 第一種完全楕円積分(Complete elliptic integral of the first kind)
+## 第1種完全楕円積分(Complete elliptic integral of the first kind)
 
 ~~~c++
 double      comp_ellint_1(double k);
@@ -109,7 +109,7 @@ float       comp_ellint_1f(float k);
 long double comp_ellint_1l(long double k);
 ~~~
 
-効果：実引数kに対する第一種完全楕円積分(Complete elliptic integral of the first kind)を計算する。
+効果：実引数kに対する第1種完全楕円積分(Complete elliptic integral of the first kind)を計算する。
 
 戻り値：
 
@@ -121,9 +121,9 @@ $$
 
 $k$をkとする。
 
-[第一種不完全楕円積分](#sf.cmath.ellint_1)も参照。
+[第1種不完全楕円積分](#sf.cmath.ellint_1)も参照。
 
-## 第二種完全楕円積分(Complete elliptic integral of the second kind)
+## 第2種完全楕円積分(Complete elliptic integral of the second kind)
 
 ~~~c++
 double      comp_ellint_2(double k);
@@ -131,7 +131,7 @@ float       comp_ellint_2f(float k);
 long double comp_ellint_2l(long double k);
 ~~~
 
-効果：実引数kに対する第二種完全楕円積分(Complete elliptic integral of the second kind)を計算する。
+効果：実引数kに対する第2種完全楕円積分(Complete elliptic integral of the second kind)を計算する。
 
 戻り値：
 
@@ -143,9 +143,9 @@ $$
 
 $k$をkとする。
 
-[第二種不完全楕円積分](#sf.cmath.ellint_2)も参照。
+[第2種不完全楕円積分](#sf.cmath.ellint_2)も参照。
 
-## 第三種完全楕円積分(Complete elliptic integral of the third kind)
+## 第3種完全楕円積分(Complete elliptic integral of the third kind)
 
 ~~~c++
 double      comp_ellint_3(double k, double nu);
@@ -153,7 +153,7 @@ float       comp_ellint_3f(float k, float nu);
 long double comp_ellint_3l(long double k, long double nu);
 ~~~
 
-効果：実引数k, nuに対する第三種完全楕円積分(Complete elliptic integral of the third kind)を計算する。
+効果：実引数k, nuに対する第3種完全楕円積分(Complete elliptic integral of the third kind)を計算する。
 
 戻り値：
 
@@ -164,7 +164,7 @@ $$
 
 $k$をk、$\nu$をnuとする。
 
-[第三種不完全楕円積分](#sf.cmath.ellint_3)も参照。
+[第3種不完全楕円積分](#sf.cmath.ellint_3)も参照。
 
 ## 正則変形円柱ベッセル関数(Regular modified cylindrical Bessel functions) {#sf.cmath.cyl_bessel_i}
 
@@ -191,9 +191,9 @@ $\nu$をnu、$x$をxとする。
 
 注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-[第一種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
+[第1種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
-## 第一種円柱ベッセル関数(Cylindrical Bessel functions of the first kind) {#sf.cmath.cyl_bessel_j}
+## 第1種円柱ベッセル関数(Cylindrical Bessel functions of the first kind) {#sf.cmath.cyl_bessel_j}
 
 ~~~c++
 double       cyl_bessel_j(double nu, double x);
@@ -201,7 +201,7 @@ float        cyl_bessel_jf(float nu, float x);
 long double  cyl_bessel_jl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, kに対する第一種円柱ベッセル関数(Cylindrical Bessel functions of the first kind)を計算する。
+効果：実引数nu, kに対する第1種円柱ベッセル関数(Cylindrical Bessel functions of the first kind)を計算する。
 
 戻り値：
 
@@ -256,7 +256,7 @@ $\nu$をnu、$x$をxとする。
 
 注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-[正則変形円柱ベッセル関数](#sf.cmath.cyl_bessel_i)、[第一種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)、[円柱ノイマン関数](#sf.cmath.cyl_neumann)も参照。
+[正則変形円柱ベッセル関数](#sf.cmath.cyl_bessel_i)、[第1種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)、[円柱ノイマン関数](#sf.cmath.cyl_neumann)も参照。
 
 
 ## 円柱ノイマン関数(Cylindrical Neumann functions) {#sf.cmath.cyl_neumann}
@@ -267,7 +267,7 @@ float        cyl_neumannf(float nu, float x);
 long double  cyl_neumannl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対する円柱ノイマン関数(Cylindrical Neumann functions)、またの名を第二種円柱ベッセル関数(Cylindrical Bessel functions of the second kind)を計算する。
+効果：実引数nu, xに対する円柱ノイマン関数(Cylindrical Neumann functions)、またの名を第2種円柱ベッセル関数(Cylindrical Bessel functions of the second kind)を計算する。
 
 戻り値：
 
@@ -293,9 +293,9 @@ $\nu$をnu、$x$をxとする。
 
 注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-[第一種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
+[第1種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
-## 第一種不完全楕円積分(Incomplete elliptic integral of the first kind) {#sf.cmath.ellint_1}
+## 第1種不完全楕円積分(Incomplete elliptic integral of the first kind) {#sf.cmath.ellint_1}
 
 ~~~c++
 double       ellint_1(double k, double phi);
@@ -303,7 +303,7 @@ float        ellint_1f(float k, float phi);
 long double  ellint_1l(long double k, long double phi);
 ~~~
 
-効果：実引数k, phi(phiの単位はラジアン)に対する第一種不完全楕円積分(Incomplete elliptic integral of the first kind)を計算する。
+効果：実引数k, phi(phiの単位はラジアン)に対する第1種不完全楕円積分(Incomplete elliptic integral of the first kind)を計算する。
 
 戻り値：
 
@@ -317,7 +317,7 @@ $$
 $k$をk、$\phi$をphiとする。
 
 
-## 第二種不完全楕円積分(Incomplete elliptic integroal of the second kind) {#sf.cmath.ellint_2}
+## 第2種不完全楕円積分(Incomplete elliptic integroal of the second kind) {#sf.cmath.ellint_2}
 
 ~~~c++
 double       ellint_2(double k, double phi);
@@ -325,7 +325,7 @@ float        ellint_2f(float k, float phi);
 long double  ellint_2l(long double k, long double phi);
 ~~~
 
-効果：実引数k, phi(phiの単位はラジアン)に対する第二種不完全楕円積分(Incomplete elliptic integral of the second kind)を計算する。
+効果：実引数k, phi(phiの単位はラジアン)に対する第2種不完全楕円積分(Incomplete elliptic integral of the second kind)を計算する。
 
 戻り値：
 
@@ -339,7 +339,7 @@ $$
 $k$をk、$\phi$をphiとする。
 
 
-## 第三種不完全楕円積分(Incomplete elliptic integral of the third kind) {#sf.cmath.ellint_3}
+## 第3種不完全楕円積分(Incomplete elliptic integral of the third kind) {#sf.cmath.ellint_3}
 
 ~~~c++
 double       ellint_3(double k, double nu, double phi);
@@ -347,7 +347,7 @@ float        ellint_3f(float k, float nu, float phi);
 long double  ellint_3l(long double k, long double nu, long double phi);
 ~~~
 
-効果：実引数k, nu, phi(phiの単位はラジアン)に対する第三種不完全楕円積分(Incomplete elliptic integral of the third kind)を計算する。
+効果：実引数k, nu, phi(phiの単位はラジアン)に対する第3種不完全楕円積分(Incomplete elliptic integral of the third kind)を計算する。
 
 戻り値：
 
@@ -491,7 +491,7 @@ $$
 
 $x$をxとする。
 
-## 第一種球ベッセル関数(Spherical Bessel functions of the first kind)
+## 第1種球ベッセル関数(Spherical Bessel functions of the first kind)
 
 ~~~c++
 double       sph_bessel(unsigned n, double x);
@@ -499,7 +499,7 @@ float        sph_besself(unsigned n, float x);
 long double  sph_bessell(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対する第一種球ベッセル関数(Spherical Bessel functions of the first kind)を計算する。
+効果：実引数n, xに対する第1種球ベッセル関数(Spherical Bessel functions of the first kind)を計算する。
 
 戻り値：
 
@@ -511,7 +511,7 @@ $$
 
 注意： n \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-[第一種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
+[第1種円柱ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
 
 ## 球面ルジャンドル陪関数(Spherical associated Legendre functions)
@@ -559,7 +559,7 @@ float        sph_neumannf(unsigned n, float x);
 long double  sph_neumannl(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対する球ノイマン関数(Spherical Neumann functions)、またの名を第二種球ベッセル関数(Spherical Bessel functions of the second kind)を計算する。
+効果：実引数n, xに対する球ノイマン関数(Spherical Neumann functions)、またの名を第2種球ベッセル関数(Spherical Bessel functions of the second kind)を計算する。
 
 戻り値：
 
