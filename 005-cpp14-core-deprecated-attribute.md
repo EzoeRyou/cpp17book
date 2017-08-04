@@ -8,7 +8,7 @@
 // 変数
 // どちらでもよい
 [[deprecated]] int variable_name1 { } ;
-int variable_name2 [[deprecated]] { }
+int variable_name2 [[deprecated]] { } ;
 
 // typedef名
 [[deprecated]] typedef int typedef_name1 ;
@@ -19,7 +19,7 @@ using typedef_name3 [[deprecated]] = int ;
 // メンバー関数も同じ文法
 // どちらでもよい
 [[deprecated]] void function_name1() { }
-void function_name2 [[deprecated]] { }
+void function_name2 [[deprecated]] () { }
 
 
 // クラス
@@ -47,7 +47,7 @@ template < typename T >
 class template_name { } ;
 
 template < >
-class [[deprecated]] template_name<void> { }
+class [[deprecated]] template_name<void> { } ;
 ~~~
 
 deprecated属性が指定された名前やエンティティを使うと、C++コンパイラーは警告メッセージを出す。
