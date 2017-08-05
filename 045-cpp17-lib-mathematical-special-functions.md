@@ -96,7 +96,7 @@ $$
   \mathsf{B}(x, y) =
   \frac{ \Gamma(x) \, \Gamma(y) }
        { \Gamma(x+y) },
-       \quad \mbox{for $x > 0$, $y > 0$}
+       \quad \mbox{for $x > 0$,\, $y > 0$}
 $$
 
 $x$をx、$y$をyとする。
@@ -375,17 +375,8 @@ long double  expintl(long double x);
 
 $$
   \mathsf{Ei}(x) =
-  \begin{cases}
-  \displaystyle
-  - \lim_{\varepsilon\to+0}\left(
-    \int_{-x}^{-\varepsilon}   \frac{e^{-t}}
-                                    {t     } \, \mathsf{d}t
-  + \int_{+\varepsilon}^\infty \frac{e^{-t}}
-                                    {t     } \, \mathsf{d}t \right) & (x>0)\\[1ex]
-  \displaystyle
   - \int_{-x}^\infty \frac{e^{-t}}
-                          {t     } \, \mathsf{d}t & (x<0)
-  \end{cases}
+                          {t     } \, \mathsf{d}t
 \;
 $$
 
