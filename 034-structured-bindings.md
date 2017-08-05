@@ -193,7 +193,7 @@ int main()
 ~~~c++
 int main()
 {
-    int expr[] = { 1,2 } ;
+    constexpr int expr[] = { 1,2 } ;
 
     // エラー
     constexpr auto [a,b] = expr ;
