@@ -205,8 +205,10 @@ int main()
     std::all_of( std::execution::par, std::begin(c), std::end(c),
         [=]( auto & x ){
             if ( ptr == &x )
+            {
                 // 最後の要素なので特別な処理
                 // エラー
+            }
         } ) ;
 }
 ~~~
@@ -246,7 +248,7 @@ int main()
     std::vector<int> c = { 1,2,3,4,5 } ;
 
     std::for_each( std::execution::par, std::begin(c), std::end(c),
-        [&]( auto x ){ sum += x } ) ;
+        [&]( auto x ){ sum += x ; } ) ;
     // エラー、データ競合
 }
 ~~~
