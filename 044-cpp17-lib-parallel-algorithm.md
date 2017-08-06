@@ -276,7 +276,7 @@ int main()
 }
 ~~~
 
-このコードはparallel_unsequenced_policyならば、非効率的ではあるが問題なく同期されてデータ競合なく動くコードだ。しかし、parallel_unsequenced_policyでは動かない。なぜならば、mutexのlockという同期をする関数を呼び出す体。
+このコードはparallel_unsequenced_policyならば、非効率的ではあるが問題なく同期されてデータ競合なく動くコードだ。しかし、parallel_unsequenced_policyでは動かない。なぜならば、mutexのlockという同期をする関数を呼び出すからだ。
 
 C++では、ストレージの確保解放以外の同期する標準ライブラリの関数をすべて、ベクトル化非安全(vectorization-unsafe)に分類している。ベクトル化非安全な関数はstd::execution::parallel_unsequenced_policyの要素アクセス関数内で呼び出すことはできない。
 
