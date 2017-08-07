@@ -165,6 +165,18 @@ $l$をl、$m$をm、$\theta$をthetaとする。
 
 注意：l \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
+球面調和関数(Spherical harmonics) $\mathsf{Y}_\ell^m(\theta, \phi)$ は、以下のような関数を定義することによって計算できる。
+
+```c++
+#include <cmath>
+#include <complex>
+
+std::complex<double> spherical_harmonics(unsigned l, unsigned m, double theta, double phi)
+{
+    return std::sph_legendre(l, m, theta) * std::polar(1.0, m * phi) ;
+}
+```
+
 [ルジャンドル陪関数](#sf.cmath.assoc_legendre)も参照。
 
 
