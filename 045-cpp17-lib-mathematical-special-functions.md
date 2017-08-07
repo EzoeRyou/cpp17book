@@ -484,7 +484,7 @@ $\nu$をnu、$x$をxとする。
 
 注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-[正則変形ベッセル関数](#sf.cmath.cyl_bessel_i)、[第1種ベッセル関数](#sf.cmath.cyl_bessel_j)、[ノイマン関数](#sf.cmath.cyl_neumann)も参照。
+[第1種変形ベッセル関数](#sf.cmath.cyl_bessel_i)、[第1種ベッセル関数](#sf.cmath.cyl_bessel_j)、[ノイマン関数](#sf.cmath.cyl_neumann)も参照。
 
 
 ## 第1種球ベッセル関数(Spherical Bessel functions of the first kind)
