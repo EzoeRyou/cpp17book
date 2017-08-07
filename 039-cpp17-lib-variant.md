@@ -638,7 +638,7 @@ int main()
     // int
     auto a = std::get<int>( v ) ;
 
-    v = 3.14
+    v = 3.14 ;
     // double
     auto b = std::get<double>( v ) ;
 
