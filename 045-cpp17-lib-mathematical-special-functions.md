@@ -32,7 +32,7 @@ long double function_namel() ;  // l
 
 ある関数の効果が実装定義(implementation-defined)である場合、その効果はC++標準規格で定義されず、C++実装はどのように実装してもよいという意味だ。
 
-## 陪ラゲル多項式(Associated Laguerre polynominals)
+## 陪ラゲル多項式(Associated Laguerre polynomials)
 
 ~~~c++
 double      assoc_laguerre(unsigned n, unsigned m, double x);
@@ -40,7 +40,7 @@ float       assoc_laguerref(unsigned n, unsigned m, float x);
 long double assoc_laguerrel(unsigned n, unsigned m, long double x);
 ~~~
 
-効果：実引数n, m, xに対する陪ラゲル多項式(Associated Laguerre polynominals)を計算する。
+効果：実引数n, m, xに対する陪ラゲル多項式(Associated Laguerre polynomials)を計算する。
 
 戻り値：
 
@@ -382,7 +382,7 @@ $$
 
 $x$をxとする。
 
-## エルミート多項式(Hermite polynominals)
+## エルミート多項式(Hermite polynomials)
 
 ~~~c++
 double       hermite(unsigned n, double x);
@@ -390,7 +390,7 @@ float        hermitef(unsigned n, float x);
 long double  hermitel(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対するエルミート多項式(Hermite polynominals)を計算する。
+効果：実引数n, xに対するエルミート多項式(Hermite polynomials)を計算する。
 
 戻り値：
 
@@ -413,7 +413,7 @@ float        laguerref(unsigned n, float x);
 long double  laguerrel(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対するラゲル多項式(Laguerre polynominals)を計算する。
+効果：実引数n, xに対するラゲル多項式(Laguerre polynomials)を計算する。
 
 戻り値：
 
@@ -428,7 +428,7 @@ $n$をn、$x$をxとする。
 
 注意： n \>= 128のときの関数の呼び出しの効果は実装定義である。
 
-## ルジャンドル多項式(Legendre polynominals)
+## ルジャンドル多項式(Legendre polynomials)
 
 ~~~c++
 double       legendre(unsigned l, double x);
@@ -436,7 +436,7 @@ float        legendref(unsigned l, float x);
 long double  legendrel(unsigned l, long double x);
 ~~~
 
-効果：実引数l, xに対するルジャンドル多項式(Legendre polynominals)を計算する。
+効果：実引数l, xに対するルジャンドル多項式(Legendre polynomials)を計算する。
 
 戻り値：
 
