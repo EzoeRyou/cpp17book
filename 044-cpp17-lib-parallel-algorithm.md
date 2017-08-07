@@ -106,7 +106,7 @@ bool all_of(InputIterator first, InputIterator last, Predicate pred);
 
 ~~~c++
 template <class ExecutionPolicy, class ForwardIterator, class Predicate>
-bool any_of(ExecutionPolicy&& exec, ForwardIterator first, ForwardIterator last, Predicate pred);
+bool all_of(ExecutionPolicy&& exec, ForwardIterator first, ForwardIterator last, Predicate pred);
 ~~~
 
 並列アルゴリズムには、テンプレート仮引数としてExecutionPolicyが追加されていて第一引数に取る。これを実行時ポリシーと呼ぶ。
