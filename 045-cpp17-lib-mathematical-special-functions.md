@@ -174,7 +174,7 @@ float        cyl_bessel_if(float nu, float x);
 long double  cyl_bessel_il(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対する第1種変形ベッセル関数を計算する。
+効果：実引数nu, xに対する第1種変形ベッセル関数(Regular modified cylindrical Bessel functions, Modified Bessel functions of the first kind)を計算する。
 
 戻り値：
 
@@ -201,7 +201,7 @@ float        cyl_bessel_jf(float nu, float x);
 long double  cyl_bessel_jl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, kに対する第1種ベッセル関数(Cylindrical Bessel functions of the first kind)を計算する。
+効果：実引数nu, kに対する第1種ベッセル関数(Cylindrical Bessel functions of the first kind, Bessel functions of the first kind)を計算する。
 
 戻り値：
 
@@ -224,7 +224,7 @@ float        cyl_bessel_kf(float nu, float x);
 long double  cyl_bessel_kl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対する第2種変形ベッセル関数(Irregular modified cylindrical Bessel functions)を計算する。
+効果：実引数nu, xに対する第2種変形ベッセル関数(Irregular modified cylindrical Bessel functions, Modified Bessel functions of the second kind)を計算する。
 
 戻り値：
 
@@ -267,7 +267,7 @@ float        cyl_neumannf(float nu, float x);
 long double  cyl_neumannl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対するノイマン関数(Cylindrical Neumann functions)、またの名を第2種ベッセル関数(Cylindrical Bessel functions of the second kind)を計算する。
+効果：実引数nu, xに対するノイマン関数(Cylindrical Neumann functions, Neumann functions)、またの名を第2種ベッセル関数(Cylindrical Bessel functions of the second kind, Bessel functions of the second kind)を計算する。
 
 戻り値：
 
