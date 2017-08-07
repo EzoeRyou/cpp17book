@@ -163,18 +163,6 @@ int main()
 }
 ~~~
 
-autoはトップレベルのCV修飾子を消すが、decltype(auto)は保持する。
-
-~~~cpp
-int main()
-{
-    // int
-    auto x1 = f() ;
-    // int &
-    decltype(auto) x2 = f() ;
-}
-~~~
-
 リスト初期化はautoではstd::initializer_listだが、decltype(auto)では式ではないためエラー
 
 ~~~c++
