@@ -39,7 +39,7 @@ int main()
     constexpr int c = f() ;
 
     // Ok、constexprの条件を満たす
-    constexpr int d = f() ;
+    constexpr int d = g() ;
 }
 ~~~
 
