@@ -1,6 +1,6 @@
 # 数学の特殊関数群
 
-C++17では数学の特殊関数群(mathematical special functions)が追加された。
+C++17では数学の特殊関数群(mathematical special functions)がヘッダーファイル\<cmath\>に追加された。
 
 数学の特殊関数は、いずれも実引数をとって、規定の計算をし、結果を浮動小数点数型の戻り値として返す。
 
