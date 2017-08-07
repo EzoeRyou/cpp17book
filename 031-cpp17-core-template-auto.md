@@ -28,7 +28,7 @@ int main()
 {
     X<int, 0> x1 ;
     X<long, 0l> x2 ;
-    X<void(*), &f> x3 ;
+    X<void(*)(), &f> x3 ;
 }
 ~~~
 
