@@ -138,7 +138,7 @@ int main()
 {
 // エラー
 // 名前fはプリプロセッサーマクロではない。
-# if f()
+#if f()
     do_true_thing() ;
 #else
     do_false_thing() ;
@@ -228,7 +228,7 @@ distance( Iterator first, Iterator last )
 }
 ~~~
 
-残念ながら、このコードは動かない。ランダムアクセスイテレーターではないイテレーターを渡すと、last - firstというコードがコンパイルされるので、コンパイルエラーになる。コンパイラはー、
+残念ながら、このコードは動かない。ランダムアクセスイテレーターではないイテレーターを渡すと、last - firstというコードがコンパイルされるので、コンパイルエラーになる。コンパイラーは、
 
 ~~~c++
 if ( is_random_access_iterator<Iterator> )
@@ -344,7 +344,7 @@ void f()
 }
 ~~~
 
-もし、どうしてもconstexpr文の条件に会うときにだけstatic_assertが使いたい場合もある。これは、constexpr ifをネストしたりしていて、その内容を全部static_assertに書くのが冗長な場合だ。
+もし、どうしてもconstexpr文の条件に合うときにだけstatic_assertが使いたい場合もある。これは、constexpr ifをネストしたりしていて、その内容を全部static_assertに書くのが冗長な場合だ。
 
 ~~~cpp
 template < typename T >
@@ -363,7 +363,7 @@ void f()
 
 現実には、E1, E2, E3は複雑な式なので、static_assert( E1 && E2 && E3 )と書くのは冗長だ。同じ内容を二度書くのは間違いの元だ。
 
-このような場合、static_assertのオペランドをテンプレート引数に依存するようにすると、constexpr ifの条件に会うときにだけ発動するstatic_assertが書ける。
+このような場合、static_assertのオペランドをテンプレート引数に依存するようにすると、constexpr ifの条件に合うときにだけ発動するstatic_assertが書ける。
 
 ~~~cpp
 template  <typename ... >
