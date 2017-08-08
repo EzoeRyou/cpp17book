@@ -33,9 +33,10 @@ public:
 ~~~c++
 int main()
 {
-    std::default_searcher fox_searcher("fox") ;
+    std::string pattern("fox") ;
+    std::default_searcher fox_searcher( std::begin(pattern), std::end(pattern) ) ;
 
-    std::string s = "The quick brown fox jumps over the lazy dog" ;
+    std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
     auto[first, last] = fox_searcher( std::begin(s), std::end(s) ) ;
     std::string fox( first, last ) ;
@@ -53,6 +54,8 @@ Boyer-Moore文字列検索アルゴリズムは極めて効率的な文字列検
 <http://www.cs.utexas.edu/~moore/publications/fstrpos.pdf>
 
 Boyer-Mooreアルゴリズムは事前に検索するパターンから二つのテーブルを生成する必要がある。このため、Boyer-Mooreアルゴリズムはメモリ使用量と検索前の準備時間というコストがかかる。そのコストは、より効率的な検索により相殺できる。特に、パターンが長い場合は効果的だ。
+
+C++17に入るBoyer_mooreアルゴリズムに基づく検索は、テンプレートを使った汎用的なchar型のような状態数の少ない型に対して
 
 クラスboyer_moore_searcherは以下のように宣言されている。
 
@@ -83,14 +86,16 @@ boyer_moore_searcheは、文字列以外にも適用できる汎用的な設計�
 ~~~c++
 int main()
 {
-    std::boyer_moore_searcher fox_searcher("fox") ;
+    std::string pattern("fox") ;
+    std::boyer_moore_searcher fox_searcher( std::begin(pattern), std::end(pattern) ) ;
 
-    std::string s = "The quick brown fox jumps over the lazy dog" ;
+    std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
     auto[first, last] = fox_searcher( std::begin(s), std::end(s) ) ;
     std::string fox( first, last ) ;
 }
 ~~~
+
 
 ### boyer_moore_horspool_searcher
 
@@ -124,12 +129,15 @@ public:
 使い方はboyer_moore_horspool_searcherと変わらない。
 
 
+
+
 ~~~c++
 int main()
 {
-    std::boyer_moore_horspool_searcher fox_searcher("fox") ;
+    std::string pattern("fox") ;
+    std::boyer_moore_horspool_searcher fox_searcher( std::begin(pattern), std::end(pattern) ) ;
 
-    std::string s = "The quick brown fox jumps over the lazy dog" ;
+    std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
     auto[first, last] = fox_searcher( std::begin(s), std::end(s) ) ;
     std::string fox( first, last ) ;
