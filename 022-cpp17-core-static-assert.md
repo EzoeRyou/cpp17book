@@ -7,7 +7,7 @@ C++17ではstatic_assertに文字列リテラルをとらないものが追加�
 static_assert( true ) ;
 ~~~
 
-C++11で追加されたstatic_asserには、文字列リテラルが必須だった。
+C++11で追加されたstatic_assertには、文字列リテラルが必須だった。
 
 ~~~cpp
 static_assert( true, "this shall not be asserted.") ;
