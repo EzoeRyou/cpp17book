@@ -8,7 +8,7 @@ switch文では対応するcaseラベルに処理が移る。通常、以下の�
 ~~~cpp
 void f( int x )
 {
-    swtich ( x )
+    switch ( x )
     {
     case 0 :
         // 処理0
