@@ -369,7 +369,7 @@ public :
 
 ## プールリソース
 
-プールリソースはC++17の標準ライブラリが提供しているメモリーリソースの実装だ。synchronized_pool_resourcceとunsynchronized_pool_resourceの二つがある。
+プールリソースはC++17の標準ライブラリが提供しているメモリーリソースの実装だ。synchronized_pool_resourceとunsynchronized_pool_resourceの二つがある。
 
 ### アルゴリズム
 
