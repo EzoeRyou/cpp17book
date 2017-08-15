@@ -14,5 +14,5 @@ int main()
 
 二進数リテラルは浮動小数点数リテラルには使えない。
 
-機能テストマクロは__cpp_binary_literals。値は201304
+機能テストマクロは__cpp_binary_literals。値は201304。
 
