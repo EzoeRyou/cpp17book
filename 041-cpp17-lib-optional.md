@@ -226,7 +226,7 @@ int main()
 
     try {
         std::optional<int> b ;
-        int y = b.get() ;
+        int y = b.value() ;
     } catch( std::bad_optional_access e )
     {
         // 値を保持していなかった
