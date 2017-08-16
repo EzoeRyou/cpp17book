@@ -1,19 +1,32 @@
-## 関数にtupleの中身を実引数に渡して呼ぶapply
+## apply: tupleの要素を実引数に関数を呼び出す
 
-C++17で追加されたヘッダーファイル\<tuple\>で定義されているapplyは関数にtupleの中身を実引数に渡して呼ぶライブラリだ。
-
-~~~cpp
-int main()
-{
-    auto f = [](int, double, std::string){} ;
-
-    // int, double, const char *
-    std::tuple t( 1, 2.0, "hello" ) ;
-
-    // f( std::get<0>(t), std::get<1>(t), std::get<2>(t) )と同じ
-    // つまり、f( 1, 2.0, "hello" )と同じ
-    std::apply( f, t ) ;
-}
+~~~c++
+template <class F, class Tuple>
+constexpr decltype(auto) apply(F&& f, Tuple&& t);
 ~~~
 
-このように、apply( f, t )は、関数オブジェクトfに対して、tuple tの要素を順番にfの実引数に渡してfを呼び出す。
+std::applyはtupleのそれぞれの要素を順番に実引数に渡して関数を呼び出すヘルパー関数だ。
+
+ある要素数Nのtuple tと関数オブジェクトfに対して、apply( f, t )は、f( get<0>(t), get<1>(t), ... , get<N>(t) )のようにfを関数呼び出しする。
+
+例
+
+~~~cpp
+template < typename ... Types >
+void f( Types ... args ) { }
+
+int main()
+{
+    // int, int, int
+    std::tuple t1( 1,2,3 ) ;
+
+    // f( 1, 2, 3 )の関数呼び出し
+    std::apply( f, t1 ) ;
+
+    // int, double, const char *
+    std::tuple t2( 123, 4.56, "hello") ;
+
+    // f( 123, 4.56, "hello" )の関数呼び出し
+    std::apply( f, t2 ) ;
+}
+~~~
