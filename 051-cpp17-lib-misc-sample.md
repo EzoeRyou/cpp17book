@@ -321,3 +321,43 @@ int main()
 std::listのメンバー関数sizeは定数時間であることが保障されているため、このコードにおけるイテレーターを回すループは一回に抑えられる。しかし、std::sampleは要素数を渡す実引数がないために要素数がイテレーターを全走査しなくても分かっている場合でも、非効率的な処理を行わなければならない。
 
 もしランダムアクセスイテレーター未満、前方イテレーター以上のイテレーターカテゴリーのイテレーターの範囲から標本を選択したい場合で、イテレーターの範囲の指す要素数が予め分かっている場合は、自前でアルゴリズムSを実装したほうが効率がよい。
+
+
+~~~cpp
+template <  class PopulationIterator, class SampleIterator,
+            class Distance, class UniformRandomBitGenerator >
+SampleIterator
+sample_s(
+    PopulationIterator first, PopulationIterator last,
+    Distance size,
+    SampleIterator out,
+    Distance n, UniformRandomBitGenerator&& g)
+{
+    // 1.
+    Distance t = 0 ;
+    Distance m = 0 ;
+    const auto N = size ;
+
+    auto r = [&]{
+        std::uniform_int_distribution<> d(0, N-t) ;
+        return d(g) ;
+    } ;
+
+    while ( m < n  && first != last )
+    {
+        // 2. 3.
+        if ( r() >= n - m )
+        {// 5.
+            ++t ;
+            ++first ;
+        }
+        else { // 4.
+            *out = *first ;
+            ++first ; ++out ;
+            ++m ; ++t ;
+        }
+    }
+    
+    return out ;
+}
+~~~
