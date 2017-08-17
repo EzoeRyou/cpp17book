@@ -1,5 +1,7 @@
 ## make_from_tuple : tupleの要素を実引数にコンストラクターを呼び出す
 
+make_from_tupleはヘッダーファイル\<tuple\>で定義されている。
+
 ~~~c++
 template <class T, class Tuple>
 constexpr T make_from_tuple(Tuple&& t);

@@ -1,6 +1,6 @@
 ## as_const: const性の付与
 
-以下のような関数テンプレートstd::as_constが追加される。
+as_constはヘッダーファイル\<utility\>で定義されている。
 
 ~~~c++
 template <class T> constexpr add_const_t<T>& as_const(T& t) noexcept

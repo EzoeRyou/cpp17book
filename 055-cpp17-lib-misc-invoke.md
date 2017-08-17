@@ -1,5 +1,7 @@
 ## invoke : 指定した関数を指定した実引数で呼び出す
 
+invokeはヘッダーファイル\<functional\>で定義されている
+
 ~~~c++
 template <class F, class... Args>
 invoke_result_t<F, Args...> invoke(F&& f, Args&&... args)

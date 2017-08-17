@@ -1,5 +1,7 @@
 ## not_fn : 戻り値の否定ラッパー
 
+not_fnはヘッダーファイル\<functional\>で定義されている。
+
 ~~~c++
 template <class F> unspecified not_fn(F&& f);
 ~~~
