@@ -7,7 +7,7 @@ constexpr T make_from_tuple(Tuple&& t);
 
 applyはtupleの要素を実引数に関数を呼び出すライブラリだが、make_from_tupleはtupleの要素を実引数にコンストラクターを呼び出すライブラリだ。
 
-ある型Tと要素数Nのtuple tに対して、make_from_tuple<T>(t)は、T型をT( get<0>(t), get<1>(t), ... , get<N>(t) )のように構築して、構築したT型のオブジェクトを返す。
+ある型Tと要素数Nのtuple tに対して、make_from_tuple\<T\>(t)は、T型をT( get\<0\>(t), get\<1\>(t), ... , get\<N\>(t) )のように構築して、構築したT型のオブジェクトを返す。
 
 ~~~cpp
 class X
