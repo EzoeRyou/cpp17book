@@ -36,8 +36,8 @@ struct X
    void f()
    {
         // thisはポインターのキャプチャー
-        // dataはthisポインターを辿る。
-        [this]{ data = 1 ; }() ;
+        // dataはthisポインターを辿る。
+        [this]{ data = 1 ; }() ;
 
         // this->dataは1
 
@@ -56,6 +56,7 @@ struct X
 ~~~
 
 最初のラムダ式で生成されるクロージャーオブジェクトは以下のようなものだ。
+
 ~~~cpp
 class closure_object
 {
