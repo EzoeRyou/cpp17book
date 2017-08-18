@@ -117,7 +117,6 @@ class string
 public :
     // 文字列を表現するストレージの動的確保
     string ( char const * str )
-        : ptr ( nullptr )
     {
         size = std::strlen( str ) ;
         ptr = new char[size+1] ;
@@ -127,9 +126,8 @@ public :
     // コピー
     // 別のストレージを動的確保
     string ( string const & r )
-        : size( r.size ), ptr ( nullptr )
+        : size( r.size ), ptr ( new char[size+1] )
     {
-        ptr = new char[size+1] ;
         std::strcpy( ptr, r.ptr ) ;
     }
 
