@@ -44,14 +44,14 @@ ForwardIterator uninitialized_default_construct_n(ForwardIterator first, Size n)
 ~~~cpp
 int main()
 {
-    void * raw_ptr = ::operator new( sizeof(std::string) * 10 ) ;
-
-    std::string * ptr = static_cast<std::string *>(raw_ptr) ;
+    std::shared_ptr<void> raw_ptr
+    (   ::operator new( sizeof(std::string) * 10 ),
+        [](void * ptr){ ::operator delete(ptr) ; } ) ;
+ 
+    std::string * ptr = static_cast<std::string *>( raw_ptr.get() ) ;
 
     std::uninitialized_default_construct_n( ptr, 10 ) ;
     std::destroy_n( ptr, 10 ) ;
-
-    ::operator delete( raw_ptr ) ;
 }
 ~~~
 
@@ -86,13 +86,15 @@ int main()
 {
     std::vector<std::string> input(10, "hello") ;
 
-    void * raw_ptr = ::operator new( sizeof(std::string) * 10 ) ;
-    std::string * ptr = static_cast<std::string *>(raw_ptr) ;
+    std::shared_ptr<void> raw_ptr
+    (   ::operator new( sizeof(std::string) * 10 ),
+        [](void * ptr){ ::operator delete(ptr) ; } ) ;
+ 
+    std::string * ptr = static_cast<std::string *>( raw_ptr.get() ) ;
+
 
     std::uninitialized_copy_n( std::begin(input), std::end(input), 10, ptr ) ;
     std::destroy_n( ptr, 10 ) ;
-
-    ::operator delete( raw_ptr ) ;
 }
 ~~~
 
