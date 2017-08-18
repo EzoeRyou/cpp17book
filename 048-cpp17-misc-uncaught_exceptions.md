@@ -43,7 +43,7 @@ struct X
     {
         try {
             // true
-            bool b = std::uncaguth_exception() ;
+            bool b = std::uncaught_exception() ;
         } catch( ... ) { }
     }
 } ;

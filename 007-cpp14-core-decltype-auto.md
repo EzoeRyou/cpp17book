@@ -17,7 +17,7 @@ auto b() { return 0 ; }
 
 変数宣言にプレイスホルダー型を使う場合、型を決定するための式は初期化子と呼ばれる部分に書かれる式を使う。関数の戻り値の型推定にプレイスホルダー型を使う場合、return文の式を使う。
 
-decltype(auto)はautoの代わりに使うことができる。delctype(auto)も型を式から決定する。
+decltype(auto)はautoの代わりに使うことができる。decltype(auto)も型を式から決定する。
 
 ~~~cpp
 // aはint

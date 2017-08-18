@@ -374,7 +374,7 @@ void f()
 {
     if constexpr ( E1 )
         if constexpr ( E2 )
-            if constepxr ( E3 )
+            if constexpr ( E3 )
             {
                 static_assert( false_v<T> ) ;
             }
