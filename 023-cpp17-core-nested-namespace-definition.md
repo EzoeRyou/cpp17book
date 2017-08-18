@@ -24,4 +24,4 @@ namespace A::B::C {
 
 
 
-機能テストマクロは__cpp_nested_namespace­_definitions, 値は201411。
+機能テストマクロは__cpp_nested_namespace_definitions, 値は201411。
