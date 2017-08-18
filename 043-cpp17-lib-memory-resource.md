@@ -195,7 +195,7 @@ int main()
 ~~~
 
 
-std::pmr::polymorphic_allocatorは以下のように宣言されている
+std::pmr::polymorphic_allocatorは以下のように宣言されている。
 
 ~~~c++
 namespace std::pmr {

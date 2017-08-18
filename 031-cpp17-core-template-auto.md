@@ -32,4 +32,4 @@ int main()
 }
 ~~~
 
-機能テストマクロは__cpp_template_auto, 値は201606
+機能テストマクロは__cpp_template_auto, 値は201606。

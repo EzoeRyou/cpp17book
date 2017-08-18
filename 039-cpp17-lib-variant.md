@@ -457,7 +457,7 @@ using type = std::variant<char, short, int> ;
 constexpr std::size_t size = std::variant_size<type>{} ;
 ~~~
 
-variant_sizeを以下のようにラップした変数テンプレートも用意されている
+variant_sizeを以下のようにラップした変数テンプレートも用意されている。
 
 ~~~c++
 template <class T>
