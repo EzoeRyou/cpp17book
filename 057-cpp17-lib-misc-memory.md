@@ -6,7 +6,7 @@ C++17ではヘッダーファイル\<memory\>にメモリー管理用のアル�
 
 ~~~c++
 template <class T> constexpr T* addressof(T& r) noexcept;
-~~
+~~~
 
 addressofはC++17以前からもある。addressof(r)はrのポインターを取得する。たとえ、rの型がoperaotr &をオーバーロードしていても正しいポインターを取得できる。
 
@@ -76,7 +76,7 @@ uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator resu
 
 template <class InputIterator, class Size, class ForwardIterator>
 ForwardIterator
-uninitialized_copy_n(   InputIterator first, Size n, ForwardIterator result);
+uninitialized_copy_n(InputIterator first, Size n, ForwardIterator result);
 ~~~
 
 [first, last)の範囲、もしくはfirstからn個の範囲の値を、resultの指す未初期化のメモリーにコピー構築する。

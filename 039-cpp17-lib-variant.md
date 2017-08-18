@@ -69,7 +69,6 @@ unionはメモリ効率がよい。unionはvariantと違い型非安全だ。ど
 試しに、冒頭のコードをunionで書くと、以下のようになる。
 
 ~~~cpp
-
 union U
 {
     int i ;
@@ -355,6 +354,7 @@ void f( std::variant<int> & v )
     { // true
         // vは値を保持していない
     }
+    else
     { // false
         // vは値を保持している
     }
@@ -372,7 +372,7 @@ int main()
         v = s ; // 動的メモリ確保が発生するかもしれない
     } catch( std::bad_alloc e )
     {
-    // 動的メモリ確保が失敗するかもしれない
+        // 動的メモリ確保が失敗するかもしれない
     }
 
     // 動的メモリ確保の失敗により
@@ -483,7 +483,7 @@ using type = std::variant< char, short, int > ;
 using t0 = std::variant_alternative<0, type >::type ;
 // short
 using t1 = std::variant_alternative<1, type >::type ;
-// ing
+// int
 using t2 = std::variant_alternative<2, type >::type ;
 ~~~
 
@@ -504,7 +504,7 @@ using type = std::variant< char, short, int > ;
 using t0 = std::variant_alternative_t<0, type > ;
 // short
 using t1 = std::variant_alternative_t<1, type > ;
-// ing
+// int
 using t2 = std::variant_alternative_t<2, type > ;
 ~~~
 

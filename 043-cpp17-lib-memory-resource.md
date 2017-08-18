@@ -93,8 +93,8 @@ void f( std::pmr::memory_resource * a, std::pmr::memory_resource * b )
 
 ~~~c++
 class memory_resource {
-// 非公開
-static constexpr size_t max_align = alignof(max_align_t);
+    // 非公開
+    static constexpr size_t max_align = alignof(max_align_t);
 
 public:
     virtual ~ memory_resource();
