@@ -10,7 +10,7 @@ searcherの基本的な設計としては、クラスのオブジェクトを構
 
 クラスstd::default_searcherは以下のように宣言されている。
 
-~~c++
+~~~c++
 template < class ForwardIterator1, class BinaryPredicate = equal_to<> >
 class default_searcher {
 public:
@@ -82,7 +82,7 @@ public:
 } ;
 ~~~
 
-boyer_moore_searcheは、文字列以外にも適用できる汎用的な設計のため、ハッシュ関数を取る。char型のような取りうる状態数の少ない型以外が渡された場合は、std::unordered_mapのようなメモリ使用量を削減できる何らかのデータ構造を使ってテーブルを構築する。
+boyer_moore_searcherは、文字列以外にも適用できる汎用的な設計のため、ハッシュ関数を取る。char型のような取りうる状態数の少ない型以外が渡された場合は、std::unordered_mapのようなメモリ使用量を削減できる何らかのデータ構造を使ってテーブルを構築する。
 
 使い方はdefault_searcherとほとんど変わらない。
 
