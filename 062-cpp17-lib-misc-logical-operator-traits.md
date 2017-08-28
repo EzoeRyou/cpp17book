@@ -5,7 +5,7 @@ C++17では、ヘッダーファイル\<type_traits\>にクラステンプレー
 ### conjunction : 論理和
 
 ~~~c++
-template<class... B> struct conjunction
+template<class... B> struct conjunction;
 ~~~
 
 クラステンプレートconjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基クラスに持つ。
@@ -28,11 +28,11 @@ int main()
 
 
 ~~~c++
-template<class... B> struct disjunction
+template<class... B> struct disjunction;
 ~~~
 
 
-クラステンプレートdisjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理和を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がtrueとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。
+クラステンプレートdisjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理和を適用する。disjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がtrueとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。
 
 ~~~cpp
 int main()
@@ -51,10 +51,10 @@ int main()
 ### negation
 
 ~~~c++
-template<class... B> struct disjunction
+template<class B> struct negation;
 ~~~
 
-クラステンプレートnegation\<B\>はBに否定を適用する。negationは基本クラスとしてbool_constant\<!bool\<B::value\>\>を持つ。
+クラステンプレートnegation\<B\>はBに否定を適用する。negationは基本クラスとしてbool_constant\<!bool\(B::value\)\>を持つ。
 
 ~~~cpp
 int main()
