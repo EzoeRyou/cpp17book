@@ -8,7 +8,7 @@ namespace std {
 template < typename T >
 class shared_ptr
 {
-    using weak_ptr = weak_ptr<T> ;
+    using weak_type = weak_ptr<T> ;
 } ;
 
 }
