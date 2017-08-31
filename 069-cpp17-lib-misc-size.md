@@ -1,6 +1,6 @@
 ## コンテナーアクセス関数
 
-ヘッダーファイル\<iterator\>に、コンテナーアクセス関数として、フリー関数版のsize, empty, dataが追加された。
+ヘッダーファイル\<iterator\>に、コンテナーアクセス関数として、フリー関数版のsize, empty, dataが追加された。それぞれ、メンバー関数のsize, empty, dataを呼び出す。
 
 ~~~cpp
 int main()
