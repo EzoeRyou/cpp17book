@@ -44,6 +44,6 @@ int main()
     // true
     constexpr bool b5 = std::is_invocable_r< int, decltype(&f), int, double >{} ;
     // false
-    constexpr bool b6 = std::is_invocable< double, decltype(&f), int, double >{} ;
+    constexpr bool b6 = std::is_invocable_r< double, decltype(&f), int, double >{} ;
 }
 ~~~
