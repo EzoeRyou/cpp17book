@@ -106,7 +106,7 @@ public :
 
 
     // 値へのアクセス
-    value_type && value() const ;   // set限定
+    value_type & value() const ;   // set限定
     key_type & key() const ;        // map限定
     mapped_type & mapped() const ;  // map限定
 
@@ -118,7 +118,7 @@ public :
     bool empty() const noexcept ;
 
     void swap( node_handle & ) ;
-}
+} ;
 ~~~
 
 setのノードハンドルはメンバー関数valueで値を得る。
@@ -166,7 +166,7 @@ int main()
     {
         std::set<int> c = { 1,2,3 } ;
         // 所有権の移動
-        auto n = c.extract( std::begin(c) ) ;
+        n = c.extract( std::begin(c) ) ;
         // cが破棄される
     }
 
