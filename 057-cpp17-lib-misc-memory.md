@@ -93,7 +93,7 @@ int main()
     std::string * ptr = static_cast<std::string *>( raw_ptr.get() ) ;
 
 
-    std::uninitialized_copy_n( std::begin(input), std::end(input), 10, ptr ) ;
+    std::uninitialized_copy_n( std::begin(input), 10, ptr ) ;
     std::destroy_n( ptr, 10 ) ;
 }
 ~~~
