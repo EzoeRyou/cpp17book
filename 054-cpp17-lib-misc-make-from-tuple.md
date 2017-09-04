@@ -24,12 +24,12 @@ int main()
     std::tuple t1(1,2,3) ;
 
     // X(1,2,3)
-    X x1 = std::make_from_tuple( t1 ) 
+    X x1 = std::make_from_tuple<X>( t1 ) 
 
     // int, double, const char *
     std::tuple t2( 123, 4.56, "hello" ) ;
 
     // X(123, 4.56, "hello")
-    X x2 = std::make_from_tuple( t2 ) ;
+    X x2 = std::make_from_tuple<X>( t2 ) ;
 }
 ~~~
