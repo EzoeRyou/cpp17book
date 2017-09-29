@@ -258,7 +258,7 @@ int main()
 
     auto n = a.extract(1) ;
 
-    b.insert( n ) ;
+    b.insert( std::move(n) ) ;
 
     // n.empty() == true
 }
@@ -273,7 +273,7 @@ int main()
     std::set<int>::node_type n ;
 
     // 何も起こらない
-    c.insert(n) ;
+    c.insert( std::move(n) ) ;
 }
 ~~~
 
@@ -288,7 +288,7 @@ int main()
     c.insert( 1 ) ;
 
     // 失敗する
-    c.insert( n ) ; 
+    c.insert( std::move(n) ) ; 
 }
 ~~~
 
@@ -337,7 +337,7 @@ int main()
     std::set<int> c = {1,2,3} ;
     std::set<int>::node_type n ; // 空
 
-    auto [position, inserted, node] = c.insert(n) ;
+    auto [position, inserted, node] = c.insert( std::move(n) ) ;
 
     // inserted == false
     // position == c.end()
@@ -353,7 +353,7 @@ int main()
     std::set<int> c = {1,2,3} ;
     auto n = c.extract(1) ;
 
-    auto [position, inserted, node] = c.insert(n) ;
+    auto [position, inserted, node] = c.insert( std::move(n) ) ;
 
     // inserted == true
     // position == c.find(1)
@@ -371,11 +371,11 @@ int main()
     auto n = c.extract(1) ;
     c.insert(1) ;
 
-    auto [position, inserted, node] = c.insert(n) ;
+    auto [position, inserted, node] = c.insert( std::move(n) ) ;
 
     // nは未規定の値。
     // inserted == false
-    // nodeはinsert(n)を呼び出す前のnの値
+    // nodeはinsert( std::move(n) )を呼び出す前のnの値
     // position == c.find(1)
 }
 ~~~
@@ -396,7 +396,7 @@ int main()
     std::set<int> b = {4,5,6} ;
 
     auto n = a.extract(1) ;
-    b.insert(n) ;
+    b.insert( std::move(n) ) ;
 }
 ~~~
 
@@ -439,6 +439,6 @@ int main()
     // キーを変更
     n.key() = "dog" ;
     // 差し戻す
-    m.insert( n ) ;
+    m.insert( std::move(n) ) ;
 }
 ~~~
