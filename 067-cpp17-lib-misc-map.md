@@ -24,7 +24,7 @@ int main()
 
     auto ptr = std::make_unique<int>(0) ;
     // emplaceは失敗する
-    auto [iter, is_emplaced] = m.emplace( 0, ptr ) ;
+    auto [iter, is_emplaced] = m.emplace( 0, std::move(ptr) ) ;
 
     // 結果は実装により異なる
     // ptrはムーブされているかもしれない
@@ -46,7 +46,7 @@ int main()
 
     auto ptr = std::make_unique<int>(0) ;
     // emplaceは失敗する
-    auto [iter, is_emplaced] = m.emplace( 0, ptr ) ;
+    auto [iter, is_emplaced] = m.emplace( 0, std::move(ptr) ) ;
 
     // trueであることが保証される
     // ptrはムーブされていない
