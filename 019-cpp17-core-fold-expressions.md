@@ -146,7 +146,7 @@ int main()
 二項fold式の文法は以下のいずれかになる。
 
 ~~~c++
-( cast-expression fold-operator ... fold-operator cast-expression
+( cast-expression fold-operator ... fold-operator cast-expression )
 ~~~
 
 左右のcast-expressionのどちらか片方だけに未展開のパラメーターパックが入っていなければならない。2つのfold-operatorは同じ演算子でなければならない。
