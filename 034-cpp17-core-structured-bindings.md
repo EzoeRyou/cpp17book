@@ -26,11 +26,11 @@ struct B
     std::string c ;
 } ;
 
-B b{ 1, 2.0, "hello"} ;
+B b{ 1, 2.0, "hello" } ;
 
-std::tuple<int, double, std::string> c { 1, 2.0, "hello" } ;
+std::tuple< int, double, std::string > c { 1, 2.0, "hello" } ;
 
-std::pair< int, int> d{ 1, 2 } ;
+std::pair< int, int > d{ 1, 2 } ;
 ~~~
 
 
@@ -77,7 +77,7 @@ int main()
     double b ;
     std::string c ;
 
-    std::tie(a, b, c ) = f() ;
+    std::tie( a, b, c ) = f() ;
     
     std::cout << a << '\n' 
         << b << '\n'
@@ -180,7 +180,7 @@ struct Values
 
 int main()
 {
-    Values values{ 1, 2.0, "hello"} ;
+    Values values{ 1, 2.0, "hello" } ;
 
     auto [a,b,c] = values ;
 }
@@ -250,7 +250,7 @@ int main()
 ~~~cpp
 int main()
 {
-    std::pair<int, int> pairs[] = { {1,2}, {3,4}, {5,6}} ;
+    std::pair<int, int> pairs[] = { {1,2}, {3,4}, {5,6} } ;
     
     for ( auto [a, b] : pairs )
     {
@@ -432,9 +432,9 @@ int main()
     
     using E = decltype(e) ;
 
-    std::tuple_element<0, E >::type & a = std::get<0>(e) ;
-    std::tuple_element<1, E >::type & b = std::get<1>(e) ;
-    std::tuple_element<2, E >::type & c = std::get<2>(e) ;
+    std::tuple_element<0, E>::type & a = std::get<0>(e) ;
+    std::tuple_element<1, E>::type & b = std::get<1>(e) ;
+    std::tuple_element<2, E>::type & c = std::get<2>(e) ;
 }
 ~~~~
 
@@ -458,9 +458,9 @@ int main()
     
     using E = decltype(e) ;
 
-    std::tuple_element<0, E >::type && a = std::get<0>(std::move(e)) ;
-    std::tuple_element<1, E >::type && b = std::get<1>(std::move(e)) ;
-    std::tuple_element<2, E >::type && c = std::get<2>(std::move(e)) ;
+    std::tuple_element<0, E>::type && a = std::get<0>(std::move(e)) ;
+    std::tuple_element<1, E>::type && b = std::get<1>(std::move(e)) ;
+    std::tuple_element<2, E>::type && c = std::get<2>(std::move(e)) ;
 }
 ~~~~
 

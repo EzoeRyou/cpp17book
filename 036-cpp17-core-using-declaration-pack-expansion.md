@@ -30,7 +30,7 @@ template < typename ... Types >
 struct S : Types ...
 {
     using Types::operator() ... ;
-    void operator ()( long ) { }
+    void operator () ( long ) { }
 } ;
 
 

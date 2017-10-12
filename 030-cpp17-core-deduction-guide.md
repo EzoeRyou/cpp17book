@@ -39,7 +39,7 @@ int main()
 
 ~~~cpp
 // コンテナー風のクラス
-template <typename T >
+template < typename T >
 class Container
 {
     std::vector<T> c ;
@@ -78,13 +78,13 @@ Container( Iterator, Iterator )
 -> Container< typename std::iterator_traits< Iterator >::value_type > ;
 ~~~
 
-C++コンパイラーはこの推定ガイドを使って、Container\<T\>::Container(Iterator, Iterator)からは、Tをstd::iterator_traits\< Iterator\>::value_typeとして推定すればいいのだと判断できる。
+C++コンパイラーはこの推定ガイドを使って、Container\<T\>::Container(Iterator, Iterator)からは、Tをstd::iterator_traits\<Iterator\>::value_typeとして推定すればいいのだと判断できる。
 
 例えば、初期化リストに対応するには以下のように書く。
 
 ~~~cpp
 
-template <typename T >
+template < typename T >
 class Container
 {
     std::vector<T> c ;

@@ -1440,18 +1440,18 @@ int main()
     using namespace std::literals ;
 
     // 最終更新日時を取得
-    auto timestamp = last_write_time("foo") ;
+    auto timestamp = last_write_time( "foo" ) ;
 
     // 時刻を1時間すすめる
     timestamp += 1h ;
     // 更新
-    last_write_time("foo", timestamp ) ;
+    last_write_time( "foo", timestamp ) ;
 
 
     // 現在時刻を取得
     auto now = file_time_type::clock::now() ;
 
-    last_write_time("foo", now ) ;
+    last_write_time( "foo", now ) ;
 }
 ~~~
 
@@ -1483,7 +1483,7 @@ int main()
     time_t timestamp = std::mktime( &struct_tm ) ;
     auto tp = system_clock::from_time_t( timestamp ) ;
 
-    last_write_time("foo", tp ) ;
+    last_write_time( "foo", tp ) ;
 }
 ~~~
 

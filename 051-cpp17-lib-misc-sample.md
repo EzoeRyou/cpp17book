@@ -39,7 +39,7 @@ int main()
     // 乱数生成器
     std::array<std::uint32_t, sizeof(std::knuth_b)/4> a ;
     std::random_device r ;
-    std::generate( std::begin( a ), std::end(a), [&]{ return r() ; } ) ;
+    std::generate( std::begin(a), std::end(a), [&]{ return r() ; } ) ;
     std::seed_seq seed( std::begin(a), std::end(a) ) ;
     std::knuth_b g( seed ) ;
 
@@ -196,7 +196,7 @@ SampleIterator sample_r(
 
     auto result = out ;
 
-    for ( ; (first != last) && (t != n) ; ++first, ++t, ++result  )
+    for ( ; (first != last) && (t != n) ; ++first, ++t, ++result )
     {
         out[t] = *first ;
     }
@@ -205,7 +205,7 @@ SampleIterator sample_r(
         return result ;
 
 
-    auto I = [&](Distance j) -> decltype(auto) { return out[j-1] ;} ;
+    auto I = [&](Distance j) -> decltype(auto) { return out[j-1] ; } ;
 
     while ( first != last )
     {

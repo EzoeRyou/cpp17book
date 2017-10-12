@@ -66,6 +66,6 @@ int main()
 {
     int x = 42 ;
 
-    std::byte * rep = reinterpret_cast< std::byte *>(&x) ;
+    std::byte * rep = reinterpret_cast< std::byte * >(&x) ;
 }
 ~~~
