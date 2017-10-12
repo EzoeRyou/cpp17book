@@ -1310,7 +1310,7 @@ bool is_x(const path& p);
 bool is_x(const path& p, error_code& ec) noexcept;
 ~~~
 
-以下はフリー関数の名前と、どのファイルタイプであるかを判定する表だ。。
+以下はフリー関数の名前と、どのファイルタイプであるかを判定する表だ。
 
 
 名前                意味
