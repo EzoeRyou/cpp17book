@@ -553,7 +553,7 @@ struct S
 
 int main()
 {
-    S e{1,3} ; ;
+    S e{1,3} ;
     auto [a,b] = e ;
 }
 ~~~
