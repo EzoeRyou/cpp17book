@@ -72,7 +72,7 @@ bool parallel_is_all_of_less_than_100( Container const & input )
 
     for ( auto & f : futures )
     {
-        f = std::async( [=]{ return std::all_of( first, last, [](auto x){ return x < 100 ;} ) ; } ) ;
+        f = std::async( [=]{ return std::all_of( first, last, [](auto x){ return x < 100 ; } ) ; } ) ;
 
         first = last ;
         last = first + step ;
@@ -181,7 +181,7 @@ int main()
 {
     std::vector<int> c = { 1,2,3,4,5 } ;
     std::for_each( std::execution::par, std::begin(c), std::end(c),
-        [](auto & x ){ ++x ; } ) ;
+        [](auto & x){ ++x ; } ) ;
     // OK
 }
 ~~~
@@ -222,7 +222,7 @@ int main()
 template < typename ExecutionPolicy, typename ForwardIterator, typename Predicate >
 bool all_of( ExecutionPolicy && exec, ForwardIterator first, ForwardIterator last, Predicate pred )
 {
-    if constexpr ( std::is_same_v< ExecutionPolicy, std::execution::parallel_policy> )
+    if constexpr ( std::is_same_v< ExecutionPolicy, std::execution::parallel_policy > )
     {
         std::vector c( first, last ) ;
         do_all_of_par( std::begin(c), std::end(c), pred ) ;

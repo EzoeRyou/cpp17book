@@ -120,7 +120,7 @@ fold-operatorにはいかのいずれかの二項演算子を使うことがで�
 
 fold式には左foldと右foldがある。
 
-左fold式の ( ... op pack )では、展開結果は( (( pack#0 op pack#1) op pack#2) ... op pack#N )となる。右fold式の( pack op ... )では、展開結果は( pack#0 op (pack#1 op ( pack#2 op (... op pack#N))))となる。
+左fold式の( ... op pack )では、展開結果は((( pack#0 op pack#1 ) op pack#2 ) ... op pack#N )となる。右fold式の( pack op ... )では、展開結果は( pack#0 op ( pack#1 op ( pack#2 op ( ... op pack#N ))))となる。
 
 ~~~cpp
 template < typename ... Types >

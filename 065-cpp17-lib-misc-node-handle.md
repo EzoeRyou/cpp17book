@@ -427,7 +427,7 @@ mapではキーは変更できない。キーを変更したければ、元の�
 ~~~cpp
 int main()
 {
-    std::map< std::string, std::string> m =
+    std::map< std::string, std::string > m =
     {
         {"cat", "meow"},
         {"DOG", "bow"}, // キーを間違えたので変更したい

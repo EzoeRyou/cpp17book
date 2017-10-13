@@ -24,7 +24,7 @@ int main()
     std::apply( f, t1 ) ;
 
     // int, double, const char *
-    std::tuple t2( 123, 4.56, "hello") ;
+    std::tuple t2( 123, 4.56, "hello" ) ;
 
     // f( 123, 4.56, "hello" )の関数呼び出し
     std::apply( f, t2 ) ;

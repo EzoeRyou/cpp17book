@@ -14,7 +14,7 @@ struct X
 
 int main()
 {
-    std::function <int () > f ;
+    std::function < int () > f ;
     {
         X x ;
         f = x.get() ;
@@ -124,7 +124,7 @@ struct X
    void f()
    {
         // thisはこのメンバー関数fを呼び出したオブジェクトへのアドレス
-        std::printf("%p\n", this ) ;
+        std::printf("%p\n", this) ;
 
         // thisはコピーされた別のオブジェクトへのアドレス
         [*this](){  std::printf("%p\n", this) ;  }() ;

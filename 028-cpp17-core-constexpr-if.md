@@ -189,7 +189,7 @@ distance( Iterator first, Iterator last )
 template < typename Iterator >
 constexpr bool is_random_access_iterator =
     std::is_same_v<
-        typename std::iterator_traits<std::decay_t<Iterator> >::iterator_category,
+        typename std::iterator_traits< std::decay_t<Iterator> >::iterator_category,
         std::random_access_iterator_tag > ;
 ~~~
 
@@ -281,7 +281,7 @@ struct X
 template < typename T >
 int f(T x)
 {
-    if constexpr ( std::is_same_v<std::decay_t<T>, X > )
+    if constexpr ( std::is_same_v< std::decay_t<T>, X > )
         return x.get() ;
     else
         return x ;
@@ -366,7 +366,7 @@ void f()
 このような場合、static_assertのオペランドをテンプレート引数に依存するようにすると、constexpr ifの条件に合うときにだけ発動するstatic_assertが書ける。
 
 ~~~cpp
-template  <typename ... >
+template  < typename ... >
 bool false_v = false ;
 
 template < typename T >

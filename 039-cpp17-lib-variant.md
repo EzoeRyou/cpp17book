@@ -122,8 +122,8 @@ int main()
 variantはテンプレート実引数で保持したい型を与える。
 
 ~~~cpp
-std::variant< char, short, int, long> v1 ;
-std::variant<int, double, std::string> v2 ;
+std::variant< char, short, int, long > v1 ;
+std::variant< int, double, std::string > v2 ;
 std::variant< std::vector<int>. std::list<int> > v3 ;
 ~~~
 
@@ -480,11 +480,11 @@ std::variant_alternative\<I, T\>はT型のvariantの保持できる型のうち�
 using type = std::variant< char, short, int > ;
 
 // char
-using t0 = std::variant_alternative<0, type >::type ;
+using t0 = std::variant_alternative< 0, type >::type ;
 // short
-using t1 = std::variant_alternative<1, type >::type ;
+using t1 = std::variant_alternative< 1, type >::type ;
 // int
-using t2 = std::variant_alternative<2, type >::type ;
+using t2 = std::variant_alternative< 2, type >::type ;
 ~~~
 
 variant_alternative_tというテンプレートエイリアスが以下のように定義されている。
@@ -501,11 +501,11 @@ template <size_t I, class T>
 using type = std::variant< char, short, int > ;
 
 // char
-using t0 = std::variant_alternative_t<0, type > ;
+using t0 = std::variant_alternative_t< 0, type > ;
 // short
-using t1 = std::variant_alternative_t<1, type > ;
+using t1 = std::variant_alternative_t< 1, type > ;
 // int
-using t2 = std::variant_alternative_t<2, type > ;
+using t2 = std::variant_alternative_t< 2, type > ;
 ~~~
 
 ### holds_alternative : variantが指定した型の値を保持しているかどうかの確認
@@ -657,7 +657,7 @@ get_if\<I\>(vp)とget_if\<T\>(vp)は、variantへのポインターvpを実引�
 ~~~cpp
 int main()
 {
-    std::variant< int, double, std::string> v( 42 ) ;
+    std::variant< int, double, std::string > v( 42 ) ;
 
     // int *
     auto a = std::get_if<int>( &v ) ; 
