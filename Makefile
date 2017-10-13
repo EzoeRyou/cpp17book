@@ -21,11 +21,11 @@ test-tool : bin/sample-code-checker
 bin/sample-code-checker : bin/sample-code-checker.cpp
 	g++ -D _ISOC11_SOURCE -std=c++14 --pedantic-errors -Wall -pthread -O2 -o bin/sample-code-checker  bin/sample-code-checker.cpp
 
-book : index.html
+book : docs/index.html
 
 
-index.html : *.md style.css
-	pandoc -s --toc --toc-depth=6 --mathjax -o index.html -H style.css  pandoc_title_block *-*.md
+docs/index.html : *.md style.css
+	pandoc -s --toc --toc-depth=6 --mathjax -o $@ -H style.css  pandoc_title_block *-*.md
 
 index.md : *.md
 	pandoc -s --toc --toc-depth=6 --mathjax -o index.md -H style.css  pandoc_title_block *-*.md
