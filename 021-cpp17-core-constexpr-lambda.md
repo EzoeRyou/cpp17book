@@ -38,7 +38,7 @@ int main()
     // エラー、constexprの条件を満たさない
     constexpr int c = f() ;
 
-    // Ok、constexprの条件を満たす
+    // OK、constexprの条件を満たす
     constexpr int d = g() ;
 }
 ~~~
