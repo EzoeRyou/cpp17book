@@ -44,4 +44,4 @@ constexpr std::common_type_t<M,N> lcm(M m, N n)
 }
 ~~~
 
-lcm(m,n)は、mとnのどちらかがゼロの場合ゼロを返す。それ以外の場合、$\abs{m}$と$\abs{n}$の最小公倍数(Least Common Multiple)を返す。
+lcm(m,n)は、mとnのどちらかがゼロの場合ゼロを返す。それ以外の場合、$|m|$と$|n|$の最小公倍数(Least Common Multiple)を返す。
