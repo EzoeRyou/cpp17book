@@ -81,7 +81,7 @@ int main()
 
 ## basic_string_view
 
-std::stringがstd::basic_string\< CharT, Traits \>に対するstd::basic_string<char>であるように、std::string_viewも、その実態はstd::basic_string_viewの特殊化へのtypedef名だ。
+std::stringがstd::basic_string\< CharT, Traits \>に対するstd::basic_string\<char\>であるように、std::string_viewも、その実態はstd::basic_string_viewの特殊化へのtypedef名だ。
 
 ~~~c++
 // 本体

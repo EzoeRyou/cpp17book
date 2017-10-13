@@ -7,7 +7,7 @@ constexpr decltype(auto) apply(F&& f, Tuple&& t);
 
 std::applyはtupleのそれぞれの要素を順番に実引数に渡して関数を呼び出すヘルパー関数だ。
 
-ある要素数Nのtuple tと関数オブジェクトfに対して、apply( f, t )は、f( get<0>(t), get<1>(t), ... , get<N>(t) )のようにfを関数呼び出しする。
+ある要素数Nのtuple tと関数オブジェクトfに対して、apply( f, t )は、f( get\<0\>(t), get\<1\>(t), ... , get\<N\>(t) )のようにfを関数呼び出しする。
 
 例
 

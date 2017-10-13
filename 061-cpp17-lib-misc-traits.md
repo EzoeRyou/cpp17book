@@ -148,7 +148,7 @@ template <class T>
 struct has_unique_object_representations ;
 ~~~
 
-has_unique_object_representations\<T>は、T型がトリビアルにコピー可能で、かつT型の同値である2つのオブジェクトの内部表現が同じ場合に、trueを返す。
+has_unique_object_representations\<T\>は、T型がトリビアルにコピー可能で、かつT型の同値である2つのオブジェクトの内部表現が同じ場合に、trueを返す。
 
 falseを返す例としては、オブジェクトがパディング(padding)と呼ばれるアライメント調整などのための値の表現に影響しないストレージ領域を持つ場合だ。パディングビットの値は同値に影響しないので、falseを返す。
 
