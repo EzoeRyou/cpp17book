@@ -177,7 +177,7 @@ int main()
 
 decltype(auto)は単体で使わなければならない。
 
-~~~c+
+~~~c++
 // OK
 auto const x1 = 0 ; 
 // エラー
