@@ -29,7 +29,7 @@ constexpr std::common_type_t<M,N> gcd(M m, N n)
 }
 ~~~
 
-gcd(m, n)はmとnがともにゼロの場合ゼロを返す。それ以外の場合、$\abs{m}$と$\abs{n}$の最大公約数(Greatest Common Divisor)を返す。
+gcd(m, n)はmとnがともにゼロの場合ゼロを返す。それ以外の場合、$|m|$と$|n|$の最大公約数(Greatest Common Divisor)を返す。
 
 ### lcm : 最小公倍数
 
