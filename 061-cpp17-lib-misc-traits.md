@@ -29,7 +29,7 @@ C++17ではクラステンプレートconjunction, disjunction, negationが追�
 template<class... B> struct conjunction;
 ~~~
 
-クラステンプレートconjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基クラスに持つ。
+クラステンプレートconjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。
 
 ~~~cpp
 int main()
