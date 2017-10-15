@@ -177,7 +177,7 @@ struct X
 
 この場合、unused_paddingの値には意味がなく、クラスXの同値比較には用いられない。この場合、std::has_unique_representations_v\<X\>はfalseになる。
 
-### no_throw_swappable: 無例外swap可能か確認するtraits
+### is_nothrow_swappable: 無例外swap可能か確認するtraits
 
 ~~~c++
 template <class T>
