@@ -177,7 +177,7 @@ public:
 } ;
 ~~~
 
-value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では/が用いられるが、Microsoft Windowsでは\が使われている。
+value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では`/`が用いられるが、Microsoft Windowsでは`\`が使われている。
 
 ### ファイルパスの文字列
 
