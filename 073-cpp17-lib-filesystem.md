@@ -33,7 +33,7 @@ void using_directive()
 void namespace_alias()
 {
     // 名前空間エイリアス
-    using fs = std::filesystem ;
+    namespace fs = std::filesystem ;
 
     fs::path p("/usr") ;
 }
