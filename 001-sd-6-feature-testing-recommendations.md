@@ -111,7 +111,7 @@ int main()
 
 ## __has_cpp_attribute式
 
-C++実装が特定の属性トークンをサポートしているかどうかをしらべるには、__has_cpp_attribute式が使える。
+C++実装が特定の属性トークンをサポートしているかどうかを調べるには、__has_cpp_attribute式が使える。
 
 ~~~c++
 __has_cpp_attribute( 属性トークン )

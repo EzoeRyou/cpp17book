@@ -671,7 +671,7 @@ int main()
 }
 ~~~
 
-メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをでリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
+メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
 
 ### オプション
 
@@ -1180,7 +1180,7 @@ void rename(const path& old_p, const path& new_p, error_code& ec) noexcept;
 
 old_pとnew_pが同じ存在するファイルを指す場合、何もしない。
 
-~~~
+~~~cpp
 int main()
 {
     using namespace std:filesystem ;
