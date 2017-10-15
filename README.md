@@ -6,6 +6,8 @@
 
 とりあえず書く。
 
+[GitHub Pageで閲覧:C++17の新機能](https://ezoeryou.github.io/cpp17book/index.html)
+
 # 参考書の構成
 
 参考書のソースコードはPandoc markdownで記述されている。
