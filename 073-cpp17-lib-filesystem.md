@@ -369,7 +369,7 @@ public :
 
 現実的には、モダンなPOSIX準拠の環境では、文字型はchar、文字列型はstd::string、エンコードはUTF-8になる。
 
-Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列方はstd::wstring、エンコードはUTF-16となっている。
+Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列型はstd::wstring、エンコードはUTF-16となっている。
 
 
 ### ファイルパスの操作
