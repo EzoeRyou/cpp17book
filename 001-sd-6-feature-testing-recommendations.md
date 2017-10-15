@@ -79,7 +79,7 @@ __has_include式はヘッダー名が存在する場合1に、存在しない場
 #if __has_include(<filesystem>) 
 // ファイルシステムをサポートしている
 #include <filesystem>
-namespace fs = std::filesystem
+namespace fs = std::filesystem ;
 #else
 // 実験的な実装を使う
 #include <experimental/filesystem>
