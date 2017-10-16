@@ -397,7 +397,7 @@ void do_true_thing() ;
 
 void f( bool runtime_value )
 {
-    if ( true )
+    if constexpr ( true )
         do_true_thing() ;
     else
         do_false_thing() ; // エラー
