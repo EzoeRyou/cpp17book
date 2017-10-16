@@ -52,11 +52,11 @@ struct S
 }
 ~~~
 
-この場合、sizeof(U)のサイズは
+この場合、sizeof(U)は
 
 $$\text{sizeof(U)} = \max \{ \text{sizeof(int)}, \text{sizeof(double)}, \text{sizeof(std::string)} \} + \text{パディングなど}$$
 
-になる。sizeof(S)のサイズは、
+になる。sizeof(S)は、
 
 $$\text{sizeof(S)} = \text{sizeof(int)} + \text{sizeof(double)} + \text{sizeof(std::string)} + \text{パディングなど}$$
 
