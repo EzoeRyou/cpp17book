@@ -1,4 +1,4 @@
-## shared_ptr<T[]> : 配列に対するshared_ptr
+## shared_ptr\<T[]\> : 配列に対するshared_ptr
 
 C++17では、shared_ptrが配列に対応した。
 

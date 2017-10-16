@@ -434,7 +434,7 @@ int main()
 
 ### variant_size\<T\> : variantが保持できる型の数を取得
 
-std::variant_size<T>は、Tにvariant型を渡すと、variantが保持できる型の数を返してくれる。
+std::variant_size\<T\>は、Tにvariant型を渡すと、variantが保持できる型の数を返してくれる。
 
 ~~~cpp
 using t1 = std::variant<char> ;

@@ -452,7 +452,7 @@ constexpr std::size_t factorial()
 }
 ~~~
 
-もしconstexpr ifがなければ、factorial<N-1>が永遠に実体化されコンパイル時ループが停止しない。
+もしconstexpr ifがなければ、factorial\<N-1\>が永遠に実体化されコンパイル時ループが停止しない。
 
 
 機能テストマクロは__cpp_if_constexpr, 値は201606。
