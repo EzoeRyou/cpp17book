@@ -922,7 +922,7 @@ path canonical(const path& p, error_code& ec);
 path canonical(const path& p, const path& base, error_code& ec);
 ~~~
 
-存在するファイルへのファイルパスpへの、シンボリックリンク、カレントディレクトリー(.)、ペアレントディレクトリー(..)の存在しない絶対パスを返す。
+存在するファイルへのファイルパスpへの、シンボリックリンク、カレントディレクトリー(.)、親ディレクトリー(..)の存在しない絶対パスを返す。
 
 #### wealky_canonical
 
