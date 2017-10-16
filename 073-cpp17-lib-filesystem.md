@@ -604,7 +604,7 @@ directory_iterator_のデフォルトコンストラクターは終端イテレ�
 
 directory_itertor::value_typeはdirectory_entryで、イテレーターのカテゴリーは入力イテレーターとなる。
 
-directory_iteratorはカレントディレクトリー(.)とパレンとディレクトリー(..)は列挙しない。
+directory_iteratorはカレントディレクトリー(.)と親ディレクトリー(..)は列挙しない。
 
 directory_iteratorがディレクトリー下のファイルをどのような順番で列挙するかは未規定だ。
 
