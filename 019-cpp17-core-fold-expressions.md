@@ -51,7 +51,7 @@ auto sum( Types ... args )
 }
 ~~~
 
-( ... + args )は、args#0 + args#1 + ... + args#Nのように展開される。
+( ... + args )は、args#0 + args#1 + ... + args#N-1のように展開される。
 
 fold式には、単項fold式と二項fold式がある。そして、演算子の結合順序に合わせて左foldと右foldがある。
 
@@ -102,7 +102,7 @@ T f( T x ) { return x ; }
 template < typename ... Types >
 auto g( Types ... args )
 {
-    // f(args#0) + f(args#1) + ... + f(args#N)
+    // f(args#0) + f(args#1) + ... + f(args#N-1)
     return ( ... + f(args) )  ;
 }
 ~~~
@@ -120,7 +120,7 @@ fold-operatorには以下のいずれかの二項演算子を使うことがで�
 
 fold式には左foldと右foldがある。
 
-左fold式の( ... op pack )では、展開結果は((( pack#0 op pack#1 ) op pack#2 ) ... op pack#N )となる。右fold式の( pack op ... )では、展開結果は( pack#0 op ( pack#1 op ( pack#2 op ( ... op pack#N ))))となる。
+左fold式の( ... op pack )では、展開結果は((( pack#0 op pack#1 ) op pack#2 ) ... op pack#N-1 )となる。右fold式の( pack op ... )では、展開結果は( pack#0 op ( pack#1 op ( pack#2 op ( ... op pack#N-1 ))))となる。
 
 ~~~cpp
 template < typename ... Types >
