@@ -204,6 +204,32 @@ int main()
 }
 ~~~
 
+### operator bool : 値を保持しているかどうか確認する
+~~~c++
+constexpr explicit operator bool() const noexcept;
+~~~
+
+optionalをbool型として評価すると、値を保持している場合にのみtrueとして評価される。
+
+~~~c++
+int main()
+{
+    std::optional<bool> a = some_function();
+    // if(a.has_value()) と等価
+    if ( a )
+    {
+        // 値を保持
+    }
+    else
+    {
+        // 値を不保持
+    }
+
+    // エラー、暗黙の型変換は行われない
+    bool b = a;
+}
+~~~
+
 ### value : 保持している値を取得
 
 ~~~c++
