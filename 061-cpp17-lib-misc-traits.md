@@ -108,14 +108,14 @@ struct is_nothrow_invocable_r;
 ~~~
 
 
-is_invocableはテンプレート実引数で与えられた型FnがパラメーターパックArgTypesをパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値はRかどうかを確認するtraitsだ。呼び出せるのであればtrue_type、そうでなければfalse_typeを基本クラスに持つ。
+is_invocableはテンプレート実引数で与えられた型FnがパラメーターパックArgTypesをパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値はRへ暗黙変換できるかどうかを確認するtraitsだ。呼び出せるのであればtrue_type、そうでなければfalse_typeを基本クラスに持つ。
 
 
 is_invocableは関数呼び出しした結果の戻り値の型については問わない。
 
-is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRであることが確認される。
+is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRへ暗黙変換できることが確認される。
 
-is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出しが無例外保証されていることも確認する。
+is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出し（および戻り値型Rへの暗黙変換）が無例外保証されていることも確認する。
 
 ~~~cpp
 
@@ -177,7 +177,7 @@ struct X
 
 この場合、unused_paddingの値には意味がなく、クラスXの同値比較には用いられない。この場合、std::has_unique_representations_v\<X\>はfalseになる。
 
-### no_throw_swappable: 無例外swap可能か確認するtraits
+### is_nothrow_swappable: 無例外swap可能か確認するtraits
 
 ~~~c++
 template <class T>
