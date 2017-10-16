@@ -29,7 +29,7 @@ C++17ではクラステンプレートconjunction, disjunction, negationが追�
 template<class... B> struct conjunction;
 ~~~
 
-クラステンプレートconjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基クラスに持つ。
+クラステンプレートconjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。
 
 ~~~cpp
 int main()
@@ -82,7 +82,7 @@ int main()
 {
     using namespace std ;
 
-    // falae
+    // false
     constexpr bool b1 = negation< true_type >::value ;
     // true
     constexpr bool b2 = negation< false_type >::value ; 
@@ -115,7 +115,7 @@ is_invocableは関数呼び出しした結果の戻り値の型については�
 
 is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRであることが確認される。
 
-is_nothrow_invocableとis_nothrow_invocableは、関数呼び出しが無例外保証されていることも確認する。
+is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出しが無例外保証されていることも確認する。
 
 ~~~cpp
 

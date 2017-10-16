@@ -366,7 +366,7 @@ int main()
 }
 ~~~
 
-string_vieはstringとほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。
+string_viewはstringとほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。
 
 ### remove_prefix/remove_suffix : 先頭、末尾の要素の削除
 

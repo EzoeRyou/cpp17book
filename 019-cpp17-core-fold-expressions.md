@@ -109,7 +109,7 @@ auto g( Types ... args )
 
 これはf(args)というパターンが展開される。
 
-fold-operatorにはいかのいずれかの二項演算子を使うことができる。
+fold-operatorには以下のいずれかの二項演算子を使うことができる。
 
 
 ~~~

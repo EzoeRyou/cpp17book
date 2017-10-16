@@ -466,7 +466,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 </div>
 <h1 id="序">序</h1>
-<p>本書が出版される頃には、すでにC++17規格が正式に制定されているだろう。本書はC++17の新機能をいち早く解説するために書かれた。</p>
+<p>この本はアスキードワンゴで紙書籍として出版される予定のC++17の新機能をほぼすべて解説している。本書に誤りを見つけたならば、Pull Requestを送る先は<a href="https://github.com/EzoeRyou/cpp17book" class="uri">https://github.com/EzoeRyou/cpp17book</a>だ。</p>
+<p>江添亮</p>
 <h2 id="cの規格">C++の規格</h2>
 <p>プログラミング言語C++はISOの傘下で国際規格ISO/IEC 14882として制定されている。この規格は数年おきに改定されている。一般にC++の規格を参照するときは、規格が制定した西暦の下二桁をとって、C++98(1998年発行)とかC++11(2011年発行)と呼ばれている。現在発行されているC++の規格は以下の通り。</p>
 <h3 id="c98">C++98</h3>
@@ -536,7 +537,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#if __has_include(&lt;filesystem&gt;) </span>
 <span class="co">// ファイルシステムをサポートしている</span>
 <span class="pp">#include </span><span class="im">&lt;filesystem&gt;</span>
-<span class="kw">namespace</span> fs = <span class="bu">std::</span>filesystem
+<span class="kw">namespace</span> fs = <span class="bu">std::</span>filesystem ;
 <span class="pp">#else</span>
 <span class="co">// 実験的な実装を使う</span>
 <span class="pp">#include </span><span class="im">&lt;experimental/filesystem&gt;</span>
@@ -556,7 +557,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     { }
 }</code></pre></div>
 <h2 id="has_cpp_attribute式">__has_cpp_attribute式</h2>
-<p>C++実装が特定の属性トークンをサポートしているかどうかをしらべるには、__has_cpp_attribute式が使える。</p>
+<p>C++実装が特定の属性トークンをサポートしているかどうかを調べるには、__has_cpp_attribute式が使える。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">__has_cpp_attribute( 属性トークン )</code></pre></div>
 <p>__has_cpp_attribute式は、属性トークンが存在する場合は属性トークンが標準規格に採択された年と月を表す数値に、存在しない場合は0に置換される。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// [[nodiscard]]がサポートされている場合は使う</span>
@@ -1322,7 +1323,7 @@ T f( T x ) { <span class="cf">return</span> x ; }
     <span class="cf">return</span> ( ... + f(args) )  ;
 }</code></pre></div>
 <p>これはf(args)というパターンが展開される。</p>
-<p>fold-operatorにはいかのいずれかの二項演算子を使うことができる。</p>
+<p>fold-operatorには以下のいずれかの二項演算子を使うことができる。</p>
 <pre><code>+   -   *   /   %   ^   &amp;   |   &lt;&lt;  &gt;&gt;
 +=  -=  *=  /=  %=  ^=  &amp;=  |=  &lt;&lt;= &gt;&gt;+ =
 ==  !=  &lt;   &gt;   &lt;=  &gt;=  &amp;&amp;  ||  ,   .*  -&gt;*</code></pre>
@@ -4240,7 +4241,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
     <span class="co">// string_viewは参照しているだけ</span>
     <span class="bu">std::</span>cout &lt;&lt; sv ;
 }</code></pre></div>
-<p>string_vieはstringとほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。</p>
+<p>string_viewはstringとほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。</p>
 <h3 id="remove_prefixremove_suffix-先頭末尾の要素の削除">remove_prefix/remove_suffix : 先頭、末尾の要素の削除</h3>
 <p>string_viewは先頭と末尾からn個の要素を削除するメンバー関数を提供している。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">constexpr</span> <span class="dt">void</span> remove_prefix(<span class="dt">size_type</span> n);
@@ -6168,7 +6169,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
     <span class="kw">auto</span> wptr1 = <span class="bu">std::</span>weak_ptr&lt; <span class="kw">typename</span> Shared_ptr::<span class="dt">element_type</span> &gt;( sptr ) ;
 
     <span class="co">// C++17</span>
-    <span class="kw">auto</span>  wptr2 = <span class="kw">typename</span> Shared_ptr::<span class="dt">weak_type</span>( sptr ) ;
+    <span class="kw">auto</span> wptr2 = <span class="kw">typename</span> Shared_ptr::<span class="dt">weak_type</span>( sptr ) ;
 }</code></pre></div>
 <h2 id="void_t">void_t</h2>
 <p>ヘッダーファイル&lt;type_traits&gt;で定義されているvoid_tは以下のように定義されている。</p>
@@ -6203,7 +6204,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 <p>C++17ではクラステンプレートconjunction, disjunction, negationが追加された。これはテンプレートメタプログラミングで論理積、論理和、否定を手軽に扱うためのtraitsだ。</p>
 <h4 id="conjunction-論理積">conjunction : 論理積</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span>... B&gt; <span class="kw">struct</span> conjunction;</code></pre></div>
-<p>クラステンプレートconjunction&lt;B1, B2, ..., BN&gt;はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基クラスに持つ。</p>
+<p>クラステンプレートconjunction&lt;B1, B2, ..., BN&gt;はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="kw">using</span> <span class="kw">namespace</span> std ;
@@ -6236,7 +6237,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 {
     <span class="kw">using</span> <span class="kw">namespace</span> std ;
 
-    <span class="co">// falae</span>
+    <span class="co">// false</span>
     <span class="kw">constexpr</span> <span class="dt">bool</span> b1 = negation&lt; <span class="dt">true_type</span> &gt;::value ;
     <span class="co">// true</span>
     <span class="kw">constexpr</span> <span class="dt">bool</span> b2 = negation&lt; <span class="dt">false_type</span> &gt;::value ; 
@@ -6256,7 +6257,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 <p>is_invocableはテンプレート実引数で与えられた型FnがパラメーターパックArgTypesをパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値はRかどうかを確認するtraitsだ。呼び出せるのであればtrue_type、そうでなければfalse_typeを基本クラスに持つ。</p>
 <p>is_invocableは関数呼び出しした結果の戻り値の型については問わない。</p>
 <p>is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRであることが確認される。</p>
-<p>is_nothrow_invocableとis_nothrow_invocableは、関数呼び出しが無例外保証されていることも確認する。</p>
+<p>is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出しが無例外保証されていることも確認する。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">
 <span class="dt">int</span> f( <span class="dt">int</span>, <span class="dt">double</span> ) ;
 
@@ -6857,7 +6858,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     <span class="cf">else</span>
         <span class="cf">return</span> gcd( n, <span class="bu">std::</span>abs(m) % <span class="bu">std::</span>abs(n) ) ; 
 }</code></pre></div>
-<p>gcd(m, n)はmとnがともにゼロの場合ゼロを返す。それ以外の場合、<span class="math inline">\(\abs{m}\)</span>と<span class="math inline">\(\abs{n}\)</span>の最大公約数(Greatest Common Divisor)を返す。</p>
+<p>gcd(m, n)はmとnがともにゼロの場合ゼロを返す。それ以外の場合、<span class="math inline">\(|m|\)</span>と<span class="math inline">\(|n|\)</span>の最大公約数(Greatest Common Divisor)を返す。</p>
 <h3 id="lcm-最小公倍数">lcm : 最小公倍数</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> M, <span class="kw">class</span> N&gt;
 <span class="kw">constexpr</span> <span class="bu">std::</span>common_type_t&lt;M,N&gt; lcm(M m, N n)
@@ -6867,7 +6868,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     <span class="cf">else</span>
         <span class="cf">return</span> <span class="bu">std::</span>abs(m) / gcd( m, n ) * <span class="bu">std::</span>abs(n) ;
 }</code></pre></div>
-<p>lcm(m,n)は、mとnのどちらかがゼロの場合ゼロを返す。それ以外の場合、<span class="math inline">\(\abs{m}\)</span>と<span class="math inline">\(\abs{n}\)</span>の最小公倍数(Least Common Multiple)を返す。</p>
+<p>lcm(m,n)は、mとnのどちらかがゼロの場合ゼロを返す。それ以外の場合、<span class="math inline">\(|m|\)</span>と<span class="math inline">\(|n|\)</span>の最小公倍数(Least Common Multiple)を返す。</p>
 <h1 id="ファイルシステム">ファイルシステム</h1>
 <p>ヘッダーファイル &lt;filesystem&gt; で定義されている標準ライブラリのファイルシステムは、ファイルやディレクトリーとその属性を扱うためのライブラリだ。</p>
 <p>一般に「ファイルシステム」といった場合、例えばLinuxのext4、Microsoft WindowsのFATやNTFS、Apple MacのHFS+やAPFSといったファイルとその属性を表現するためのストレージ上のデータ構造を意味する。C++の標準ライブラリのファイルシステムとは、そのようなファイルシステムを実現するデータ構造を操作するライブラリではない。ファイルシステムというデータ構造で抽象化された、ファイルやディレクトリーとその属性、それに付随する要素、例えばパスやファイルやディレクトリーを操作するためのライブラリのことだ。</p>
@@ -6891,7 +6892,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 <span class="dt">void</span> namespace_alias()
 {
     <span class="co">// 名前空間エイリアス</span>
-    <span class="kw">using</span> fs = <span class="bu">std::</span>filesystem ;
+    <span class="kw">namespace</span> fs = <span class="bu">std::</span>filesystem ;
 
     fs::path p(<span class="st">&quot;/usr&quot;</span>) ;
 }</code></pre></div>
@@ -6999,7 +7000,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     <span class="kw">using</span> <span class="dt">string_type</span> = basic_string&lt;<span class="dt">value_type</span>&gt;;
     <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">value_type</span> preferred_separator = see below ;
 } ;</code></pre></div>
-<p>value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では/が用いられるが、Microsoft Windowsでは。</p>
+<p>value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では<code>/</code>が用いられるが、Microsoft Windowsでは<code>\</code>が使われている。</p>
 <h3 id="ファイルパスの文字列">ファイルパスの文字列</h3>
 <p>ファイルパスは文字列で表現する。C++の文字列のエンコードには以下のものがある。</p>
 <ul>
@@ -7059,7 +7060,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 <li>ジェネリック: 汎用的な標準のフォーマット</li>
 </ul>
 <p>POSIX準拠の環境においては、ネイティブとジェネリックは全く同じだ。POSIX準拠ではない環境では、ネイティブとジェネリックは異なるフォーマットを持つ可能性がある。</p>
-<p>例えば、Microsoft Windowsでは、ネイティブのファイルパス文字列はディレクトリーの区切り文字にPOSIX準拠の/ではなく。</p>
+<p>例えば、Microsoft Windowsでは、ネイティブのファイルパス文字列はディレクトリーの区切り文字にPOSIX準拠の<code>/</code>ではなく<code>\</code>を使っている。</p>
 <p>まずメンバー関数nativeとc_strがある。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> path {
 {
@@ -7132,7 +7133,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 <p>使い方はネイティブな文字列を返すstring()系のメンバー関数と同じだ。</p>
 <p>ファイルパスの文字列の文字型と文字列エンコードは環境ごとに異なるので、移植性の高いコードを書くときには注意が必要だ。</p>
 <p>現実的には、モダンなPOSIX準拠の環境では、文字型はchar、文字列型はstd::string、エンコードはUTF-8になる。</p>
-<p>Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列方はstd::wstring、エンコードはUTF-16となっている。</p>
+<p>Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列型はstd::wstring、エンコードはUTF-16となっている。</p>
 <h3 id="ファイルパスの操作">ファイルパスの操作</h3>
 <p>クラスpathはファイルパス文字列の操作を提供している。std::stringとは違い、findやsubstrのような操作は提供していないが、ファイルパス文字列に特化した操作を提供している。</p>
 <p>operator /, operator /=はセパレーターで区切ったファイルパス文字列の追加を行う。</p>
@@ -7348,7 +7349,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 
     <span class="bu">std::</span>copy( iter, end, <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
 }</code></pre></div>
-<p>メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをでリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。</p>
+<p>メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。</p>
 <h3 id="オプション">オプション</h3>
 <p>recursive_directory_iteratorはコンストラクターの実引数にdirectory_options型のscoped enum値を取ることによって、挙動を変更できる。directory_options型のenum値はビットマスクになっていて、以下の3つのビットマスク値が規定されている。</p>
 <table>
@@ -7758,13 +7759,13 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 <span class="dt">void</span> rename(<span class="at">const</span> path&amp; old_p, <span class="at">const</span> path&amp; new_p, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルold_pをファイルnew_pにリネームする。</p>
 <p>old_pとnew_pが同じ存在するファイルを指す場合、何もしない。</p>
-<pre><code>int main()
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
-    using namespace std:filesystem ;
+    <span class="kw">using</span> <span class="kw">namespace</span> std:filesystem ;
 
-    // 何もしない
-    rename(&quot;foo&quot;, &quot;foo&quot;) ;
-}</code></pre>
+    <span class="co">// 何もしない</span>
+    rename(<span class="st">&quot;foo&quot;</span>, <span class="st">&quot;foo&quot;</span>) ;
+}</code></pre></div>
 <p>それ以外の場合、リネームに伴って以下のような挙動も発生する。</p>
 <p>もし、リネーム前にnew_pが既存のファイルを指していた場合、リネームに伴ってnew_pは削除される。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()

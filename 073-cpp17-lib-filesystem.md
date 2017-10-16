@@ -33,7 +33,7 @@ void using_directive()
 void namespace_alias()
 {
     // 名前空間エイリアス
-    using fs = std::filesystem ;
+    namespace fs = std::filesystem ;
 
     fs::path p("/usr") ;
 }
@@ -177,7 +177,7 @@ public:
 } ;
 ~~~
 
-value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では/が用いられるが、Microsoft Windowsでは\が使われている。
+value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では`/`が用いられるが、Microsoft Windowsでは`\`が使われている。
 
 ### ファイルパスの文字列
 
@@ -260,7 +260,7 @@ pathに格納されているファイルパス文字列を取得する方法は�
 
 POSIX準拠の環境においては、ネイティブとジェネリックは全く同じだ。POSIX準拠ではない環境では、ネイティブとジェネリックは異なるフォーマットを持つ可能性がある。
 
-例えば、Microsoft Windowsでは、ネイティブのファイルパス文字列はディレクトリーの区切り文字にPOSIX準拠の/ではなく\を使っている。
+例えば、Microsoft Windowsでは、ネイティブのファイルパス文字列はディレクトリーの区切り文字にPOSIX準拠の`/`ではなく`\`を使っている。
 
 まずメンバー関数nativeとc_strがある。
 
@@ -369,7 +369,7 @@ public :
 
 現実的には、モダンなPOSIX準拠の環境では、文字型はchar、文字列型はstd::string、エンコードはUTF-8になる。
 
-Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列方はstd::wstring、エンコードはUTF-16となっている。
+Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列型はstd::wstring、エンコードはUTF-16となっている。
 
 
 ### ファイルパスの操作
@@ -671,7 +671,7 @@ int main()
 }
 ~~~
 
-メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをでリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
+メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
 
 ### オプション
 
@@ -1180,7 +1180,7 @@ void rename(const path& old_p, const path& new_p, error_code& ec) noexcept;
 
 old_pとnew_pが同じ存在するファイルを指す場合、何もしない。
 
-~~~
+~~~cpp
 int main()
 {
     using namespace std:filesystem ;
@@ -1250,7 +1250,7 @@ void resize_file(const path& p, uintmax_t new_size, error_code& ec) noexcept;
 
 ファイルパスpathの指すファイルのファイルサイズをnew_sizeにする。
 
-リサイズはPOSIXのtruncate()で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータはnullバイト'\0'でパディングされる。ファイルの最終アクセス日時も更新される。
+リサイズはPOSIXのtruncate()で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータはnullバイト(`\0`)でパディングされる。ファイルの最終アクセス日時も更新される。
 
 ### 情報取得
 
