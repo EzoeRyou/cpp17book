@@ -292,7 +292,7 @@ int main()
     int * p1 = std::any_cast<int>( &a ) ;
 
     // nullptr
-    double * p2 = std::any_Cast<double>( &a ) ;
+    double * p2 = std::any_cast<double>( &a ) ;
 }
 ~~~
 
