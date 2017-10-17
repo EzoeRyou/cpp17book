@@ -1372,7 +1372,7 @@ p1とp2が物理ファイルシステム上、同一のファイルである場�
 #### exists
 
 ~~~c++
-ool exists(file_status s) noexcept;
+bool exists(file_status s) noexcept;
 bool exists(const path& p);
 bool exists(const path& p, error_code& ec) noexcept;
 ~~~
