@@ -38,7 +38,7 @@ int main()
 
     std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
-    auto[first, last] = fox_searcher( std::begin(s), std::end(s) ) ;
+    auto[first, last] = fox_searcher( std::begin(corpus), std::end(corpus) ) ;
     std::string fox( first, last ) ;
 }
 ~~~
@@ -95,7 +95,7 @@ int main()
 
     std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
-    auto[first, last] = fox_searcher( std::begin(s), std::end(s) ) ;
+    auto[first, last] = fox_searcher( std::begin(corpus), std::end(corpus) ) ;
     std::string fox( first, last ) ;
 }
 ~~~
@@ -143,7 +143,7 @@ int main()
 
     std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
-    auto[first, last] = fox_searcher( std::begin(s), std::end(s) ) ;
+    auto[first, last] = fox_searcher( std::begin(corpus), std::end(corpus) ) ;
     std::string fox( first, last ) ;
 }
 ~~~
