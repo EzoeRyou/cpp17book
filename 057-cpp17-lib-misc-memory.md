@@ -8,7 +8,7 @@ C++17ではヘッダーファイル\<memory\>にメモリー管理用のアル�
 template <class T> constexpr T* addressof(T& r) noexcept;
 ~~~
 
-addressofはC++17以前からもある。addressof(r)はrのポインターを取得する。たとえ、rの型がoperaotr &をオーバーロードしていても正しいポインターを取得できる。
+addressofはC++17以前からもある。addressof(r)はrのポインターを取得する。たとえ、rの型がoperator &をオーバーロードしていても正しいポインターを取得できる。
 
 ~~~cpp
 struct S
