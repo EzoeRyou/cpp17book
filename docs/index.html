@@ -140,7 +140,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li><a href="#初期化文つき条件文">初期化文つき条件文</a></li>
 <li><a href="#クラステンプレートのコンストラクターからの実引数推定">クラステンプレートのコンストラクターからの実引数推定</a><ul>
-<li><a href="#実引数ガイド">実引数ガイド</a></li>
+<li><a href="#推定ガイド">推定ガイド</a></li>
 </ul></li>
 <li><a href="#autoによる非型テンプレートパラメーターの宣言">autoによる非型テンプレートパラメーターの宣言</a></li>
 <li><a href="#using属性名前空間">using属性名前空間</a></li>
@@ -158,7 +158,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#inline変数の意味">inline変数の意味</a></li>
 </ul></li>
 <li><a href="#可変長using宣言">可変長using宣言</a></li>
-<li><a href="#stdbyte-バイトを表現する型">std::byte バイトを表現する型</a></li>
+<li><a href="#std.byte">std::byte バイトを表現する型</a></li>
 </ul></li>
 <li><a href="#c17の型安全な値を格納するライブラリ">C++17の型安全な値を格納するライブラリ</a><ul>
 <li><a href="#variant-型安全なunion">variant : 型安全なunion</a><ul>
@@ -216,6 +216,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#optionalの破棄">optionalの破棄</a></li>
 <li><a href="#swap-1">swap</a></li>
 <li><a href="#has_value-値を保持しているかどうか確認する">has_value : 値を保持しているかどうか確認する</a></li>
+<li><a href="#operator-bool-値を保持しているかどうか確認する">operator bool : 値を保持しているかどうか確認する</a></li>
 <li><a href="#value-保持している値を取得">value : 保持している値を取得</a></li>
 <li><a href="#value_or-値もしくはデフォルト値を返す">value_or : 値もしくはデフォルト値を返す</a></li>
 <li><a href="#reset-保持している値を破棄する">reset : 保持している値を破棄する</a></li>
@@ -336,7 +337,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#アルゴリズムr保管標本要素数がわからない集合からの標本の選択">アルゴリズムR：保管標本、要素数がわからない集合からの標本の選択</a></li>
 <li><a href="#cのsample">C++のsample</a></li>
 </ul></li>
-<li><a href="#shared_ptr-配列に対するshared_ptr">shared_ptr<T[]> : 配列に対するshared_ptr</a></li>
+<li><a href="#shared_ptrt-配列に対するshared_ptr">shared_ptr&lt;T[]&gt; : 配列に対するshared_ptr</a></li>
 <li><a href="#as_const-const性の付与">as_const: const性の付与</a></li>
 <li><a href="#make_from_tuple-tupleの要素を実引数にコンストラクターを呼び出す">make_from_tuple : tupleの要素を実引数にコンストラクターを呼び出す</a></li>
 <li><a href="#invoke-指定した関数を指定した実引数で呼び出す">invoke : 指定した関数を指定した実引数で呼び出す</a></li>
@@ -362,7 +363,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#negation-否定">negation: 否定</a></li>
 <li><a href="#is_invocable-呼び出し可能か確認するtraits">is_invocable: 呼び出し可能か確認するtraits</a></li>
 <li><a href="#has_unique_object_representations-同値の内部表現が同一か確認するtraits">has_unique_object_representations : 同値の内部表現が同一か確認するtraits</a></li>
-<li><a href="#no_throw_swappable-無例外swap可能か確認するtraits">no_throw_swappable: 無例外swap可能か確認するtraits</a></li>
+<li><a href="#is_nothrow_swappable-無例外swap可能か確認するtraits">is_nothrow_swappable: 無例外swap可能か確認するtraits</a></li>
 </ul></li>
 <li><a href="#コンテナーで不完全型のサポート">コンテナーで不完全型のサポート</a></li>
 <li><a href="#emplaceの戻り値">emplaceの戻り値</a></li>
@@ -446,7 +447,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#変更">変更</a><ul>
 <li><a href="#permissions">permissions</a></li>
 <li><a href="#rename">rename</a></li>
-<li><a href="#resize">resize</a></li>
+<li><a href="#resize_file">resize_file</a></li>
 </ul></li>
 <li><a href="#情報取得">情報取得</a><ul>
 <li><a href="#ファイルタイプの判定">ファイルタイプの判定</a></li>
@@ -494,7 +495,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>機能テストというのは、C++の実装(C++コンパイラー)が特定の機能をサポートしているかどうかをコンパイル時に判断できる機能だ。本来、C++17の規格に準拠したC++実装は、C++17の機能をすべてサポートしているべきだ。しかし、残念ながら現実のC++コンパイラーの開発はそのようには行われていない。C++17に対応途中のC++コンパイラーは将来的にはすべての機能を実装することを目標としつつも、現時点では一部の機能しか実装していないという状態になる。</p>
 <p>例えば、C++11で追加されたrvalueリファレンスという機能に現実のC++コンパイラーが対応しているかどうかをコンパイル時に判定するコードは以下のようになる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#ifndef __USE_RVALUE_REFERENCES</span>
-  <span class="pp">#if (__GNUC__ &gt; 4 || __GNUC__ == 4 &amp;&amp; __GNUC_MINOR__ &gt;= 3) || \</span>
+  <span class="pp">#if (</span><span class="ot">__GNUC__</span><span class="pp"> &gt; 4 || </span><span class="ot">__GNUC__</span><span class="pp"> == 4 &amp;&amp; </span><span class="ot">__GNUC_MINOR__</span><span class="pp"> &gt;= 3) || \</span>
 <span class="pp">      _MSC_VER &gt;= 1600</span>
     <span class="pp">#if __EDG_VERSION__ &gt; 0</span>
       <span class="pp">#define __USE_RVALUE_REFERENCES (__EDG_VERSION__ &gt;= 410)</span>
@@ -590,7 +591,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
     <span class="dt">double</span> x5 = <span class="fl">3.14159</span><span class="st">&#39;26535&#39;</span><span class="dv">89793</span> ;
 }</code></pre></div>
-<p>大きな数値を扱うとき、ソースファイルに100000000と1000000000と書かれていた場合、どちらが大きいのか人間の目にはわかりにくい。人間が読んでわかりにくいコードは間違いの元だ。数値区切りを使うと、100'000'000と1000'000'000のように書くことができる。これはわかりやすい。</p>
+<p>大きな数値を扱うとき、ソースファイルに100000000と1000000000と書かれていた場合、どちらが大きいのか人間の目にはわかりにくい。人間が読んでわかりにくいコードは間違いの元だ。数値区切りを使うと、100'000'000と1'000'000'000のように書くことができる。これはわかりやすい。</p>
 <p>他には、1バイト単位で見やすいように区切ることもできる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -620,14 +621,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <span class="co">// クラス</span>
 <span class="co">// unionも同じ</span>
-<span class="kw">class</span> [[<span class="at">deprecated</span>]] class_name
+<span class="kw">class</span> [[<span class="at">deprecated</span>]] clas<span class="va">s_name</span>
 {
 <span class="co">// 非staticデータメンバー</span>
 [[<span class="at">deprecated</span>]] <span class="dt">int</span> non_static_data_member_name ;
 } ;
 
 <span class="co">// enum</span>
-<span class="kw">enum</span> <span class="kw">class</span> [[<span class="at">deprecated</span>]] enum_name
+<span class="kw">enum</span> <span class="kw">class</span> [[<span class="at">deprecated</span>]] enu<span class="va">m_name</span>
 {
 <span class="co">// enumerator</span>
 enumerator_name [[<span class="at">deprecated</span>]] = <span class="dv">42</span>
@@ -646,7 +647,8 @@ enumerator_name [[<span class="at">deprecated</span>]] = <span class="dv">42</sp
 <span class="kw">class</span> [[<span class="at">deprecated</span>]] template_name&lt;<span class="dt">void</span>&gt; { } ;</code></pre></div>
 <p>deprecated属性が指定された名前やエンティティを使うと、C++コンパイラーは警告メッセージを出す。</p>
 <p>deprecated属性には、文字列を付け加えることができる。これはC++実装によっては警告メッセージに含まれるかもしれない。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[<span class="at">deprecated</span>(<span class="st">&quot;Use of f() is deprecated. Use f(int option) instead.&quot;</span>)]] <span class="dt">void</span> f() ;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[<span class="at">deprecated</span>(<span class="st">&quot;Use of f() is deprecated. Use f(int option) instead.&quot;</span>)]]
+<span class="dt">void</span> f() ;
 
 <span class="dt">void</span> f( <span class="dt">int</span> option ) ;</code></pre></div>
 <p>機能テストマクロは__has_cpp_attribute(deprecated)。値は201309。</p>
@@ -930,7 +932,7 @@ enumerator_name [[<span class="at">deprecated</span>]] = <span class="dv">42</sp
     <span class="co">// return &amp;x-&gt;dataで破棄されたxを参照する</span>
     <span class="bu">std::</span>cout &lt;&lt; f() &lt;&lt; <span class="bu">std::</span>endl ;
 }</code></pre></div>
-<p>なんと、すでに破棄されたオブジェクトへのリファレンスを参照してしまっている。これは未定義動作だ。</p>
+<p>なんと、すでに破棄されたオブジェクトへのリファレンスを参照してしまっている。これは未定義の動作だ。</p>
 <p>初期化ラムダキャプチャーを使えば、非staticデータメンバーもコピーキャプチャーできる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">auto</span> get_closure_object()
 {
@@ -1179,7 +1181,7 @@ S s2{ <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</sp
 <p>C++17では浮動小数点数リテラルに16進数を使うことができるようになった。</p>
 <p>16進数浮動小数点数リテラルは、プレフィクス0xに続いて仮数部を16進数(0123456789abcdefABCDEF)で書き、pもしくはPに続けて指数部を10進数で書く。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> d1 = <span class="er">0x1p0</span> ; <span class="co">// 1</span>
-<span class="dt">double</span> d2 = <span class="bn">0x1</span>.<span class="er">0p0</span> ; <span class="co">// 1</span>
+<span class="dt">double</span> d2 = <span class="bn">0x1</span><span class="fl">.0</span>p0 ; <span class="co">// 1</span>
 <span class="dt">double</span> d3 = <span class="er">0x10p0</span> ; <span class="co">// 16</span>
 <span class="dt">double</span> d4 = <span class="er">0xabcp0</span> ; <span class="co">// 2748</span></code></pre></div>
 <p>指数部はeではなくpかPを使う。</p>
@@ -1279,14 +1281,14 @@ u8<span class="st">&#39;あ&#39;</span> ;</code></pre></div>
 <p>sum(x, args)は1番目の引数をxで、残りをパラメーターパックargsで受け取る。そして、x + sum( args ... )を返す。すると、sum( args ... )はまたsum(x, args)に渡されて、1番目の引数、つまり最初から見て2番目の引数がxに入り、またsumが呼ばれる。このような再帰的な処理を繰り返していく。</p>
 <p>そして、引数がひとつだけになると、可変長テンプレートではないsumが呼ばれる。これは重要だ。なぜならば可変長テンプレートは0個の引数を取ることができるので、そのまま可変長テンプレート版のsumが呼ばれてしまうと、次のsumの呼び出しができずにエラーとなる。これを回避するために、また再帰の終了条件のために、引数がひとつのsumのオーバーロード関数を書いておく。</p>
 <p>可変長テンプレートでは任意個の引数に対応するために、このような再帰的なコードが必須になる。</p>
-<p>しかし、ここで実現したいこととはN個あるパラメーターパックargsの中身に対して、仮にN番目をargs#Nとする表記を使うと、args#0 + args#1 + ... + args#Nのような展開をしたいだけだ。C++17のfold式はパラメーターパックに対して二項演算子を適用する展開を行う機能だ。</p>
+<p>しかし、ここで実現したいこととはN個あるパラメーターパックargsの中身に対して、仮にN番目をargs#Nとする表記を使うと、args#0 + args#1 + ... + args#N-1のような展開をしたいだけだ。C++17のfold式はパラメーターパックに対して二項演算子を適用する展開を行う機能だ。</p>
 <p>fold式を使うとsumは以下のように書ける。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">typename</span> ... Types &gt;
 <span class="kw">auto</span> sum( Types ... args )
 {
     <span class="cf">return</span> ( ... + args )  ;
 }</code></pre></div>
-<p>( ... + args )は、args#0 + args#1 + ... + args#Nのように展開される。</p>
+<p>( ... + args )は、args#0 + args#1 + ... + args#N-1のように展開される。</p>
 <p>fold式には、単項fold式と二項fold式がある。そして、演算子の結合順序に合わせて左foldと右foldがある。</p>
 <p>fold式は必ず括弧で囲まなければならない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">typename</span> ... Types &gt;
@@ -1319,7 +1321,7 @@ T f( T x ) { <span class="cf">return</span> x ; }
 <span class="kw">template</span> &lt; <span class="kw">typename</span> ... Types &gt;
 <span class="kw">auto</span> g( Types ... args )
 {
-    <span class="co">// f(args#0) + f(args#1) + ... + f(args#N)</span>
+    <span class="co">// f(args#0) + f(args#1) + ... + f(args#N-1)</span>
     <span class="cf">return</span> ( ... + f(args) )  ;
 }</code></pre></div>
 <p>これはf(args)というパターンが展開される。</p>
@@ -1328,7 +1330,7 @@ T f( T x ) { <span class="cf">return</span> x ; }
 +=  -=  *=  /=  %=  ^=  &amp;=  |=  &lt;&lt;= &gt;&gt;+ =
 ==  !=  &lt;   &gt;   &lt;=  &gt;=  &amp;&amp;  ||  ,   .*  -&gt;*</code></pre>
 <p>fold式には左foldと右foldがある。</p>
-<p>左fold式の( ... op pack )では、展開結果は((( pack#0 op pack#1 ) op pack#2 ) ... op pack#N )となる。右fold式の( pack op ... )では、展開結果は( pack#0 op ( pack#1 op ( pack#2 op ( ... op pack#N ))))となる。</p>
+<p>左fold式の( ... op pack )では、展開結果は((( pack#0 op pack#1 ) op pack#2 ) ... op pack#N-1 )となる。右fold式の( pack op ... )では、展開結果は( pack#0 op ( pack#1 op ( pack#2 op ( ... op pack#N-1 ))))となる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">typename</span> ... Types &gt;
 <span class="dt">void</span> sum( Types ... args )
 {
@@ -1626,7 +1628,7 @@ T f( T x ) { <span class="cf">return</span> x ; }
 <p>戻り値をエラーなどのユーザーが確認しなければならない情報の通知に使う関数。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">enum</span> <span class="kw">struct</span> error_code
 {
-    no_error, some_operations_failed,  serious_error
+    no_error, some_operations_failed,  seriou<span class="va">s_error</span>
 } ;
 
 <span class="co">// 失敗するかもしれない処理</span>
@@ -1688,7 +1690,7 @@ X f() { <span class="cf">return</span> X{} ; }
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[<span class="at">maybe_unused</span>]] <span class="dt">char</span> reserved[<span class="dv">1024</span>] ;</code></pre></div>
 <p>[[maybe_unused]]属性を適用できる名前とエンティティの宣言は、クラス、typedef名、変数、非staticデータメンバー、関数、enum、enumeratorだ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// クラス</span>
-<span class="kw">class</span> [[<span class="at">maybe_unused</span>]] class_name
+<span class="kw">class</span> [[<span class="at">maybe_unused</span>]] clas<span class="va">s_name</span>
 {
 <span class="co">// 非staticデータメンバー</span>
     [[<span class="at">maybe_unused</span>]] <span class="dt">int</span> non_static_data_member ;
@@ -1714,7 +1716,7 @@ X f() { <span class="cf">return</span> X{} ; }
 [[<span class="at">maybe_unused</span>]] <span class="dt">void</span> function_name1() { }
 <span class="dt">void</span> function_name2 [[<span class="at">maybe_unused</span>]] () { }
 
-<span class="kw">enum</span> [[<span class="at">maybe_unused</span>]] enum_name
+<span class="kw">enum</span> [[<span class="at">maybe_unused</span>]] enu<span class="va">m_name</span>
 {
 <span class="co">// enumerator</span>
     enumerator_name [[<span class="at">maybe_unused</span>]] = <span class="dv">0</span>
@@ -1722,7 +1724,7 @@ X f() { <span class="cf">return</span> X{} ; }
 <p>機能テストマクロは__has_cpp_attribute(maybe_unused), 値は201603</p>
 <h2 id="演算子のオペランドの評価順序の固定">演算子のオペランドの評価順序の固定</h2>
 <p>C++17では演算子のオペランドの評価順序が固定された。</p>
-<p>以下の式は、a, b, c, dの順番に評価されることが規格上保証される。</p>
+<p>以下の式は、a, bの順番に評価されることが規格上保証される。@=の@には文法上許される任意の演算子が入る(+=, -=など)</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">a.b
 a-&gt;b
 a-&gt;*b
@@ -1741,7 +1743,7 @@ a &gt;&gt; b</code></pre></div>
 }</code></pre></div>
 <p>と書いた場合、関数fがまず先に呼び出されて、次に関数gが呼び出されることが保証される。</p>
 <p>関数呼び出しの実引数のオペランドb1, b2, b3の評価順序は未規定のままだ。</p>
-<p>これにより、既存の未定義の挙動となっていたコードの挙動が定まる。</p>
+<p>これにより、既存の未定義の動作となっていたコードの挙動が定まる。</p>
 <h2 id="constexpr-if文-コンパイル時条件分岐">constexpr if文 : コンパイル時条件分岐</h2>
 <p>constexpr if文はコンパイル時の条件分岐ができる機能だ。</p>
 <p>constexpr if文は、通常のif文をif constexprで置き換える。</p>
@@ -1869,14 +1871,18 @@ distance( Iterator first, Iterator last )
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">typename</span> Iterator &gt;
 <span class="kw">constexpr</span> <span class="dt">bool</span> is_random_access_iterator =
     <span class="bu">std::</span>is_same_v&lt;
-        <span class="kw">typename</span> <span class="bu">std::</span>iterator_traits&lt; <span class="bu">std::</span>decay_t&lt;Iterator&gt; &gt;::iterator_category,
+        <span class="kw">typename</span> <span class="bu">std::</span>iterator_traits&lt; 
+            <span class="bu">std::</span>decay_t&lt;Iterator&gt; 
+        &gt;::iterator_category,
         <span class="bu">std::</span>random_access_iterator_tag &gt; ;</code></pre></div>
 <p>すると、distanceは以下のように書けるのではないか。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// ランダムアクセスイテレーターかどうかを判定するコード</span>
 <span class="kw">template</span> &lt; <span class="kw">typename</span> Iterator &gt;
 <span class="kw">constexpr</span> <span class="dt">bool</span> is_random_access_iterator =
     <span class="bu">std::</span>is_same_v&lt;
-        <span class="kw">typename</span> <span class="bu">std::</span>iterator_traits&lt; <span class="bu">std::</span>decay_t&lt;Iterator&gt; &gt;::iterator_category,
+        <span class="kw">typename</span> <span class="bu">std::</span>iterator_traits&lt; 
+            <span class="bu">std::</span>decay_t&lt;Iterator&gt;
+        &gt;::iterator_category,
         <span class="bu">std::</span>random_access_iterator_tag &gt; ;
 
 <span class="co">// distance</span>
@@ -2026,7 +2032,7 @@ distance( Iterator first, Iterator last )
 
 <span class="dt">void</span> f( <span class="dt">bool</span> runtime_value )
 {
-    <span class="cf">if</span> ( <span class="kw">true</span> )
+    <span class="cf">if</span> <span class="kw">constexpr</span> ( <span class="kw">true</span> )
         do_true_thing() ;
     <span class="cf">else</span>
         do_false_thing() ; <span class="co">// エラー</span>
@@ -2067,7 +2073,7 @@ distance( Iterator first, Iterator last )
     <span class="cf">else</span>
     { <span class="cf">return</span> I * factorial&lt;I<span class="dv">-1</span>&gt;() ; }
 }</code></pre></div>
-<p>もしconstexpr ifがなければ、factorial<N-1>が永遠に実体化されコンパイル時ループが停止しない。</p>
+<p>もしconstexpr ifがなければ、factorial&lt;N-1&gt;が永遠に実体化されコンパイル時ループが停止しない。</p>
 <p>機能テストマクロは__cpp_if_constexpr, 値は201606。</p>
 <h2 id="初期化文つき条件文">初期化文つき条件文</h2>
 <p>C++17では、条件文に初期化文を記述できるようになった。</p>
@@ -2164,7 +2170,7 @@ FILE * file = <span class="bu">std::</span>fopen(<span class="st">&quot;text.txt
     f( <span class="fl">0.0</span> ) ; <span class="co">// f&lt;double&gt;</span>
     f( <span class="st">&quot;hello&quot;</span> ) ; <span class="co">// f&lt;char const *&gt;</span>
 }</code></pre></div>
-<h3 id="実引数ガイド">実引数ガイド</h3>
+<h3 id="推定ガイド">推定ガイド</h3>
 <p>クラステンプレートのコンストラクターからの実引数は便利だが、クラスのコンストラクターはクラステンプレートのテンプレートパラメーターに一致しない場合もある。そのような場合はそのままでは実引数推定ができない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// コンテナー風のクラス</span>
 <span class="kw">template</span> &lt; <span class="kw">typename</span> T &gt;
@@ -2258,7 +2264,7 @@ Container( <span class="bu">std::</span>initializer_list&lt;T&gt; ) -&gt; Contai
 <p>このため、C++には属性名前空間という文法が用意されている。注意深いC++コンパイラーは独自拡張の属性トークンには属性名前空間を設定していることだろう。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[ <span class="at">extention::foo</span>, <span class="at">extention::bar</span> ]] <span class="dt">int</span> x ;</code></pre></div>
 <p>問題は、これをいちいち記述するのは面倒だということだ。</p>
-<p>C++17では、using属性名前空間という機能により、usingディレクティブのような名前空間の省略が可能になった。</p>
+<p>C++17では、using属性名前空間という機能により、usingディレクティブのような名前空間の省略が可能になった。文法はusingディレクティブと似ていて、属性の中でusing name : ...と書くことで、コロンに続く属性トークンに、属性名前空間nameをつけたものと同じ効果が得られる。</p>
 <h2 id="非標準属性の無視">非標準属性の無視</h2>
 <p>C++17では、非標準の属性トークンは無視される。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// OK、無視される</span>
@@ -2834,12 +2840,12 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     s(<span class="fl">0.0</span>) ; <span class="co">// B::operator()</span>
 }</code></pre></div>
 <p>機能テストマクロは__cpp_variadic_using, 値は201611。</p>
-<h2 id="stdbyte-バイトを表現する型">std::byte バイトを表現する型</h2>
-<p>C++17では、バイトを表現する型が入った。std::byteは&lt;cstddef&gt;で定義されている。ライブラリでもあるのだがコア言語で特別な型として扱われている。</p>
+<h2 id="std.byte">std::byte バイトを表現する型</h2>
+<p>C++17では、バイトを表現する型が入った。ライブラリでもあるのだがコア言語で特別な型として扱われている。</p>
 <p>バイトとはC++のメモリモデルにおけるストレージの単位で、C++においてユニークなアドレスが付与される最小単位だ。C++の規格は未だに1バイトが具体的に何ビットであるのかを規定していない。これは過去にバイトのサイズが8ビットではないアーキテクチャが存在したためだ。</p>
 <p>バイトのビット数は&lt;climits&gt;で定義されているプリプロセッサーマクロ、CHAR_BITで知ることができる。</p>
 <p>C++17では、1バイトはUTF-8の8ビットの1コード単位をすべて表現できると規定している。</p>
-<p>C++では、1バイトのストレージはunsigned char型かstd::byte型で表現できる。複数バイトが連続するストレージは、unsigned charの配列型、もしくはstd::byteの配列型として表現できる。</p>
+<p>std::byte型は、生のバイト列を表すための型として使うことができる。生の1バイトを表すにはunsigned char型が慣習的に使われてきたが、std::byte型は生の1バイトを表現する型として、新たにC++17で追加された。複数バイトが連続するストレージは、unsigned charの配列型、もしくはstd::byteの配列型として表現できる。</p>
 <p>std::byte型は、&lt;cstddef&gt;で以下のように定義されている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> std
 {
@@ -2858,7 +2864,8 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
 
     b = <span class="bu">std::</span>byte( <span class="dv">1</span> ) ;
     b = <span class="bu">std::</span>byte{ <span class="dv">1</span> } ;
-    b = <span class="kw">static_cast</span>&lt; <span class="bu">std::</span>byte &gt;( <span class="dv">1</span> )
+    b = <span class="kw">static_cast</span>&lt; <span class="bu">std::</span>byte &gt;( <span class="dv">1</span> ) ;
+    b = <span class="kw">static_cast</span>&lt; <span class="bu">std::</span>byte &gt;( <span class="bn">0b11110000</span> ) ; <span class="co">// アルファベットの&#39;l&#39;</span>
 }</code></pre></div>
 <p>std::byte型は他の数値型からは暗黙に型変換できない。これによりうっかりと型を取り違えてバイト型と他の型を演算してしまうことを防ぐことができる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -2884,6 +2891,13 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     <span class="bu">std::</span>byte b1{<span class="dv">-1</span>} ;
     <span class="co">// エラー、表現できる値の範囲ではない</span>
     <span class="bu">std::</span>byte b2{<span class="dv">256</span>} ;
+}</code></pre></div>
+<p>std::byteは内部のストレージをバイト単位でアクセスできるようにするため、規格上charと同じ様な配慮が行われている。</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
+{
+    <span class="dt">int</span> x = <span class="dv">42</span> ;
+
+    <span class="bu">std::</span>byte * rep = <span class="kw">reinterpret_cast</span>&lt; <span class="bu">std::</span>byte * &gt;(&amp;x) ;
 }</code></pre></div>
 <p>std::byteは一部の演算子がオーバーロードされているので、通常の整数型のように使うことができる。ただし、バイトをビット列演算するのに使う一部の演算子だけだ。</p>
 <p>具体的には、以下に示すシフト、ビットOR、ビット列AND、ビット列XOR、ビット列NOTだ。</p>
@@ -2947,9 +2961,9 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     <span class="dt">double</span> d ;
     <span class="bu">std::</span>string s ;
 }</code></pre></div>
-<p>この場合、sizeof(U)のサイズは</p>
+<p>この場合、sizeof(U)は</p>
 <p><span class="math display">\[\text{sizeof(U)} = \max \{ \text{sizeof(int)}, \text{sizeof(double)}, \text{sizeof(std::string)} \} + \text{パディングなど}\]</span></p>
-<p>になる。sizeof(S)のサイズは、</p>
+<p>になる。sizeof(S)は、</p>
 <p><span class="math display">\[\text{sizeof(S)} = \text{sizeof(int)} + \text{sizeof(double)} + \text{sizeof(std::string)} + \text{パディングなど}\]</span></p>
 <p>になる。</p>
 <p>unionはメモリ効率がよい。unionはvariantと違い型非安全だ。どの型の値を保持しているかという情報は保持しないので、利用者が適切に管理しなければならない。</p>
@@ -3119,7 +3133,11 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     <span class="bu">std::</span>vector&lt;<span class="dt">int</span>&gt; v ;
     <span class="bu">std::</span>list&lt;<span class="dt">int</span>&gt; l ;
     <span class="bu">std::</span>deque&lt;<span class="dt">int</span>&gt; d ;
-    <span class="bu">std::</span>variant&lt; <span class="bu">std::</span>vector&lt;<span class="dt">int</span>&gt;, <span class="bu">std::</span>list&lt;<span class="dt">int</span>&gt;, <span class="bu">std::</span>deque&lt;<span class="dt">int</span>&gt; &gt; val ;
+    <span class="bu">std::</span>variant&lt; 
+        <span class="bu">std::</span>vector&lt;<span class="dt">int</span>&gt;, 
+        <span class="bu">std::</span>list&lt;<span class="dt">int</span>&gt;,
+        <span class="bu">std::</span>deque&lt;<span class="dt">int</span>&gt;
+    &gt; val ;
 
     val = v ;
     val = l ;
@@ -3214,7 +3232,7 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     <span class="bu">std::</span>swap( a, b ) ;
 }</code></pre></div>
 <h3 id="variant_sizet-variantが保持できる型の数を取得">variant_size&lt;T&gt; : variantが保持できる型の数を取得</h3>
-<p>std::variant_size<T>は、Tにvariant型を渡すと、variantが保持できる型の数を返してくれる。</p>
+<p>std::variant_size&lt;T&gt;は、Tにvariant型を渡すと、variantが保持できる型の数を返してくれる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">using</span> t1 = <span class="bu">std::</span>variant&lt;<span class="dt">char</span>&gt; ;
 <span class="kw">using</span> t2 = <span class="bu">std::</span>variant&lt;<span class="dt">char</span>, <span class="dt">short</span>&gt; ;
 <span class="kw">using</span> t3 = <span class="bu">std::</span>variant&lt;<span class="dt">char</span>, <span class="dt">short</span>, <span class="dt">int</span>&gt; ;
@@ -3248,7 +3266,8 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
 <span class="kw">using</span> t2 = <span class="bu">std::</span>variant_alternative&lt; <span class="dv">2</span>, type &gt;::type ;</code></pre></div>
 <p>variant_alternative_tというテンプレートエイリアスが以下のように定義されている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="dt">size_t</span> I, <span class="kw">class</span> T&gt;
-    <span class="kw">using</span> <span class="dt">variant_alternative_t</span> = <span class="kw">typename</span> variant_alternative&lt;I, T&gt;::type;</code></pre></div>
+    <span class="kw">using</span> <span class="dt">variant_alternative_t</span> 
+        = <span class="kw">typename</span> variant_alternative&lt;I, T&gt;::type ;</code></pre></div>
 <p>これをつかえば、以下のようにも書ける。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">using</span> type = <span class="bu">std::</span>variant&lt; <span class="dt">char</span>, <span class="dt">short</span>, <span class="dt">int</span> &gt; ;
 
@@ -3421,14 +3440,17 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
 }</code></pre></div>
 <p>例えばoperator ==は以下のような実装になる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span>... Types&gt;
-<span class="kw">constexpr</span> <span class="dt">bool</span> <span class="kw">operator</span> == (<span class="at">const</span> variant&lt;Types...&gt;&amp; v, <span class="at">const</span> variant&lt;Types...&gt;&amp; w)
+<span class="kw">constexpr</span> <span class="dt">bool</span> 
+<span class="kw">operator</span> == (<span class="at">const</span> variant&lt;Types...&gt;&amp; v, <span class="at">const</span> variant&lt;Types...&gt;&amp; w)
 {
     <span class="cf">if</span> ( v.index() != w.index() )
         <span class="cf">return</span> <span class="kw">false</span> ;
     <span class="cf">else</span> <span class="cf">if</span> ( v.valueless_by_exception() )
         <span class="cf">return</span> <span class="kw">true</span> ;
     <span class="cf">else</span>
-        <span class="cf">return</span> <span class="bu">std::</span>visit( []( <span class="kw">auto</span> &amp;&amp; a, <span class="kw">auto</span> &amp;&amp; b ){ <span class="cf">return</span> a == b ; }, v, w ) ;
+        <span class="cf">return</span> <span class="bu">std::</span>visit( 
+            []( <span class="kw">auto</span> &amp;&amp; a, <span class="kw">auto</span> &amp;&amp; b ){ <span class="cf">return</span> a == b ; },
+            v, w ) ;
 }</code></pre></div>
 <p>operator !=はこの逆だと考えてよい。</p>
 <h4 id="大小比較">大小比較</h4>
@@ -3462,7 +3484,8 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
 }</code></pre></div>
 <p>operator &lt;は以下のような実装になる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span>... Types&gt;
-<span class="kw">constexpr</span> <span class="dt">bool</span> <span class="kw">operator</span>&lt;(<span class="at">const</span> variant&lt;Types...&gt;&amp; v, <span class="at">const</span> variant&lt;Types...&gt;&amp; w)
+<span class="kw">constexpr</span> <span class="dt">bool</span> 
+<span class="kw">operator</span>&lt;(<span class="at">const</span> variant&lt;Types...&gt;&amp; v, <span class="at">const</span> variant&lt;Types...&gt;&amp; w)
 {
     <span class="cf">if</span> ( w.valueless_by_exception() )
         <span class="cf">return</span> <span class="kw">false</span> ;
@@ -3473,7 +3496,9 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     <span class="cf">else</span> <span class="cf">if</span> ( v.index() &gt; w.index() )
         <span class="cf">return</span> <span class="kw">false</span> ;
     <span class="cf">else</span>
-        <span class="cf">return</span> <span class="bu">std::</span>visit( []( <span class="kw">auto</span> &amp;&amp; a, <span class="kw">auto</span> &amp;&amp; b ){ <span class="cf">return</span> a &lt; b ; }, v, w ) ;
+        <span class="cf">return</span> <span class="bu">std::</span>visit( 
+            []( <span class="kw">auto</span> &amp;&amp; a, <span class="kw">auto</span> &amp;&amp; b ){ <span class="cf">return</span> a &lt; b ; },
+            v, w ) ;
 }</code></pre></div>
 <p>残りの大小比較も同じ方法で比較される。</p>
 <h3 id="visit-variantが保持している値を受け取る">visit : variantが保持している値を受け取る。</h3>
@@ -3485,7 +3510,8 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     val v(<span class="dv">42</span>) ;
     val w(<span class="fl">3.14</span>) ;
 
-    <span class="kw">auto</span> visitor = []( <span class="kw">auto</span> a, <span class="kw">auto</span> b ) { <span class="bu">std::</span>cout &lt;&lt; a &lt;&lt; b &lt;&lt; <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span> ; } ;
+    <span class="kw">auto</span> visitor =  []( <span class="kw">auto</span> a, <span class="kw">auto</span> b ) 
+                    { <span class="bu">std::</span>cout &lt;&lt; a &lt;&lt; b &lt;&lt; <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span> ; } ;
 
     <span class="co">// visitor( 42, 3.14 )が呼ばれる</span>
     <span class="bu">std::</span>visit( visitor, v, w ) ;
@@ -3705,7 +3731,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
     <span class="dt">int</span> * p1 = <span class="bu">std::</span>any_cast&lt;<span class="dt">int</span>&gt;( &amp;a ) ;
 
     <span class="co">// nullptr</span>
-    <span class="dt">double</span> * p2 = <span class="bu">std::</span>any_Cast&lt;<span class="dt">double</span>&gt;( &amp;a ) ;
+    <span class="dt">double</span> * p2 = <span class="bu">std::</span>any_cast&lt;<span class="dt">double</span>&gt;( &amp;a ) ;
 }</code></pre></div>
 <h2 id="optional-値を保有しているかしていないクラス">optional : 値を保有しているか、していないクラス</h2>
 <h3 id="使い方-2">使い方</h3>
@@ -3844,6 +3870,27 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
     <span class="bu">std::</span>optional&lt;<span class="dt">int</span>&gt; b(<span class="dv">42</span>) ;
     <span class="co">// true</span>
     <span class="dt">bool</span> b2 = b.has_value() ;
+}</code></pre></div>
+<h3 id="operator-bool-値を保持しているかどうか確認する">operator bool : 値を保持しているかどうか確認する</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">constexpr</span> <span class="kw">explicit</span> <span class="kw">operator</span> <span class="dt">bool</span>() <span class="at">const</span> <span class="kw">noexcept</span>;</code></pre></div>
+<p>optionalを文脈上boolに変換すると、値を保持している場合にのみtrueとして評価される。</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
+{
+    <span class="bu">std::</span>optional&lt;<span class="dt">bool</span>&gt; a = some_function();
+    <span class="co">// OK、文脈上boolに変換</span>
+    <span class="cf">if</span> ( a )
+    {
+        <span class="co">// 値を保持</span>
+    }
+    <span class="cf">else</span>
+    {
+        <span class="co">// 値を不保持</span>
+    }
+
+    <span class="co">// エラー、暗黙の型変換は行われない</span>
+    <span class="dt">bool</span> b1 = a ;
+    <span class="co">// OK、明示的な型変換</span>
+    <span class="dt">bool</span> b2 = <span class="kw">static_cast</span>&lt;<span class="dt">bool</span>&gt;(a) ;
 }</code></pre></div>
 <h3 id="value-保持している値を取得">value : 保持している値を取得</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">constexpr</span> <span class="at">const</span> T&amp; value() <span class="at">const</span>&amp;;
@@ -4035,7 +4082,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
     process_string( st ) ;
 }</code></pre></div>
 <h2 id="basic_string_view">basic_string_view</h2>
-<p>std::stringがstd::basic_string&lt; CharT, Traits &gt;に対するstd::basic_string<char>であるように、std::string_viewも、その実態はstd::basic_string_viewの特殊化へのtypedef名だ。</p>
+<p>std::stringがstd::basic_string&lt; CharT, Traits &gt;に対するstd::basic_string&lt;char&gt;であるように、std::string_viewも、その実態はstd::basic_string_viewの特殊化へのtypedef名だ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 本体</span>
 <span class="kw">template</span>&lt;<span class="kw">class</span> charT, <span class="kw">class</span> traits = char_traits&lt;charT&gt;&gt;
 <span class="kw">class</span> basic_string_view ;
@@ -4090,7 +4137,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
 } ;</code></pre></div>
 <p>std::stringは文字列を表現するストレージを動的に確保し、所有する。コピーは別のストレージを確保する。ムーブするときはストレージの所有権を移す。デストラクターは所有しているストレージを破棄する。</p>
 <p>std::string_viewは文字列を所有しない。std::string_view風のクラスの実装は、例えば以下のようになる。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> string_view
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> strin<span class="va">g_view</span>
 {
     <span class="bu">std::</span>size_t size ;
     <span class="dt">char</span> <span class="at">const</span> * ptr ;
@@ -4269,10 +4316,17 @@ u16string operator<span class="st">&quot;&quot;</span>s(<span class="at">const</
 u32string operator<span class="st">&quot;&quot;</span>s(<span class="at">const</span> <span class="dt">char32_t</span>* str, <span class="dt">size_t</span> len);
 wstring operator<span class="st">&quot;&quot;</span>s(<span class="at">const</span> <span class="dt">wchar_t</span>* str, <span class="dt">size_t</span> len);
 
-<span class="kw">constexpr</span> string_view operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">char</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;
-<span class="kw">constexpr</span> u16string_view operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">char16_t</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;
-<span class="kw">constexpr</span> u32string_view operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">char32_t</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;
-<span class="kw">constexpr</span> wstring_view operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">wchar_t</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;</code></pre></div>
+<span class="kw">constexpr</span> strin<span class="va">g_view</span>
+operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">char</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;
+
+<span class="kw">constexpr</span> u<span class="er">16string_view</span>
+operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">char16_t</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;
+
+<span class="kw">constexpr</span> u<span class="er">32string_view</span>
+operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">char32_t</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;
+
+<span class="kw">constexpr</span> wstrin<span class="va">g_view</span>
+operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <span class="dt">wchar_t</span>* str, <span class="dt">size_t</span> len) <span class="kw">noexcept</span>;</code></pre></div>
 <p>以下のように使う。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -4307,13 +4361,16 @@ wstring operator<span class="st">&quot;&quot;</span>s(<span class="at">const</sp
 <span class="kw">public</span>:
     <span class="kw">virtual</span> ~ memory_resource();
     <span class="dt">void</span>* allocate(<span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment = max_align);
-    <span class="dt">void</span> deallocate(<span class="dt">void</span>* p, <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment = max_align);
+    <span class="dt">void</span> deallocate(<span class="dt">void</span>* p, <span class="dt">size_t</span> bytes,
+                    <span class="dt">size_t</span> alignment = max_align);
     <span class="dt">bool</span> is_equal(<span class="at">const</span> memory_resource&amp; other) <span class="at">const</span> <span class="kw">noexcept</span>;
 
 <span class="kw">private</span>:
     <span class="kw">virtual</span> <span class="dt">void</span>* do_allocate(<span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment) = <span class="dv">0</span>;
-    <span class="kw">virtual</span> <span class="dt">void</span> do_deallocate(<span class="dt">void</span>* p, <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment) = <span class="dv">0</span>;
-    <span class="kw">virtual</span> <span class="dt">bool</span> do_is_equal(<span class="at">const</span> memory_resource&amp; other) <span class="at">const</span> <span class="kw">noexcept</span> = <span class="dv">0</span>;
+    <span class="kw">virtual</span> <span class="dt">void</span> do_deallocate( <span class="dt">void</span>* p, <span class="dt">size_t</span> bytes,
+                                <span class="dt">size_t</span> alignment) = <span class="dv">0</span>;
+    <span class="kw">virtual</span> <span class="dt">bool</span> do_is_equal(<span class="at">const</span> memory_resource&amp; other)
+        <span class="at">const</span> <span class="kw">noexcept</span> = <span class="dv">0</span>;
 };
 
 }</code></pre></div>
@@ -4359,7 +4416,8 @@ wstring operator<span class="st">&quot;&quot;</span>s(<span class="at">const</sp
 
 <span class="kw">private</span>:
     <span class="kw">virtual</span> <span class="dt">void</span>* do_allocate(<span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment) = <span class="dv">0</span>;
-    <span class="kw">virtual</span> <span class="dt">void</span> do_deallocate(<span class="dt">void</span>* p, <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment) = <span class="dv">0</span>;
+    <span class="kw">virtual</span> <span class="dt">void</span> do_deallocate( <span class="dt">void</span>* p, <span class="dt">size_t</span> bytes,
+                                <span class="dt">size_t</span> alignment) = <span class="dv">0</span>;
     <span class="kw">virtual</span> <span class="dt">bool</span> do_is_equal(<span class="at">const</span> memory_resource&amp; other) <span class="at">const</span> <span class="kw">noexcept</span> = <span class="dv">0</span>;
 };</code></pre></div>
 <p>do_allocate(bytes, alignment)は少なくともalignmentバイトでアライメントされたbytesバイトのストレージへのポインターを返す。ストレージが確保できなかった場合は、適切な例外をthrowする。</p>
@@ -4376,7 +4434,8 @@ wstring operator<span class="st">&quot;&quot;</span>s(<span class="at">const</sp
 <span class="kw">private</span> :
     <span class="co">// ストレージの確保</span>
     <span class="co">// 失敗した場合std::bad_allocをthrowする</span>
-    <span class="kw">virtual</span> <span class="dt">void</span> * do_allocate( <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> * 
+    do_allocate( <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
     {
         <span class="dt">void</span> * ptr = <span class="bu">std::</span>malloc( bytes ) ;
         <span class="cf">if</span> ( ptr == <span class="kw">nullptr</span> )
@@ -4386,14 +4445,19 @@ wstring operator<span class="st">&quot;&quot;</span>s(<span class="at">const</sp
     }
 
     <span class="co">// ストレージの解放</span>
-    <span class="kw">virtual</span> <span class="dt">void</span> do_deallocate( <span class="dt">void</span> * p, <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> 
+    do_deallocate(  <span class="dt">void</span> * p, <span class="bu">std::</span>size_t bytes, 
+                    <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
     {
         <span class="bu">std::</span>free( p ) ;
     }
 
-    <span class="kw">virtual</span> <span class="dt">bool</span> do_is_equal( <span class="at">const</span> memory_resource &amp; other ) <span class="at">const</span> <span class="kw">noexcept</span> <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">bool</span> 
+    do_is_equal( <span class="at">const</span> memory_resource &amp; other )
+        <span class="at">const</span> <span class="kw">noexcept</span> <span class="kw">override</span>
     {
-        <span class="cf">return</span> <span class="kw">dynamic_cast</span>&lt; <span class="at">const</span> malloc_resource * &gt;( &amp;other ) != <span class="kw">nullptr</span> ;
+        <span class="cf">return</span> <span class="kw">dynamic_cast</span>&lt; <span class="at">const</span> malloc_resource * &gt;
+                    ( &amp;other ) != <span class="kw">nullptr</span> ;
     }
 
 } ;</code></pre></div>
@@ -4421,11 +4485,13 @@ wstring operator<span class="st">&quot;&quot;</span>s(<span class="at">const</sp
     }
     <span class="cf">else</span>
     { <span class="co">// モノトニックバッファーを使う</span>
-        mono = <span class="bu">std::</span>make_unique&lt; <span class="bu">std::</span>pmr<span class="bu">::</span>monotonic_buffer_resource &gt;( <span class="bu">std::</span>pmr<span class="bu">::</span>get_default_resource() ) ;
+        mono = <span class="bu">std::</span>make_unique&lt; <span class="bu">std::</span>pmr<span class="bu">::</span>monotonic_buffer_resource &gt;
+                ( <span class="bu">std::</span>pmr<span class="bu">::</span>get_default_resource() ) ;
         mem = mono.get() ;
     }
 
-    <span class="bu">std::</span>vector&lt; <span class="dt">int</span>, <span class="bu">std::</span>pmr<span class="bu">::</span>polymorphic_allocator&lt;<span class="dt">int</span>&gt; &gt; v( <span class="bu">std::</span>pmr<span class="bu">::</span>polymorphic_allocator&lt;<span class="dt">int</span>&gt;( mem ) ) ;
+    <span class="bu">std::</span>vector&lt; <span class="dt">int</span>, <span class="bu">std::</span>pmr<span class="bu">::</span>polymorphic_allocator&lt;<span class="dt">int</span>&gt; &gt;
+        v( <span class="bu">std::</span>pmr<span class="bu">::</span>polymorphic_allocator&lt;<span class="dt">int</span>&gt;( mem ) ) ;
 }</code></pre></div>
 <p>std::pmr::polymorphic_allocatorは以下のように宣言されている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> <span class="bu">std::</span>pmr {
@@ -4522,20 +4588,24 @@ memory_resource* get_default_resource() <span class="kw">noexcept</span> ;</code
         <span class="co">// 大きな連続したストレージを確保</span>
     }
 
-    <span class="kw">virtual</span> <span class="dt">void</span> * do_allocate( <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> * 
+    do_allocate( <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
     {
         <span class="bu">std::</span>scoped_lock lock( m ) ; 
         <span class="co">// リンクリストをたどり、十分な大きさの未使用領域を探し、リンクリスト構造体を構築して返す</span>
         <span class="co">// アライメント要求に注意</span>
     }
 
-    <span class="kw">virtual</span> <span class="dt">void</span> * do_allocate( <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> * 
+    do_allocate( <span class="bu">std::</span>size_t bytes, <span class="bu">std::</span>size_t alignment ) <span class="kw">override</span>
     {
         <span class="bu">std::</span>scoped_lock lock( m ) ;
         <span class="co">// リンクリストから該当する部分を削除</span>
     }
 
-    <span class="kw">virtual</span> <span class="dt">bool</span> do_is_equal( <span class="at">const</span> memory_resource &amp; other ) <span class="at">const</span> <span class="kw">noexcept</span> <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">bool</span> 
+    do_is_equal( <span class="at">const</span> memory_resource &amp; other )
+        <span class="at">const</span> <span class="kw">noexcept</span> <span class="kw">override</span>
     { 
     <span class="co">// *thisとotherで相互にストレージを解放できるかどうか返す</span>
     }
@@ -4630,7 +4700,8 @@ memory_resource* get_default_resource() <span class="kw">noexcept</span> ;</code
 {
     <span class="bu">std::</span>mutex m ;
 
-    <span class="kw">virtual</span> <span class="dt">void</span> * do_allocate( <span class="dt">size_t</span> size, <span class="dt">size_t</span> alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> * 
+    do_allocate( <span class="dt">size_t</span> size, <span class="dt">size_t</span> alignment ) <span class="kw">override</span>
     {
         <span class="co">// 同期する</span>
         <span class="bu">std::</span>scoped_lock l(m) ;
@@ -4640,7 +4711,8 @@ memory_resource* get_default_resource() <span class="kw">noexcept</span> ;</code
 
 <span class="kw">class</span> unsynchronized_pool_resource : <span class="kw">public</span> memory_resource
 {
-    <span class="kw">virtual</span> <span class="dt">void</span> * do_allocate( <span class="dt">size_t</span> size, <span class="dt">size_t</span> alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> * 
+    do_allocate( <span class="dt">size_t</span> size, <span class="dt">size_t</span> alignment ) <span class="kw">override</span>
     {
         <span class="co">// 同期しない</span>
         <span class="cf">return</span> do_allocate_impl( size, alignment ) ;
@@ -4706,14 +4778,16 @@ pool_resource()
     <span class="co">// 現在の未使用ストレージの先頭へのポインター</span>
     <span class="bu">std::</span>byte * current ;
 
-    <span class="kw">virtual</span> <span class="dt">void</span> * do_allocate( <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment ) <span class="kw">override</span>
+    <span class="kw">virtual</span> <span class="dt">void</span> * 
+    do_allocate( <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment ) <span class="kw">override</span>
     {
         <span class="dt">void</span> * result = <span class="kw">static_cast</span>&lt;<span class="dt">void</span> *&gt;(current) ;
         current += bytes ; <span class="co">// 必要であればアライメント調整</span>
         <span class="cf">return</span> result ;
     }
 
-    <span class="kw">virtual</span> <span class="dt">void</span> do_deallocate( <span class="dt">void</span> * ptr, <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment ) <span class="kw">override</span> 
+    <span class="kw">virtual</span> <span class="dt">void</span> 
+    do_deallocate( <span class="dt">void</span> * ptr, <span class="dt">size_t</span> bytes, <span class="dt">size_t</span> alignment ) <span class="kw">override</span> 
     {
         <span class="co">// 何もしない</span>
     }
@@ -4749,7 +4823,8 @@ pool_resource()
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>byte initial_buffer[<span class="dv">10</span>] ;
-    <span class="bu">std::</span>pmr<span class="bu">::</span>monotonic_buffer_resource mem( initial_buffer, <span class="dv">10</span>, <span class="bu">std::</span>pmr<span class="bu">::</span>get_default_resource() ) ;
+    <span class="bu">std::</span>pmr<span class="bu">::</span>monotonic_buffer_resource 
+        mem( initial_buffer, <span class="dv">10</span>, <span class="bu">std::</span>pmr<span class="bu">::</span>get_default_resource() ) ;
 
     <span class="co">// 初期バッファーから確保</span>
     mem.allocate( <span class="dv">1</span> ) ;
@@ -4767,32 +4842,40 @@ pool_resource()
 <p>モノトニックバッファーリソースには以下のコンストラクターがある。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">
 <span class="kw">explicit</span> monotonic_buffer_resource(memory_resource *upstream);
-monotonic_buffer_resource(<span class="dt">size_t</span> initial_size, memory_resource *upstream);
-monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt">size_t</span> buffer_size, memory_resource *upstream);
+monotonic_buffer_resource(  <span class="dt">size_t</span> initial_size,
+                            memory_resource *upstream);
+monotonic_buffer_resource(  <span class="dt">void</span> *buffer, <span class="dt">size_t</span> buffer_size,
+                            memory_resource *upstream);
 
 
 monotonic_buffer_resource()
     : monotonic_buffer_resource(get_default_resource()) {}
 <span class="kw">explicit</span> monotonic_buffer_resource(<span class="dt">size_t</span> initial_size)
-    : monotonic_buffer_resource(initial_size, get_default_resource()) {}
+    : monotonic_buffer_resource(initial_size,
+                                get_default_resource()) {}
 monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt">size_t</span> buffer_size)
-    : monotonic_buffer_resource(buffer, buffer_size, get_default_resource()) {}</code></pre></div>
+    : monotonic_buffer_resource(buffer, buffer_size,
+                                get_default_resource()) {}</code></pre></div>
 <p>初期バッファーを取らないコンストラクターは以下の通り。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">explicit</span> monotonic_buffer_resource(memory_resource *upstream);
-monotonic_buffer_resource(<span class="dt">size_t</span> initial_size, memory_resource *upstream);
+monotonic_buffer_resource(  <span class="dt">size_t</span> initial_size,
+                            memory_resource *upstream);
 
 monotonic_buffer_resource()
     : monotonic_buffer_resource(get_default_resource()) {}
 <span class="kw">explicit</span> monotonic_buffer_resource(<span class="dt">size_t</span> initial_size)
-    : monotonic_buffer_resource(initial_size, get_default_resource()) {}</code></pre></div>
+    : monotonic_buffer_resource(initial_size,
+                                get_default_resource()) {}</code></pre></div>
 <p>initial_sizeは、上流メモリーリソースから最初に確保するバッファーのサイズ(初期サイズ)のヒントとなる。実装はこのサイズか、あるいは実装依存のサイズをバッファーとして確保する。</p>
 <p>デフォルトコンストラクターは上流メモリーリソースにstd::pmr_get_default_resource()を与えたのと同じ挙動になる。</p>
 <p>size_tひとつだけを取るコンストラクターは、初期サイズだけを与えて後はデフォルトの扱いになる。</p>
 <p>初期バッファーをとるコンストラクターは以下の通り。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt">size_t</span> buffer_size, memory_resource *upstream);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">monotonic_buffer_resource(  <span class="dt">void</span> *buffer, <span class="dt">size_t</span> buffer_size,
+                            memory_resource *upstream);
 
 monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt">size_t</span> buffer_size)
-    : monotonic_buffer_resource(buffer, buffer_size, get_default_resource()) {}</code></pre></div>
+    : monotonic_buffer_resource(buffer, buffer_size,
+                                get_default_resource()) {}</code></pre></div>
 <p>初期バッファーは先頭アドレスをvoid *型で渡し、そのサイズをsize_t型で渡す。</p>
 <h3 id="その他の操作">その他の操作</h3>
 <h4 id="release-1">release()</h4>
@@ -4841,12 +4924,20 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
     <span class="kw">auto</span> first = <span class="bu">std::</span>begin(input) ;
     <span class="kw">auto</span> last = first + (input.size()/<span class="dv">2</span>) ;
 
-    <span class="kw">auto</span> r1 = <span class="bu">std::</span>async( [=]{ <span class="cf">return</span> <span class="bu">std::</span>all_of( first, last, [](<span class="kw">auto</span> x) { <span class="cf">return</span> x &lt; <span class="dv">100</span> ; } ) ; } ) ;
+    <span class="kw">auto</span> r1 = <span class="bu">std::</span>async( [=]
+    {
+        <span class="cf">return</span> <span class="bu">std::</span>all_of( first, last,
+                            [](<span class="kw">auto</span> x) { <span class="cf">return</span> x &lt; <span class="dv">100</span> ; } ) ; 
+    } ) ;
 
     first = last ;
     last = <span class="bu">std::</span>end(input) ;
 
-    <span class="kw">auto</span> r2 = <span class="bu">std::</span>async( [=]{ <span class="cf">return</span> <span class="bu">std::</span>all_of( first, last, [](<span class="kw">auto</span> x) { <span class="cf">return</span> x &lt; <span class="dv">100</span> ; } ) ; } ) ;
+    <span class="kw">auto</span> r2 = <span class="bu">std::</span>async( [=]
+    {
+        <span class="cf">return</span> <span class="bu">std::</span>all_of( first, last,
+                            [](<span class="kw">auto</span> x) { <span class="cf">return</span> x &lt; <span class="dv">100</span> ; } ) ;
+    } ) ;
 
     <span class="cf">return</span> r1.get() &amp;&amp; r2.get() ;
 }</code></pre></div>
@@ -4868,7 +4959,11 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 
     <span class="cf">for</span> ( <span class="kw">auto</span> &amp; f : futures )
     {
-        f = <span class="bu">std::</span>async( [=]{ <span class="cf">return</span> <span class="bu">std::</span>all_of( first, last, [](<span class="kw">auto</span> x){ <span class="cf">return</span> x &lt; <span class="dv">100</span> ; } ) ; } ) ;
+        f = <span class="bu">std::</span>async( [=]
+        {
+            <span class="cf">return</span> <span class="bu">std::</span>all_of( first, last,
+                                [](<span class="kw">auto</span> x){ <span class="cf">return</span> x &lt; <span class="dv">100</span> ; } ) ;
+        } ) ;
 
         first = last ;
         last = first + step ;
@@ -4889,8 +4984,10 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> InputIterator, <span class="kw">class</span> Predicate&gt;
 <span class="dt">bool</span> all_of(InputIterator first, InputIterator last, Predicate pred);</code></pre></div>
 <p>並列アルゴリズム版のall_ofは以下のような宣言になる。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> ExecutionPolicy, <span class="kw">class</span> ForwardIterator, <span class="kw">class</span> Predicate&gt;
-<span class="dt">bool</span> all_of(ExecutionPolicy&amp;&amp; exec, ForwardIterator first, ForwardIterator last, Predicate pred);</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;  <span class="kw">class</span> ExecutionPolicy, <span class="kw">class</span> ForwardIterator,
+            <span class="kw">class</span> Predicate&gt;
+<span class="dt">bool</span> all_of(ExecutionPolicy&amp;&amp; exec, ForwardIterator first,
+            ForwardIterator last, Predicate pred);</code></pre></div>
 <p>並列アルゴリズムには、テンプレート仮引数としてExecutionPolicyが追加されていて第一引数に取る。これを実行時ポリシーと呼ぶ。</p>
 <p>実行時ポリシーは&lt;execution&gt;で定義されている関数ディスパッチ用のタグ型で、std::execution::seq, std::execution::par, std::execution::par_unseqがある。</p>
 <p>複数のスレッドによる並列実行を行うには、std::execution::parを使う。</p>
@@ -4964,10 +5061,17 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <p>これはなぜかというと、並列アルゴリズムはその並列処理の一環として、要素のコピーを作成し、そのコピーをユーザー提供の関数オブジェクトに渡すかもしれないからだ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 実装イメージ</span>
 
-<span class="kw">template</span> &lt; <span class="kw">typename</span> ExecutionPolicy, <span class="kw">typename</span> ForwardIterator, <span class="kw">typename</span> Predicate &gt;
-<span class="dt">bool</span> all_of( ExecutionPolicy &amp;&amp; exec, ForwardIterator first, ForwardIterator last, Predicate pred )
+<span class="kw">template</span> &lt;  <span class="kw">typename</span> ExecutionPolicy,
+            <span class="kw">typename</span> ForwardIterator,
+            <span class="kw">typename</span> Predicate &gt;
+<span class="dt">bool</span> all_of(    ExecutionPolicy &amp;&amp; exec,
+                ForwardIterator first, ForwardIterator last,
+                Predicate pred )
 {
-    <span class="cf">if</span> <span class="kw">constexpr</span> ( <span class="bu">std::</span>is_same_v&lt; ExecutionPolicy, <span class="bu">std::</span>execution<span class="bu">::</span>parallel_policy &gt; )
+    <span class="cf">if</span> <span class="kw">constexpr</span> (
+        <span class="bu">std::</span>is_same_v&lt; ExecutionPolicy,
+                        <span class="bu">std::</span>execution<span class="bu">::</span>parallel_policy &gt;
+    )
     {
         <span class="bu">std::</span>vector c( first, last ) ;
         do_all_of_par( <span class="bu">std::</span>begin(c), <span class="bu">std::</span>end(c), pred ) ;
@@ -4999,7 +5103,9 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 
     <span class="bu">std::</span>vector&lt;<span class="dt">int</span>&gt; c = { <span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span> } ;
 
-    <span class="bu">std::</span>for_each( <span class="bu">std::</span>execution<span class="bu">::</span>par_unseq, <span class="bu">std::</span>begin(c), <span class="bu">std::</span>end(c),
+    <span class="bu">std::</span>for_each(
+        <span class="bu">std::</span>execution<span class="bu">::</span>par_unseq,
+        <span class="bu">std::</span>begin(c), <span class="bu">std::</span>end(c),
         [&amp;]( <span class="kw">auto</span> x ) {
             <span class="bu">std::</span>scoped_lock l(m) ;
             sum += x ; 
@@ -5015,7 +5121,8 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <p>実行ポリシーはヘッダーファイル&lt;execution&gt;で定義されている。その定義は以下のようになっている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> std {
 <span class="kw">template</span>&lt;<span class="kw">class</span> T&gt; <span class="kw">struct</span> is_execution_policy;
-<span class="kw">template</span>&lt;<span class="kw">class</span> T&gt; <span class="kw">inline</span> <span class="kw">constexpr</span> <span class="dt">bool</span> is_execution_policy_v = is_execution_policy&lt;T&gt;::value;
+<span class="kw">template</span>&lt;<span class="kw">class</span> T&gt; <span class="kw">inline</span> <span class="kw">constexpr</span> <span class="dt">bool</span>
+    is_execution_policy_v = is_execution_policy&lt;T&gt;::value;
 }
 
 <span class="kw">namespace</span> <span class="bu">std::</span>execution {
@@ -5034,7 +5141,8 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// false</span>
 <span class="kw">constexpr</span> <span class="dt">bool</span> b1 = <span class="bu">std::</span>is_execution_policy_v&lt;<span class="dt">int</span>&gt; ;
 <span class="co">// true</span>
-<span class="kw">constexpr</span> <span class="dt">bool</span> b2 = <span class="bu">std::</span>is_execution_policy_v&lt;<span class="bu">std::</span>execution<span class="bu">::</span>sequenced_policy&gt; ;</code></pre></div>
+<span class="kw">constexpr</span> <span class="dt">bool</span> b2 = 
+    <span class="bu">std::</span>is_execution_policy_v&lt;<span class="bu">std::</span>execution<span class="bu">::</span>sequenced_policy&gt; ;</code></pre></div>
 <h4 id="シーケンス実行ポリシー">シーケンス実行ポリシー</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> <span class="bu">std::</span>execution {
 
@@ -5155,9 +5263,10 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <p><span class="math inline">\(l\)</span>をl、<span class="math inline">\(m\)</span>をm、<span class="math inline">\(x\)</span>をxとする。</p>
 <p>注意：l &gt;= 128 のときの関数呼び出しの効果は実装定義である。</p>
 <h2 id="球面ルジャンドル陪関数spherical-associated-legendre-functions">球面ルジャンドル陪関数(Spherical associated Legendre functions)</h2>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span>       sph_legendre(<span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">double</span> theta);
-<span class="dt">float</span>        sph_legendref(<span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">float</span> theta);
-<span class="dt">long</span> <span class="dt">double</span>  sph_legendrel(<span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">long</span> <span class="dt">double</span> theta);</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span>       sph_legendre(  <span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">double</span> theta);
+<span class="dt">float</span>        sph_legendref( <span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">float</span> theta);
+<span class="dt">long</span> <span class="dt">double</span>  sph_legendrel( <span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m,
+                            <span class="dt">long</span> <span class="dt">double</span> theta);</code></pre></div>
 <p>効果：実引数l, m, theta(thetaの単位はラジアン)に対する球面ルジャンドル陪関数(Spherical associated Legendre functions)を計算する。</p>
 <p>戻り値：</p>
 <p><span class="math display">\[
@@ -5181,7 +5290,8 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span>
 <span class="pp">#include </span><span class="im">&lt;complex&gt;</span>
 
-<span class="bu">std::</span>complex&lt;<span class="dt">double</span>&gt; spherical_harmonics(<span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">double</span> theta, <span class="dt">double</span> phi)
+<span class="bu">std::</span>complex&lt;<span class="dt">double</span>&gt;
+spherical_harmonics(<span class="dt">unsigned</span> l, <span class="dt">unsigned</span> m, <span class="dt">double</span> theta, <span class="dt">double</span> phi)
 {
     <span class="cf">return</span> <span class="bu">std::</span>sph_legendre(l, m, theta) * <span class="bu">std::</span>polar(<span class="fl">1.0</span>, m * phi) ;
 }</code></pre></div>
@@ -5277,9 +5387,10 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 \]</span></p>
 <p><span class="math inline">\(k\)</span>をk、<span class="math inline">\(\phi\)</span>をphiとする。</p>
 <h2 id="sf.cmath.ellint_3">第3種不完全楕円積分(Incomplete elliptic integral of the third kind)</h2>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span>       ellint_3(<span class="dt">double</span> k, <span class="dt">double</span> nu, <span class="dt">double</span> phi);
-<span class="dt">float</span>        ellint_3f(<span class="dt">float</span> k, <span class="dt">float</span> nu, <span class="dt">float</span> phi);
-<span class="dt">long</span> <span class="dt">double</span>  ellint_3l(<span class="dt">long</span> <span class="dt">double</span> k, <span class="dt">long</span> <span class="dt">double</span> nu, <span class="dt">long</span> <span class="dt">double</span> phi);</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span>       ellint_3(  <span class="dt">double</span> k, <span class="dt">double</span> nu, <span class="dt">double</span> phi);
+<span class="dt">float</span>        ellint_3f( <span class="dt">float</span> k, <span class="dt">float</span> nu, <span class="dt">float</span> phi);
+<span class="dt">long</span> <span class="dt">double</span>  ellint_3l( <span class="dt">long</span> <span class="dt">double</span> k, <span class="dt">long</span> <span class="dt">double</span> nu,
+                        <span class="dt">long</span> <span class="dt">double</span> phi);</code></pre></div>
 <p>効果：実引数k, nu, phi(phiの単位はラジアン)に対する第3種不完全楕円積分(Incomplete elliptic integral of the third kind)を計算する。</p>
 <p>戻り値：</p>
 <p><span class="math display">\[
@@ -5465,14 +5576,18 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Data
 {
     <span class="dt">int</span> counter ;
-    <span class="bu">std::</span>byte padding[<span class="bu">std::</span>hardware_destructive_interference_size - <span class="kw">sizeof</span>(<span class="dt">int</span>)] ;
+    <span class="bu">std::</span>byte padding[
+        <span class="bu">std::</span>hardware_destructive_interference_size - <span class="kw">sizeof</span>(<span class="dt">int</span>)
+    ] ;
     <span class="dt">int</span> status ;
 } ;</code></pre></div>
 <p>反対に、二つのオブジェクトを同一の局所性を持つキャッシュに載せたい場合、std::hardware_constructive_interference_sizeが使える。</p>
 <p>ハードウェア干渉サイズは&lt;new&gt;ヘッダーで以下のように定義されている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> std {
-    <span class="kw">inline</span> <span class="kw">constexpr</span> <span class="dt">size_t</span> hardware_destructive_interference_size = 実装依存 ;
-    <span class="kw">inline</span> <span class="kw">constexpr</span> <span class="dt">size_t</span> hardware_constructive_interference_size = 実装依存 ;
+    <span class="kw">inline</span> <span class="kw">constexpr</span> <span class="dt">size_t</span>
+        hardware_destructive_interference_size = 実装依存 ;
+    <span class="kw">inline</span> <span class="kw">constexpr</span> <span class="dt">size_t</span>
+        hardware_constructive_interference_size = 実装依存 ;
 }</code></pre></div>
 <h2 id="stduncaught_exceptions">std::uncaught_exceptions</h2>
 <p>C++14までは、まだcatchされていない例外がある場合は、bool std::uncaught_exception()で判定することができた。</p>
@@ -5533,7 +5648,7 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> F, <span class="kw">class</span> Tuple&gt;
 <span class="kw">constexpr</span> <span class="kw">decltype</span>(<span class="kw">auto</span>) apply(F&amp;&amp; f, Tuple&amp;&amp; t);</code></pre></div>
 <p>std::applyはtupleのそれぞれの要素を順番に実引数に渡して関数を呼び出すヘルパー関数だ。</p>
-<p>ある要素数Nのtuple tと関数オブジェクトfに対して、apply( f, t )は、f( get&lt;0&gt;(t), get&lt;1&gt;(t), ... , get<N>(t) )のようにfを関数呼び出しする。</p>
+<p>ある要素数Nのtuple tと関数オブジェクトfに対して、apply( f, t )は、f( get&lt;0&gt;(t), get&lt;1&gt;(t), ... , get&lt;N-1&gt;(t) )のようにfを関数呼び出しする。</p>
 <p>例</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">typename</span> ... Types &gt;
 <span class="dt">void</span> f( Types ... args ) { }
@@ -5558,7 +5673,8 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <p>この設計のライブラリが追加された理由は、パターンの検索のために何らかの事前の準備を状態として保持しておきたい検索アルゴリズムを実装するためだ。</p>
 <h3 id="default_searcher">default_searcher</h3>
 <p>クラスstd::default_searcherは以下のように宣言されている。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">class</span> ForwardIterator1, <span class="kw">class</span> BinaryPredicate = equal_to&lt;&gt; &gt;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;  <span class="kw">class</span> ForwardIterator1,
+            <span class="kw">class</span> BinaryPredicate = equal_to&lt;&gt; &gt;
 <span class="kw">class</span> default_searcher {
 <span class="kw">public</span>:
     <span class="co">// コンストラクター</span>
@@ -5576,11 +5692,13 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>string pattern(<span class="st">&quot;fox&quot;</span>) ;
-    <span class="bu">std::</span>default_searcher fox_searcher( <span class="bu">std::</span>begin(pattern), <span class="bu">std::</span>end(pattern) ) ;
+    <span class="bu">std::</span>default_searcher
+        fox_searcher( <span class="bu">std::</span>begin(pattern), <span class="bu">std::</span>end(pattern) ) ;
 
     <span class="bu">std::</span>string corpus = <span class="st">&quot;The quick brown fox jumps over the lazy dog&quot;</span> ;
 
-    <span class="kw">auto</span>[first, last] = fox_searcher( <span class="bu">std::</span>begin(s), <span class="bu">std::</span>end(s) ) ;
+    <span class="kw">auto</span>[first, last] = fox_searcher( <span class="bu">std::</span>begin(corpus),
+                                      <span class="bu">std::</span>end(corpus) ) ;
     <span class="bu">std::</span>string fox( first, last ) ;
 }</code></pre></div>
 <p>default_searcherの検索は、内部的にstd::searchが使われる。</p>
@@ -5593,32 +5711,37 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <p>Boyer-Mooreアルゴリズムは事前にパターンのどの文字が不一致ならば何文字比較せずに読み飛ばせるかという情報を計算した二つのテーブルを生成する必要がある。このため、Boyer-Mooreアルゴリズムはメモリ使用量と検索前の準備時間というコストがかかる。そのコストは、より効率的な検索により相殺できる。特に、パターンが長い場合は効果的だ。</p>
 <p>C++17に入るBoyer_mooreアルゴリズムに基づく検索は、テンプレートを使った汎用的なchar型のような状態数の少ない型に対しての実装だけではなく、ハッシュを使ったハッシュマップのようなデータ構造を使うことにより、任意の型に対応できる汎用的な設計になっている。</p>
 <p>クラスboyer_moore_searcherは以下のように宣言されている。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt; <span class="kw">class</span> RandomAccessIterator1,
-            <span class="kw">class</span> Hash = hash&lt;<span class="kw">typename</span> iterator_traits&lt;RandomAccessIterator1&gt;::<span class="dt">value_type</span>&gt;,
-            <span class="kw">class</span> BinaryPredicate = equal_to&lt;&gt; &gt;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;
+    <span class="kw">class</span> RandomAccessIterator1,
+    <span class="kw">class</span> Hash = hash&lt;
+        <span class="kw">typename</span> iterator_traits&lt;RandomAccessIterator1&gt;::<span class="dt">value_type</span>&gt;,
+    <span class="kw">class</span> BinaryPredicate = equal_to&lt;&gt; &gt;
 <span class="kw">class</span> boyer_moore_searcher {
 <span class="kw">public</span>:
     <span class="co">// コンストラクター</span>
     boyer_moore_searcher(
-        RandomAccessIterator1 pat_first, RandomAccessIterator1 pat_last,
+        RandomAccessIterator1 pat_first,
+        RandomAccessIterator1 pat_last,
         Hash hf = Hash(),
         BinaryPredicate pred = BinaryPredicate() ) ;
 
     <span class="co">// operator ()</span>
     <span class="kw">template</span> &lt;<span class="kw">class</span> RandomAccessIterator2&gt;
     pair&lt;RandomAccessIterator2, RandomAccessIterator2&gt;
-    <span class="kw">operator</span>()(RandomAccessIterator2 first, RandomAccessIterator2 last) <span class="at">const</span>;
+    <span class="kw">operator</span>()( RandomAccessIterator2 first,
+                RandomAccessIterator2 last) <span class="at">const</span>;
 } ;</code></pre></div>
 <p>boyer_moore_searcherは、文字列以外にも適用できる汎用的な設計のため、ハッシュ関数を取る。char型のような取りうる状態数の少ない型以外が渡された場合は、std::unordered_mapのようなメモリ使用量を削減できる何らかのデータ構造を使ってテーブルを構築する。</p>
 <p>使い方はdefault_searcherとほとんど変わらない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>string pattern(<span class="st">&quot;fox&quot;</span>) ;
-    <span class="bu">std::</span>boyer_moore_searcher fox_searcher( <span class="bu">std::</span>begin(pattern), <span class="bu">std::</span>end(pattern) ) ;
+    <span class="bu">std::</span>boyer_moore_searcher
+        fox_searcher( <span class="bu">std::</span>begin(pattern), <span class="bu">std::</span>end(pattern) ) ;
 
     <span class="bu">std::</span>string corpus = <span class="st">&quot;The quick brown fox jumps over the lazy dog&quot;</span> ;
 
-    <span class="kw">auto</span>[first, last] = fox_searcher( <span class="bu">std::</span>begin(s), <span class="bu">std::</span>end(s) ) ;
+    <span class="kw">auto</span>[first, last] = fox_searcher( <span class="bu">std::</span>begin(corpus), <span class="bu">std::</span>end(corpus) ) ;
     <span class="bu">std::</span>string fox( first, last ) ;
 }</code></pre></div>
 <h3 id="boyer_moore_horspool_searcher">boyer_moore_horspool_searcher</h3>
@@ -5626,31 +5749,37 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 <p>参考: &quot;Practical fast searching in strings&quot; 1980</p>
 <p>Boyer-Moore-Horspoolアルゴリズムは内部テーブルに使うメモリー使用量を削減しているが、最悪計算量の点でオリジナルのBoyer-Mooreアルゴリズムには劣っている。つまり、実行時間の増大を犠牲にしてメモリ使用量を削減したトレードオフなアルゴリズムと言える。</p>
 <p>クラスboyer_moore_horspool_searcherの宣言は以下の通り。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;  <span class="kw">class</span> RandomAccessIterator1,
-            <span class="kw">class</span> Hash = hash&lt;<span class="kw">typename</span> iterator_traits&lt;RandomAccessIterator1&gt;::<span class="dt">value_type</span>&gt;,
-            <span class="kw">class</span> BinaryPredicate = equal_to&lt;&gt; &gt;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;
+    <span class="kw">class</span> RandomAccessIterator1,
+    <span class="kw">class</span> Hash = hash&lt;
+        <span class="kw">typename</span> iterator_traits&lt;RandomAccessIterator1&gt;::<span class="dt">value_type</span>&gt;,
+    <span class="kw">class</span> BinaryPredicate = equal_to&lt;&gt; &gt;
 <span class="kw">class</span> boyer_moore_horspool_searcher {
 <span class="kw">public</span>:
     <span class="co">// コンストラクター</span>
     boyer_moore_horspool_searcher(
-        RandomAccessIterator1 pat_first, RandomAccessIterator1 pat_last,
+        RandomAccessIterator1 pat_first,
+        RandomAccessIterator1 pat_last,
         Hash hf = Hash(),
         BinaryPredicate pred = BinaryPredicate() );
 
     <span class="co">// operator () </span>
     <span class="kw">template</span> &lt;<span class="kw">class</span> RandomAccessIterator2&gt;
     pair&lt;RandomAccessIterator2, RandomAccessIterator2&gt;
-    <span class="kw">operator</span>()(RandomAccessIterator2 first, RandomAccessIterator2 last) <span class="at">const</span>;
+    <span class="kw">operator</span>()( RandomAccessIterator2 first,
+                RandomAccessIterator2 last) <span class="at">const</span>;
 } ;</code></pre></div>
 <p>使い方はboyer_moore_horspool_searcherと変わらない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>string pattern(<span class="st">&quot;fox&quot;</span>) ;
-    <span class="bu">std::</span>boyer_moore_horspool_searcher fox_searcher( <span class="bu">std::</span>begin(pattern), <span class="bu">std::</span>end(pattern) ) ;
+    <span class="bu">std::</span>boyer_moore_horspool_searcher
+        fox_searcher( <span class="bu">std::</span>begin(pattern), <span class="bu">std::</span>end(pattern) ) ;
 
     <span class="bu">std::</span>string corpus = <span class="st">&quot;The quick brown fox jumps over the lazy dog&quot;</span> ;
 
-    <span class="kw">auto</span>[first, last] = fox_searcher( <span class="bu">std::</span>begin(s), <span class="bu">std::</span>end(s) ) ;
+    <span class="kw">auto</span>[first, last] = fox_searcher(   <span class="bu">std::</span>begin(corpus),
+                                        <span class="bu">std::</span>end(corpus) ) ;
     <span class="bu">std::</span>string fox( first, last ) ;
 }</code></pre></div>
 <h2 id="sample-乱択アルゴリズム">sample: 乱択アルゴリズム</h2>
@@ -5689,7 +5818,8 @@ SampleIterator sample(
     sample( <span class="bu">std::</span>begin(pop), <span class="bu">std::</span>end(pop), <span class="bu">std::</span>begin(out), <span class="dv">10</span>, g ) ;
 
     <span class="co">// 標本を出力</span>
-    <span class="bu">std::</span>copy( <span class="bu">std::</span>begin(out), <span class="bu">std::</span>end(out), <span class="bu">std::</span>ostream_iterator&lt;<span class="dt">int</span>&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;, &quot;</span>) ) ;
+    <span class="bu">std::</span>copy(  <span class="bu">std::</span>begin(out), <span class="bu">std::</span>end(out),
+                <span class="bu">std::</span>ostream_iterator&lt;<span class="dt">int</span>&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;, &quot;</span>) ) ;
 }</code></pre></div>
 <p>集合に含まれる値の数がN個だと分かっているならば、それぞれの値について<span class="math inline">\(n/m\)</span>の確率で選ぶというのはどうだろうか。100個中10個を選ぶのであれば、<span class="math inline">\(1/10\)</span>の確率でそれぞれの値を標本として選択することになる。</p>
 <p>この考えに基づく乱択アルゴリズムは以下のようになる。</p>
@@ -5840,7 +5970,7 @@ SampleIterator sample_r(
     <span class="cf">return</span> result ;
 }</code></pre></div>
 <h3 id="cのsample">C++のsample</h3>
-<p>個々まで説明したように、乱択アルゴリズムには2種類ある。入力の要素数が分かっている場合のアルゴリズムS(選択標本)と、入力の要素数がわからない場合のアルゴリズムR(保管標本)だ。</p>
+<p>ここまで説明したように、乱択アルゴリズムには2種類ある。入力の要素数が分かっている場合のアルゴリズムS(選択標本)と、入力の要素数がわからない場合のアルゴリズムR(保管標本)だ。</p>
 <p>しかし、C++に追加された乱択アルゴリズムの関数テンプレートの宣言は、はじめに説明したように以下の一つしかない。並列アルゴリズムには対応していない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;
     <span class="kw">class</span> PopulationIterator, <span class="kw">class</span> SampleIterator,
@@ -5872,9 +6002,10 @@ sample(
 
     <span class="co">// PopulationIteratorは入力イテレーターしか満たさない</span>
     <span class="co">// SampleIteratorにはランダムアクセスイテレーターが必要</span>
-    <span class="bu">std::</span>sample(    <span class="bu">std::</span>istream_iterator&lt;<span class="dt">int</span>&gt;(<span class="bu">std::</span>cin), <span class="bu">std::</span>istream_iterator&lt;<span class="dt">int</span>&gt;{},
-                    <span class="bu">std::</span>begin(sample), <span class="dv">100</span>,
-                    g ) ;
+    <span class="bu">std::</span>sample(
+        <span class="bu">std::</span>istream_iterator&lt;<span class="dt">int</span>&gt;(<span class="bu">std::</span>cin),
+        <span class="bu">std::</span>istream_iterator&lt;<span class="dt">int</span>&gt;{},
+        <span class="bu">std::</span>begin(sample), <span class="dv">100</span>, g ) ;
 
 }</code></pre></div>
 <p>注意が必要なこととして、C++のsampleは入力元のPopulationIteratorが前方イテレーター以上を満たす場合は、かならずアルゴリズムS(選択標本)を使うということだ。これはつまり、要素数を得るためにstd::distance(first, last)が行われるということを意味する。もしこの処理が非効率的なイテレーターを渡した場合、必要以上に非効率的なコードになってしまう。</p>
@@ -5885,7 +6016,8 @@ sample(
     <span class="bu">std::</span>list&lt;<span class="dt">int</span>&gt; sample(<span class="dv">100</span>) ;
     <span class="bu">std::</span>knuth_b g ;
 
-    <span class="bu">std::</span>sample( <span class="bu">std::</span>begin(input), <span class="bu">std::</span>end(input), <span class="bu">std::</span>begin(sample), <span class="dv">100</span>, g ) ;
+    <span class="bu">std::</span>sample(    <span class="bu">std::</span>begin(input), <span class="bu">std::</span>end(input),
+                    <span class="bu">std::</span>begin(sample), <span class="dv">100</span>, g ) ;
 }</code></pre></div>
 <p>以下のような意味を持つ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -5943,7 +6075,7 @@ sample_s(
     
     <span class="cf">return</span> out ;
 }</code></pre></div>
-<h2 id="shared_ptr-配列に対するshared_ptr">shared_ptr<T[]> : 配列に対するshared_ptr</h2>
+<h2 id="shared_ptrt-配列に対するshared_ptr">shared_ptr&lt;T[]&gt; : 配列に対するshared_ptr</h2>
 <p>C++17では、shared_ptrが配列に対応した。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -5987,7 +6119,7 @@ sample_s(
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> T, <span class="kw">class</span> Tuple&gt;
 <span class="kw">constexpr</span> T make_from_tuple(Tuple&amp;&amp; t);</code></pre></div>
 <p>applyはtupleの要素を実引数に関数を呼び出すライブラリだが、make_from_tupleはtupleの要素を実引数にコンストラクターを呼び出すライブラリだ。</p>
-<p>ある型Tと要素数Nのtuple tに対して、make_from_tuple&lt;T&gt;(t)は、T型をT( get&lt;0&gt;(t), get&lt;1&gt;(t), ... , get&lt;N&gt;(t) )のように構築して、構築したT型のオブジェクトを返す。</p>
+<p>ある型Tと要素数Nのtuple tに対して、make_from_tuple&lt;T&gt;(t)は、T型をT( get&lt;0&gt;(t), get&lt;1&gt;(t), ... , get&lt;N-1&gt;(t) )のように構築して、構築したT型のオブジェクトを返す。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> X
 {
     <span class="kw">template</span> &lt; <span class="kw">typename</span> ... Types &gt;
@@ -6059,7 +6191,7 @@ sample_s(
 <p>C++17ではヘッダーファイル&lt;memory&gt;にメモリー管理用のアルゴリズムが追加された。</p>
 <h3 id="addressof">addressof</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> T&gt; <span class="kw">constexpr</span> T* addressof(T&amp; r) <span class="kw">noexcept</span>;</code></pre></div>
-<p>addressofはC++17以前からもある。addressof(r)はrのポインターを取得する。たとえ、rの型がoperaotr &amp;をオーバーロードしていても正しいポインターを取得できる。</p>
+<p>addressofはC++17以前からもある。addressof(r)はrのポインターを取得する。たとえ、rの型がoperator &amp;をオーバーロードしていても正しいポインターを取得できる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> S
 {
     S * <span class="kw">operator</span> &amp;() <span class="at">const</span> <span class="kw">noexcept</span>
@@ -6078,11 +6210,13 @@ sample_s(
 }</code></pre></div>
 <h3 id="uninitialized_default_construct">uninitialized_default_construct</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> ForwardIterator&gt;
-<span class="dt">void</span> uninitialized_default_construct(ForwardIterator first, ForwardIterator last);
+<span class="dt">void</span> uninitialized_default_construct(
+    ForwardIterator first, ForwardIterator last);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> ForwardIterator, <span class="kw">class</span> Size&gt;
-ForwardIterator uninitialized_default_construct_n(ForwardIterator first, Size n);</code></pre></div>
-<p>[first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーをtypename iterator_traits<ForwardIterator>::value_typeでデフォルト初期化する。2つめのアルゴリズムはfirstからn個をデフォルト初期化する。</p>
+ForwardIterator uninitialized_default_construct_n(
+    ForwardIterator first, Size n);</code></pre></div>
+<p>[first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーをtypename iterator_traits&lt;ForwardIterator&gt;::value_typeでデフォルト初期化する。2つめのアルゴリズムはfirstからn個をデフォルト初期化する。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>shared_ptr&lt;<span class="dt">void</span>&gt; raw_ptr
@@ -6096,19 +6230,23 @@ ForwardIterator uninitialized_default_construct_n(ForwardIterator first, Size n)
 }</code></pre></div>
 <h3 id="uninitialized_value_construct">uninitialized_value_construct</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> ForwardIterator&gt;
-<span class="dt">void</span> uninitialized_value_construct(ForwardIterator first, ForwardIterator last);
+<span class="dt">void</span> uninitialized_value_construct(
+    ForwardIterator first, ForwardIterator last);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> ForwardIterator, <span class="kw">class</span> Size&gt;
-ForwardIterator uninitialized_value_construct_n(ForwardIterator first, Size n);</code></pre></div>
+ForwardIterator uninitialized_value_construct_n(
+    ForwardIterator first, Size n);</code></pre></div>
 <p>使い方はuninitialized_default_constructと同じ。ただし、こちらはデフォルト初期化ではなく値初期化する。</p>
 <h3 id="uninitialized_copy">uninitialized_copy</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> InputIterator, <span class="kw">class</span> ForwardIterator&gt;
 ForwardIterator
-uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator result);
+uninitialized_copy( InputIterator first, InputIterator last,
+                    ForwardIterator result);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> InputIterator, <span class="kw">class</span> Size, <span class="kw">class</span> ForwardIterator&gt;
 ForwardIterator
-uninitialized_copy_n(InputIterator first, Size n, ForwardIterator result);</code></pre></div>
+uninitialized_copy_n(   InputIterator first, Size n,
+                        ForwardIterator result);</code></pre></div>
 <p>[first, last)の範囲、もしくはfirstからn個の範囲の値を、resultの指す未初期化のメモリーにコピー構築する。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -6127,18 +6265,24 @@ uninitialized_copy_n(InputIterator first, Size n, ForwardIterator result);</code
 <h3 id="uninitialized_move">uninitialized_move</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> InputIterator, <span class="kw">class</span> ForwardIterator&gt;
 ForwardIterator
-uninitialized_move(InputIterator first, InputIterator last, ForwardIterator result);
+uninitialized_move( InputIterator first, InputIterator last,
+                    ForwardIterator result);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> InputIterator, <span class="kw">class</span> Size, <span class="kw">class</span> ForwardIterator&gt;
 pair&lt;InputIterator, ForwardIterator&gt;
-uninitialized_move_n(InputIterator first, Size n, ForwardIterator result);</code></pre></div>
+uninitialized_move_n(   InputIterator first, Size n,
+                        ForwardIterator result);</code></pre></div>
 <p>使い方はuninitialized_copyと同じ。ただしこちらはコピーではなくムーブする。</p>
 <h3 id="uninitialized_fill">uninitialized_fill</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> ForwardIterator, <span class="kw">class</span> T&gt;
-<span class="dt">void</span> uninitialized_fill(ForwardIterator first, ForwardIterator last, <span class="at">const</span> T&amp; x);
+<span class="dt">void</span> uninitialized_fill(
+    ForwardIterator first, ForwardIterator last,
+    <span class="at">const</span> T&amp; x);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> ForwardIterator, <span class="kw">class</span> Size, <span class="kw">class</span> T&gt;
-ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, <span class="at">const</span> T&amp; x);</code></pre></div>
+ForwardIterator uninitialized_fill_n(
+    ForwardIterator first, Size n,
+    <span class="at">const</span> T&amp; x);</code></pre></div>
 <p>[first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーを、コンストラクターに実引数xを与えて構築する。</p>
 <h3 id="destory">destory</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> T&gt;
@@ -6166,7 +6310,9 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 <span class="dt">void</span> f( Shared_ptr sptr )
 {
     <span class="co">// C++14</span>
-    <span class="kw">auto</span> wptr1 = <span class="bu">std::</span>weak_ptr&lt; <span class="kw">typename</span> Shared_ptr::<span class="dt">element_type</span> &gt;( sptr ) ;
+    <span class="kw">auto</span> wptr1 = <span class="bu">std::</span>weak_ptr&lt;
+                    <span class="kw">typename</span> Shared_ptr::<span class="dt">element_type</span>
+                &gt;( sptr ) ;
 
     <span class="co">// C++17</span>
     <span class="kw">auto</span> wptr2 = <span class="kw">typename</span> Shared_ptr::<span class="dt">weak_type</span>( sptr ) ;
@@ -6210,10 +6356,16 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
     <span class="kw">using</span> <span class="kw">namespace</span> std ;
 
     <span class="co">// is_void&lt;void&gt;を基本クラスに持つ</span>
-    <span class="kw">using</span> t1 = conjunction&lt; is_same&lt;<span class="dt">int</span>, <span class="dt">int</span>&gt;, is_integral&lt;<span class="dt">int</span>&gt;, is_void&lt;<span class="dt">void</span>&gt; &gt; ;
+    <span class="kw">using</span> t1 =
+        conjunction&lt;
+            is_same&lt;<span class="dt">int</span>, <span class="dt">int</span>&gt;, is_integral&lt;<span class="dt">int</span>&gt;,
+            is_void&lt;<span class="dt">void</span>&gt; &gt; ;
 
     <span class="co">// is_integral&lt;double&gt;を基本クラスに持つ</span>
-    <span class="kw">using</span> t2 = conjunction&lt; is_same&lt;<span class="dt">int</span>, <span class="dt">int</span>&gt;, is_integral&lt;<span class="dt">double</span>&gt;, is_void&lt;<span class="dt">void</span>&gt; &gt; ;
+    <span class="kw">using</span> t2 =
+        conjunction&lt;
+            is_same&lt;<span class="dt">int</span>, <span class="dt">int</span>&gt;, is_integral&lt;<span class="dt">double</span>&gt;,
+            is_void&lt;<span class="dt">void</span>&gt; &gt; ;
 
 }</code></pre></div>
 <h4 id="disjunction-論理和">disjunction: 論理和</h4>
@@ -6224,11 +6376,16 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
     <span class="kw">using</span> <span class="kw">namespace</span> std ;
 
     <span class="co">// is_same&lt;int,int&gt;を基本クラスに持つ</span>
-    <span class="kw">using</span> t1 = disjunction&lt; is_same&lt;<span class="dt">int</span>, <span class="dt">int</span>&gt;, is_integral&lt;<span class="dt">int</span>&gt;, is_void&lt;<span class="dt">void</span>&gt; &gt; ;
+    <span class="kw">using</span> t1 =
+        disjunction&lt;
+            is_same&lt;<span class="dt">int</span>, <span class="dt">int</span>&gt;, is_integral&lt;<span class="dt">int</span>&gt;,
+            is_void&lt;<span class="dt">void</span>&gt; &gt; ;
 
     <span class="co">// is_void&lt;int&gt;を基本クラスに持つ</span>
-    <span class="kw">using</span> t2 = disjunction&lt; is_same&lt;<span class="dt">int</span>, <span class="dt">double</span>&gt;, is_integral&lt;<span class="dt">double</span>&gt;, is_void&lt;<span class="dt">int</span>&gt; &gt; ;
-
+    <span class="kw">using</span> t2 =
+        disjunction&lt;
+            is_same&lt;<span class="dt">int</span>, <span class="dt">double</span>&gt;, is_integral&lt;<span class="dt">double</span>&gt;,
+            is_void&lt;<span class="dt">int</span>&gt; &gt; ;
 }</code></pre></div>
 <h3 id="negation-否定">negation: 否定</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> B&gt; <span class="kw">struct</span> negation;</code></pre></div>
@@ -6254,29 +6411,35 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> R, <span class="kw">class</span> Fn, <span class="kw">class</span>... ArgTypes&gt;
 <span class="kw">struct</span> is_nothrow_invocable_r;</code></pre></div>
-<p>is_invocableはテンプレート実引数で与えられた型FnがパラメーターパックArgTypesをパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値はRかどうかを確認するtraitsだ。呼び出せるのであればtrue_type、そうでなければfalse_typeを基本クラスに持つ。</p>
+<p>is_invocableはテンプレート実引数で与えられた型FnがパラメーターパックArgTypesをパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値はRへ暗黙変換できるかどうかを確認するtraitsだ。呼び出せるのであればtrue_type、そうでなければfalse_typeを基本クラスに持つ。</p>
 <p>is_invocableは関数呼び出しした結果の戻り値の型については問わない。</p>
-<p>is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRであることが確認される。</p>
-<p>is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出しが無例外保証されていることも確認する。</p>
+<p>is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRへ暗黙変換できることが確認される。</p>
+<p>is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出し（および戻り値型Rへの暗黙変換）が無例外保証されていることも確認する。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">
 <span class="dt">int</span> f( <span class="dt">int</span>, <span class="dt">double</span> ) ;
 
 <span class="dt">int</span> main()
 {
     <span class="co">// true</span>
-    <span class="kw">constexpr</span> <span class="dt">bool</span> b1 = <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">double</span> &gt;{} ;
+    <span class="kw">constexpr</span> <span class="dt">bool</span> b1 =
+        <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">double</span> &gt;{} ;
     <span class="co">// true</span>
-    <span class="kw">constexpr</span> <span class="dt">bool</span> b2 = <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">int</span> &gt;{} ;
+    <span class="kw">constexpr</span> <span class="dt">bool</span> b2 =
+        <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">int</span> &gt;{} ;
 
     <span class="co">// false</span>
-    <span class="kw">constexpr</span> <span class="dt">bool</span> b3 = <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span> &gt;{} ;
+    <span class="kw">constexpr</span> <span class="dt">bool</span> b3 =
+        <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span> &gt;{} ;
     <span class="co">// false</span>
-    <span class="kw">constexpr</span> <span class="dt">bool</span> b4 = <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="bu">std::</span>string &gt;{} ;
+    <span class="kw">constexpr</span> <span class="dt">bool</span> b4 =
+        <span class="bu">std::</span>is_invocable&lt; <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="bu">std::</span>string &gt;{} ;
     
     <span class="co">// true</span>
-    <span class="kw">constexpr</span> <span class="dt">bool</span> b5 = <span class="bu">std::</span>is_invocable_r&lt; <span class="dt">int</span>, <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">double</span> &gt;{} ;
+    <span class="kw">constexpr</span> <span class="dt">bool</span> b5 = 
+        <span class="bu">std::</span>is_invocable_r&lt; <span class="dt">int</span>, <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">double</span> &gt;{} ;
     <span class="co">// false</span>
-    <span class="kw">constexpr</span> <span class="dt">bool</span> b6 = <span class="bu">std::</span>is_invocable_r&lt; <span class="dt">double</span>, <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">double</span> &gt;{} ;
+    <span class="kw">constexpr</span> <span class="dt">bool</span> b6 =
+        <span class="bu">std::</span>is_invocable_r&lt; <span class="dt">double</span>, <span class="kw">decltype</span>(&amp;f), <span class="dt">int</span>, <span class="dt">double</span> &gt;{} ;
 }</code></pre></div>
 <h3 id="has_unique_object_representations-同値の内部表現が同一か確認するtraits">has_unique_object_representations : 同値の内部表現が同一か確認するtraits</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> T&gt;
@@ -6299,7 +6462,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
     <span class="bu">std::</span>uint32_t b ;
 } ;</code></pre></div>
 <p>この場合、unused_paddingの値には意味がなく、クラスXの同値比較には用いられない。この場合、std::has_unique_representations_v&lt;X&gt;はfalseになる。</p>
-<h3 id="no_throw_swappable-無例外swap可能か確認するtraits">no_throw_swappable: 無例外swap可能か確認するtraits</h3>
+<h3 id="is_nothrow_swappable-無例外swap可能か確認するtraits">is_nothrow_swappable: 無例外swap可能か確認するtraits</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> T&gt;
 <span class="kw">struct</span> is_nothrow_swappable;
 
@@ -6339,10 +6502,14 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 <p>mapとunordered_mapに、try_emplaceとinsert_or_assignという2つのメンバー関数が入った。このメンバー関数はmulti_mapとunordered_multi_mapには追加されていない。</p>
 <h3 id="try_emplace">try_emplace</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span>... Args&gt;
-pair&lt;iterator, <span class="dt">bool</span>&gt; try_emplace(<span class="at">const</span> <span class="dt">key_type</span>&amp; k, Args&amp;&amp;... args);
+pair&lt;iterator, <span class="dt">bool</span>&gt;
+try_emplace(<span class="at">const</span> <span class="dt">key_type</span>&amp; k, Args&amp;&amp;... args);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span>... Args&gt;
-iterator try_emplace(const_iterator hint, <span class="at">const</span> <span class="dt">key_type</span>&amp; k, Args&amp;&amp;... args);</code></pre></div>
+iterator
+try_emplace(
+    const_iterator hint,
+    <span class="at">const</span> <span class="dt">key_type</span>&amp; k, Args&amp;&amp;... args);</code></pre></div>
 <p>従来のemplaceは、キーに対応する要素が存在しない場合、要素がargsからemplace構築されて追加される。もし、キーに対応する要素が存在する場合、要素は追加されない。要素が追加されない時、argsがムーブされるかどうかは実装定義である。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -6378,10 +6545,14 @@ iterator try_emplace(const_iterator hint, <span class="at">const</span> <span cl
 }</code></pre></div>
 <h3 id="insert_or_assign">insert_or_assign</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> M&gt;
-pair&lt;iterator, <span class="dt">bool</span>&gt; insert_or_assign(<span class="at">const</span> <span class="dt">key_type</span>&amp; k, M&amp;&amp; obj);
+pair&lt;iterator, <span class="dt">bool</span>&gt;
+insert_or_assign(<span class="at">const</span> <span class="dt">key_type</span>&amp; k, M&amp;&amp; obj);
 
 <span class="kw">template</span> &lt;<span class="kw">class</span> M&gt;
-iterator insert_or_assign(const_iterator hint, <span class="at">const</span> <span class="dt">key_type</span>&amp; k, M&amp;&amp; obj);</code></pre></div>
+iterator
+insert_or_assign(
+    const_iterator hint,
+    <span class="at">const</span> <span class="dt">key_type</span>&amp; k, M&amp;&amp; obj);</code></pre></div>
 <p>insert_or_assignはkeyに連想された要素が存在する場合は要素を代入し、存在しない場合は要素を追加する。operator []との違いは、要素が代入されたか追加されたかが、戻り値のpairのboolでわかるということだ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -6744,9 +6915,11 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 }</code></pre></div>
 <h2 id="clamp">clamp</h2>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> T&gt;
-<span class="kw">constexpr</span> <span class="at">const</span> T&amp; clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&amp; lo, <span class="at">const</span> T&amp; hi);
+<span class="kw">constexpr</span> <span class="at">const</span> T&amp;
+clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&amp; lo, <span class="at">const</span> T&amp; hi);
 <span class="kw">template</span>&lt;<span class="kw">class</span> T, <span class="kw">class</span> Compare&gt;
-<span class="kw">constexpr</span> <span class="at">const</span> T&amp; clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&amp; lo, <span class="at">const</span> T&amp; hi, Compare comp);</code></pre></div>
+<span class="kw">constexpr</span> <span class="at">const</span> T&amp;
+clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&amp; lo, <span class="at">const</span> T&amp; hi, Compare comp);</code></pre></div>
 <p>ヘッダーファイル&lt;algorithm&gt;に追加されたclamp(v, lo, hi)は値vがloより小さい場合はloを、hiより高い場合はhiを、それ以外の場合はvを返す。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -6787,55 +6960,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 }</code></pre></div>
 <p>std::scoped_lockのコンストラクターは複数のロックのオブジェクトのリファレンスを取り、それぞれにデッドロックを起こさない方法でメンバー関数lockを呼び出す。デストラクターはメンバー関数unlockを呼び出す。</p>
 <h2 id="stdbyte">std::byte</h2>
-<p>std::byteはヘッダーファイル&lt;cstddef&gt;で以下のように定義されている。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> std {
-
-    <span class="kw">enum</span> <span class="kw">class</span> byte : <span class="dt">unsigned</span> <span class="dt">char</span> {};
-
-    <span class="co">// byte型に対する演算子のオーバーロード</span>
-}</code></pre></div>
-<p>std::byte型は、生のバイト列を表すための型として使うことができる。生の1バイトを表すにはchar型が慣習的に使われてきたが、std::byte型は生の1バイトを表現する型として、新たにC++17で追加された。</p>
-<p>std::byte型は強い型によって、暗黙の型変換を防ぐ。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
-{
-    <span class="co">// OK、暗黙の型変換</span>
-    <span class="dt">char</span> c = <span class="dv">0</span> ;
-    c += <span class="dv">1</span> ;
-
-    <span class="co">// エラー、int型からstd::byte型に変換できない</span>
-    <span class="bu">std::</span>byte b = <span class="dv">0</span> ;
-    <span class="co">// エラー、int型からstd::byte型に変換できない</span>
-    b += <span class="dv">1</span> ;
-}</code></pre></div>
-<p>std::byteを扱うには、明示的なキャストが必要だ。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
-{
-    <span class="bu">std::</span>byte b = <span class="kw">static_cast</span>&lt;<span class="bu">std::</span>byte&gt;(<span class="dv">0</span>) ;
-    b += <span class="kw">static_cast</span>&lt;<span class="bu">std::</span>byte&gt;(<span class="dv">1</span>) ;
-}</code></pre></div>
-<p>これによって、型の取り違えを防ぐことができる。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> f()
-{
-    <span class="co">// 数字の1</span>
-    <span class="dt">int</span> va1 = <span class="dv">20</span> ;
-
-    <span class="co">// 長いコード</span>
-
-
-    
-    <span class="bu">std::</span>byte b = <span class="kw">static_cast</span>&lt;<span class="bu">std::</span>byte&gt;(<span class="bn">0b00000001</span>) ;
-    <span class="co">// アルファベットl</span>
-    <span class="bu">std::</span>byte val = <span class="kw">static_cast</span>&lt;<span class="bu">std::</span>byte&gt;(<span class="bn">0b11110000</span>) ;
-
-    b |= va1 ; <span class="co">// エラー</span>
-}</code></pre></div>
-<p>std::byteは内部のストレージをバイト単位でアクセスできるようにするため、規格上charと同じ様な配慮が行われている。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
-{
-    <span class="dt">int</span> x = <span class="dv">42</span> ;
-
-    <span class="bu">std::</span>byte * rep = <span class="kw">reinterpret_cast</span>&lt; <span class="bu">std::</span>byte * &gt;(&amp;x) ;
-}</code></pre></div>
+<p>C++17ではバイトを表現する型としてstd::byteがライブラリに追加された。これは、コア言語の一部であり、<a href="#std.byte">別項で詳しく解説を行っている</a>。</p>
 <h2 id="最大公約数gcdと最小公倍数lcm">最大公約数(gcd)と最小公倍数(lcm)</h2>
 <p>C++17ではヘッダーファイル&lt;numeric&gt;に最大公約数(gcd)と最小公倍数(lcm)が追加された。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -6938,7 +7063,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
         <span class="bu">std::</span>cout
             &lt;&lt; <span class="st">&quot;error number: &quot;</span> &lt;&lt; error_code.value ()
             &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">error message: &quot;</span> &lt;&lt; error_code.message() 
-            &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">path1: &quot;</span> &lt;&lt; path1
+            &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">path1: &quot;</span> &lt;&lt; path<span class="dv">1</span>
             &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">path2: &quot;</span> &lt;&lt; path2 &lt;&lt; <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span> ;
     }
 }</code></pre></div>
@@ -6977,7 +7102,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
         <span class="bu">std::</span>cout
             &lt;&lt; <span class="st">&quot;error number: &quot;</span> &lt;&lt; error_code.value ()
             &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">error message: &quot;</span> &lt;&lt; error_code.message() 
-            &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">path1: &quot;</span> &lt;&lt; path1
+            &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">path1: &quot;</span> &lt;&lt; path<span class="dv">1</span>
             &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">path2: &quot;</span> &lt;&lt; path2 &lt;&lt; <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span> ;
     }
 }</code></pre></div>
@@ -7212,7 +7337,8 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
         <span class="cf">if</span> ( file_status.type() == <span class="dt">file_type</span>::regular )
             ++regular_files ;
 
-        <span class="kw">constexpr</span> <span class="kw">auto</span> exec_bits = perms::owner_exec | perms::group_exec | perms::others_exec ;
+        <span class="kw">constexpr</span> <span class="kw">auto</span> exec_bits = 
+            perms::owner_exec | perms::group_exec | perms::others_exec ;
 
         <span class="kw">auto</span> permissions = file_status.permissions() ;
         <span class="cf">if</span> ( (  permissions != perms::unknown) &amp;&amp;
@@ -7220,8 +7346,12 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
             ++execs ;
     } ) ;
 
-    <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;Curernt directory has &quot;</span> &lt;&lt; regular_files &lt;&lt; <span class="st">&quot; regular files.</span><span class="sc">\n</span><span class="st">&quot;</span> ;
-    <span class="bu">std::</span>cout &lt;&lt; execs &lt;&lt; <span class="st">&quot; files are executable.</span><span class="sc">\n</span><span class="st">&quot;</span> ;
+    <span class="bu">std::</span>cout
+        &lt;&lt; <span class="st">&quot;Current directory has &quot;</span>
+        &lt;&lt; regular_files
+        &lt;&lt; <span class="st">&quot; regular files.</span><span class="sc">\n</span><span class="st">&quot;</span> ;
+        &lt;&lt; execs
+        &lt;&lt; <span class="st">&quot; files are executable.</span><span class="sc">\n</span><span class="st">&quot;</span> ;
 }</code></pre></div>
 <p>このプログラムは、カレントディレクトリーにある通常のファイルの数と、実行可能なファイルの数を表示する。</p>
 <p>ファイルパーミッションを表現するenum型permsは、パーミッションが不明な場合perms::unknownになる。この値は0xFFFFなのでビット演算をする場合には注意が必要だ。</p>
@@ -7256,7 +7386,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     recursive_directory_iterator i2(p) ;
     directory_entry e3 = *i2 ;
 }</code></pre></div>
-<p>directory_entoryには様々なファイル情報を取得するメンバー関数があるが、これは同じ機能のものがフリー関数でも用意されている。directory_entryを使うと、ファイル情報をキャッシュできるため、同じファイルパスに対して、物理ファイルシステムの変更がないときに複数回のファイル情報取得を行うのが効率的になる。</p>
+<p>directory_entryには様々なファイル情報を取得するメンバー関数があるが、これは同じ機能のものがフリー関数でも用意されている。directory_entryを使うと、ファイル情報をキャッシュできるため、同じファイルパスに対して、物理ファイルシステムの変更がないときに複数回のファイル情報取得を行うのが効率的になる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>filesystem ;
@@ -7296,15 +7426,16 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 {
     <span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>filesystem ;
     directory_iterator iter(<span class="st">&quot;.&quot;</span>), end ;
-    <span class="bu">std::</span>copy( iter, end, <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
+    <span class="bu">std::</span>copy( iter, end,
+        <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
 }</code></pre></div>
 <p>directory_iteratorはコンストラクターとしてpathを渡すと、そのディレクトリー下の最初のファイルに相当するdirectory_entryを返すイテレーターとなる。コンストラクターで指定されたディレクトリー下にファイルが存在しない場合、終端イテレーターになる。</p>
-<p>directory_iterator_のデフォルトコンストラクターは終端イテレーターになる。終端イテレーターはデリファレンスできない。</p>
-<p>directory_itertor::value_typeはdirectory_entryで、イテレーターのカテゴリーは入力イテレーターとなる。</p>
-<p>directory_iteratorはカレントディレクトリー(.)とパレンとディレクトリー(..)は列挙しない。</p>
+<p>directory_iteratorのデフォルトコンストラクターは終端イテレーターになる。終端イテレーターはデリファレンスできない。</p>
+<p>directory_iterator::value_typeはdirectory_entryで、イテレーターのカテゴリーは入力イテレーターとなる。</p>
+<p>directory_iteratorはカレントディレクトリー(.)と親ディレクトリー(..)は列挙しない。</p>
 <p>directory_iteratorがディレクトリー下のファイルをどのような順番で列挙するかは未規定だ。</p>
 <p>directory_iteratorによって返されるファイルパスは存在しない可能性があるので、ファイルが存在することを当てにしてはいけない。例えば、存在しないファイルへのシンボリックリンクかもしれない。</p>
-<p>direcotry_iteratorのオブジェクトが作成されたあとに物理ファイルシステムになされた変更は、反映されるかどうか未規定である。</p>
+<p>directory_iteratorのオブジェクトが作成されたあとに物理ファイルシステムになされた変更は、反映されるかどうか未規定である。</p>
 <p>directory_iteratorのコンストラクターは列挙時の動作を指定できるdirectory_optionsを実引数に受け取ることができる。しかし、C++17の標準規格の範囲ではdirectory_iteratorの挙動を変更するdirectory_optionsは規定されていない。</p>
 <h3 id="エラー処理-1">エラー処理</h3>
 <p>directory_iteratorは構築時にエラーが発生することがある。このエラーを例外ではなくerror_codeで受け取りたい場合、コンストラクターの実引数でerror_codeへのリファレンスを渡す。</p>
@@ -7347,7 +7478,8 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     <span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>filesystem ; 
     recursive_directory_iterator iter(<span class="st">&quot;.&quot;</span>), end ;
 
-    <span class="bu">std::</span>copy( iter, end, <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
+    <span class="bu">std::</span>copy(  iter, end,
+                <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
 }</code></pre></div>
 <p>メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。</p>
 <h3 id="オプション">オプション</h3>
@@ -7378,9 +7510,11 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>filesystem ; 
-    recursive_directory_iterator iter(<span class="st">&quot;/&quot;</span>, directory_options::skip_permission_denied), end ;
+    recursive_directory_iterator
+        iter(<span class="st">&quot;/&quot;</span>, directory_options::skip_permission_denied), end ;
 
-    <span class="bu">std::</span>copy( iter, end, <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
+    <span class="bu">std::</span>copy(  iter, end,
+                <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) ) ;
 }</code></pre></div>
 <p>follow_directory_symlinkは、親ディレクトリーへのシンボリックリンクが存在する場合、イテレーターが終端イテレーターに到達しない可能性があるので注意すること。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -7390,7 +7524,8 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     <span class="co">// 自分自身を含むディレクトリーに対するシンボリックリンク</span>
     create_symlink(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;foo&quot;</span>) ;
 
-    recursive_directory_iterator iter(<span class="st">&quot;.&quot;</span>, directory_options::follow_directory_symlink), end ;
+    recursive_directory_iterator
+        iter(<span class="st">&quot;.&quot;</span>, directory_options::follow_directory_symlink), end ;
 
     <span class="co">// エラー、もしくは終了しない</span>
     <span class="bu">std::</span>copy( iter, end, <span class="bu">std::</span>ostream_iterator&lt;path&gt;(<span class="bu">std::</span>cout) ) ;
@@ -7519,7 +7654,7 @@ path current_path(error_code&amp; ec);</code></pre></div>
 <h4 id="temp_directory_path">temp_directory_path</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">path temp_directory_path();
 path temp_directory_path(error_code&amp; ec);</code></pre></div>
-<p>一時ファイルを作成するのに最適な一時ディレクトリー(tempolary directory)へのファイルパスを返す。</p>
+<p>一時ファイルを作成するのに最適な一時ディレクトリー(temporary directory)へのファイルパスを返す。</p>
 <h3 id="ファイルパス操作">ファイルパス操作</h3>
 <h4 id="absolute">absolute</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">path absolute(<span class="at">const</span> path&amp; p);
@@ -7529,7 +7664,7 @@ path absolute(<span class="at">const</span> path&amp; p, error_code&amp; ec);</c
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">path canonical(<span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; base = current_path());
 path canonical(<span class="at">const</span> path&amp; p, error_code&amp; ec);
 path canonical(<span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; base, error_code&amp; ec);</code></pre></div>
-<p>存在するファイルへのファイルパスpへの、シンボリックリンク、., ..の存在しない絶対パスを返す。</p>
+<p>存在するファイルへのファイルパスpへの、シンボリックリンク、カレントディレクトリー(.)、親ディレクトリー(..)の存在しない絶対パスを返す。</p>
 <h4 id="wealky_canonical">wealky_canonical</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">path weakly_canonical(<span class="at">const</span> path&amp; p);
 path weakly_canonical(<span class="at">const</span> path&amp; p, error_code&amp; ec);</code></pre></div>
@@ -7549,8 +7684,12 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> create_directory(<span class="at">const</span> path&amp; p);
 <span class="dt">bool</span> create_directory(<span class="at">const</span> path&amp; p, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>pの指すディレクトリーをひとつ作成する。新しいディレクトリーが作成できた場合はtrueを、作成できなかった場合はfalseを返す。pが既存のディレクトリーを指していて新しいディレクトリーが作成できなかった場合はエラーにはならない。単にfalseが返る。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> create_directory(<span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; existing_p);
-<span class="dt">bool</span> create_directory(<span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; existing_p, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> create_directory(
+    <span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; existing_p);
+
+<span class="dt">bool</span> create_directory(
+    <span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; existing_p,
+    error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>新しく作成するディレクトリーpのアトリビュートを既存のディレクトリーexisting_pと同じものにする。</p>
 <h4 id="create_directories">create_directories</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> create_directories(<span class="at">const</span> path&amp; p);
@@ -7564,25 +7703,38 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 }</code></pre></div>
 <p>戻り値は、ディレクトリーを作成した場合true、そうでない場合false。</p>
 <h4 id="create_directory_symlink">create_directory_symlink</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> create_directory_symlink(<span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink);
-<span class="dt">void</span> create_directory_symlink(<span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> create_directory_symlink(
+    <span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink);
+<span class="dt">void</span> create_directory_symlink(
+    <span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink,
+    error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ディレクトリーtoに解決されるシンボリックリンクnew_symlinkを作成する。</p>
 <p>一部のOSでは、ディレクトリーへのシンボリックリンクとファイルへのシンボリックリンクを作成時に明示的に区別する必要がある。ポータブルなコードはディレクトリーへのシンボリックリンクを作成するときにはcreate_symlinkではなくcreate_directory_symlinkを使うべきである。</p>
 <p>一部のOSはシンボリックリンクをサポートしていない。ポータブルなコードでは注意すべきである。</p>
 <h4 id="create_symlink">create_symlink</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> create_symlink(<span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink);
-<span class="dt">void</span> create_symlink(<span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> create_symlink(
+    <span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink);
+<span class="dt">void</span> create_symlink(
+    <span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_symlink,
+    error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルパスtoに解決されるシンボリックリンクnew_symlinkを作成する。</p>
 <h4 id="create_hard_link">create_hard_link</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> create_hard_link(<span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_hard_link);
-<span class="dt">void</span> create_hard_link(<span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_hard_link, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> create_hard_link(
+    <span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_hard_link);
+<span class="dt">void</span> create_hard_link(
+    <span class="at">const</span> path&amp; to, <span class="at">const</span> path&amp; new_hard_link,
+    error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルパスtoに解決されるハードリンクnew_hard_linkを作成する。</p>
 <h3 id="コピー">コピー</h3>
 <h4 id="copy_file">copy_file</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> copy_file(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to);
-<span class="dt">bool</span> copy_file(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to, error_code&amp; ec) <span class="kw">noexcept</span>;
-<span class="dt">bool</span> copy_file(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to, copy_options options);
-<span class="dt">bool</span> copy_file(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to, copy_options options, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> copy_file( <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to);
+<span class="dt">bool</span> copy_file( <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to,
+                error_code&amp; ec) <span class="kw">noexcept</span>;
+<span class="dt">bool</span> copy_file( <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to,
+                copy_options options);
+<span class="dt">bool</span> copy_file( <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to,
+                copy_options options,
+                error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルパスfromのファイルをファイルパスtoにコピーする。</p>
 <p>copy_optionsはコピーの挙動を変えるビットマスクのenum型で、以下のenum値がサポートされている。</p>
 <table>
@@ -7612,10 +7764,14 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 </tbody>
 </table>
 <h4 id="copy">copy</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> copy(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to);
-<span class="dt">void</span> copy(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to, error_code&amp; ec) <span class="kw">noexcept</span>;
-<span class="dt">void</span> copy(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to, copy_options options);
-<span class="dt">void</span> copy(<span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to, copy_options options, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> copy(  <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to);
+<span class="dt">void</span> copy(  <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to,
+            error_code&amp; ec) <span class="kw">noexcept</span>;
+<span class="dt">void</span> copy(  <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to,
+            copy_options options);
+<span class="dt">void</span> copy(  <span class="at">const</span> path&amp; from, <span class="at">const</span> path&amp; to,
+            copy_options options,
+            error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルパスfromのファイルをファイルパスtoにコピーする。</p>
 <p>copy_optionsはコピーの挙動を変えるビットマスク型のenum型で、以下のenum値がサポートされている。</p>
 <ul>
@@ -7689,13 +7845,16 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 </tr>
 <tr class="even">
 <td align="left">create_hard_links</td>
-<td align="left">ファイルをコピーするのではなく、ハードリンクを作成する。</td>
+<td align="left">ファイルをコピーするのではなく、ハードリンクを作成する</td>
 </tr>
 </tbody>
 </table>
 <h4 id="copy_symlink">copy_symlink</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> copy_symlink(<span class="at">const</span> path&amp; existing_symlink, <span class="at">const</span> path&amp; new_symlink);
-<span class="dt">void</span> copy_symlink(<span class="at">const</span> path&amp; existing_symlink, <span class="at">const</span> path&amp; new_symlink, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> copy_symlink(  <span class="at">const</span> path&amp; existing_symlink,
+                    <span class="at">const</span> path&amp; new_symlink);
+<span class="dt">void</span> copy_symlink(  <span class="at">const</span> path&amp; existing_symlink,
+                    <span class="at">const</span> path&amp; new_symlink,
+                    error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>existing_symlinkをnew_symlinkにコピーする。</p>
 <h3 id="削除">削除</h3>
 <h4 id="remove">remove</h4>
@@ -7712,9 +7871,13 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 <p>戻り値として、削除したファイルの個数が返る。error_codeでエラー通知を受け取る関数オーバーロードの場合、エラーならばstatic_cast&lt;uintmax_t&gt;(-1)が返る。</p>
 <h3 id="変更">変更</h3>
 <h4 id="permissions">permissions</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> permissions(<span class="at">const</span> path&amp; p, perms prms, perm_options opts=perm_options::replace);
-<span class="dt">void</span> permissions(<span class="at">const</span> path&amp; p, perms prms, error_code&amp; ec) <span class="kw">noexcept</span>;
-<span class="dt">void</span> permissions(<span class="at">const</span> path&amp; p, perms prms, perm_options opts, error_code&amp; ec);</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> permissions(   <span class="at">const</span> path&amp; p, perms prms,
+                    perm_options opts=perm_options::replace);
+<span class="dt">void</span> permissions(   <span class="at">const</span> path&amp; p, perms prms,
+                    error_code&amp; ec) <span class="kw">noexcept</span>;
+<span class="dt">void</span> permissions(   <span class="at">const</span> path&amp; p, perms prms,
+                    perm_options opts,
+                    error_code&amp; ec);</code></pre></div>
 <p>ファイルパスpのパーミッションを変更する。</p>
 <p>optsはperm_options型のenum値、replace, add, removeのうちいずれかひとつと、別途nofollowを指定することができる。省略した場合はreplaceになる。</p>
 <p>カレントディレクトリーに存在するファイルfooを、すべてのユーザーに対して実行権限を付加するには、以下のように書く。</p>
@@ -7756,7 +7919,8 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
 <p>と書く。</p>
 <h4 id="rename">rename</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rename(<span class="at">const</span> path&amp; old_p, <span class="at">const</span> path&amp; new_p);
-<span class="dt">void</span> rename(<span class="at">const</span> path&amp; old_p, <span class="at">const</span> path&amp; new_p, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<span class="dt">void</span> rename(<span class="at">const</span> path&amp; old_p, <span class="at">const</span> path&amp; new_p,
+            error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルold_pをファイルnew_pにリネームする。</p>
 <p>old_pとnew_pが同じ存在するファイルを指す場合、何もしない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -7806,11 +7970,12 @@ path proximate(<span class="at">const</span> path&amp; p, <span class="at">const
     rename(<span class="st">&quot;old_p&quot;</span>, <span class="st">&quot;new_p&quot;</span>) ;
 }</code></pre></div>
 <p>old_pがシンボリックリンクの場合、フォロー先ではなくシンボリックリンクファイルがリネームされる。</p>
-<h4 id="resize">resize</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> resize_file(<span class="at">const</span> path&amp; p, <span class="dt">uintmax_t</span> new_size);
-<span class="dt">void</span> resize_file(<span class="at">const</span> path&amp; p, <span class="dt">uintmax_t</span> new_size, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<h4 id="resize_file">resize_file</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> resize_file(   <span class="at">const</span> path&amp; p, <span class="dt">uintmax_t</span> new_size);
+<span class="dt">void</span> resize_file(   <span class="at">const</span> path&amp; p, <span class="dt">uintmax_t</span> new_size,
+                    error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>ファイルパスpathの指すファイルのファイルサイズをnew_sizeにする。</p>
-<p>リサイズはPOSIXのtruncate()で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータはnullバイト''でパディングされる。ファイルの最終アクセス日時も更新される。</p>
+<p>リサイズはPOSIXのtruncate()で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータはnullバイト(<code>\0</code>)でパディングされる。ファイルの最終アクセス日時も更新される。</p>
 <h3 id="情報取得">情報取得</h3>
 <h4 id="ファイルタイプの判定">ファイルタイプの判定</h4>
 <p>ファイルタイプを表現するfile_type型のenumがあり、そのenum値は以下のようになっている。</p>
@@ -7953,10 +8118,11 @@ file_status symlink_status(<span class="at">const</span> path&amp; p, error_code
 <p>statusと同じだが、pがシンボリックリンクの場合、そのシンボリックリンクファイルのstatusを返す。</p>
 <h4 id="equivalent">equivalent</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> equivalent(<span class="at">const</span> path&amp; p1, <span class="at">const</span> path&amp; p2);
-<span class="dt">bool</span> equivalent(<span class="at">const</span> path&amp; p1, <span class="at">const</span> path&amp; p2, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<span class="dt">bool</span> equivalent(<span class="at">const</span> path&amp; p1, <span class="at">const</span> path&amp; p2,
+                error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>p1とp2が物理ファイルシステム上、同一のファイルである場合、trueを返す。そうでない場合falseを返す。</p>
 <h4 id="exists">exists</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">ool exists(file_status s) <span class="kw">noexcept</span>;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> exists(file_status s) <span class="kw">noexcept</span>;
 <span class="dt">bool</span> exists(<span class="at">const</span> path&amp; p);
 <span class="dt">bool</span> exists(<span class="at">const</span> path&amp; p, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>s, pが指すファイルが存在するのであればtrueを返す。そうでない場合falseを返す。</p>
@@ -7972,11 +8138,13 @@ file_status symlink_status(<span class="at">const</span> path&amp; p, error_code
 <p>pの指すファイルのハードリンク数を返す。</p>
 <p>エラー通知をerror_codeで受け取る関数オーバーロードでエラーの時、戻り値はstatic_cast&lt;uintmax_t&gt;(-1)となる。</p>
 <h4 id="last_write_time">last_write_time</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">file_time_type</span> last_write_time(<span class="at">const</span> path&amp; p);
-<span class="dt">file_time_type</span> last_write_time(<span class="at">const</span> path&amp; p, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">file_time_type</span> last_write_time( <span class="at">const</span> path&amp; p);
+<span class="dt">file_time_type</span> last_write_time( <span class="at">const</span> path&amp; p,
+                                error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>pの指すファイルの最終更新日時を返す。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> last_write_time(<span class="at">const</span> path&amp; p, <span class="dt">file_time_type</span> new_time);
-<span class="dt">void</span> last_write_time(<span class="at">const</span> path&amp; p, <span class="dt">file_time_type</span> new_time, error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> last_write_time(   <span class="at">const</span> path&amp; p, <span class="dt">file_time_type</span> new_time);
+<span class="dt">void</span> last_write_time(   <span class="at">const</span> path&amp; p, <span class="dt">file_time_type</span> new_time,
+                        error_code&amp; ec) <span class="kw">noexcept</span>;</code></pre></div>
 <p>pの指すファイルの最終更新日時をnew_timeにする。</p>
 <p>last_write_time(p, new_time)を呼び出した後に、last_write_time(p) == new_timeである保証はない。なぜならば、物理ファイルシステムの実装に起因する時刻の分解能や品質の問題があるからだ。</p>
 <p>file_time_typeは、std::chrono_time_pointの特殊化で以下のように定義されている。</p>
@@ -8014,7 +8182,8 @@ file_status symlink_status(<span class="at">const</span> path&amp; p, error_code
 
     <span class="co">// 最終更新日時を文字列で得る</span>
     <span class="kw">auto</span> time_point_value = last_write_time( <span class="st">&quot;foo&quot;</span> ) ;
-    <span class="dt">time_t</span> time_t_value = system_clock::<span class="dt">to_time_t</span>( time_point_value ) ;
+    <span class="dt">time_t</span> time_t_value =
+        system_clock::<span class="dt">to_time_t</span>( time_point_value ) ;
     <span class="bu">std::</span>cout &lt;&lt; ctime( &amp;time_t_value ) &lt;&lt; <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span> ;
 
    
