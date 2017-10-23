@@ -11,7 +11,8 @@ searcherの基本的な設計としては、クラスのオブジェクトを構
 クラスstd::default_searcherは以下のように宣言されている。
 
 ~~~c++
-template < class ForwardIterator1, class BinaryPredicate = equal_to<> >
+template <  class ForwardIterator1,
+            class BinaryPredicate = equal_to<> >
 class default_searcher {
 public:
     // コンストラクター
@@ -34,11 +35,13 @@ public:
 int main()
 {
     std::string pattern("fox") ;
-    std::default_searcher fox_searcher( std::begin(pattern), std::end(pattern) ) ;
+    std::default_searcher
+        fox_searcher( std::begin(pattern), std::end(pattern) ) ;
 
     std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
-    auto[first, last] = fox_searcher( std::begin(corpus), std::end(corpus) ) ;
+    auto[first, last] = fox_searcher( std::begin(corpus),
+                                      std::end(corpus) ) ;
     std::string fox( first, last ) ;
 }
 ~~~
@@ -64,21 +67,25 @@ C++17に入るBoyer_mooreアルゴリズムに基づく検索は、テンプレ�
 クラスboyer_moore_searcherは以下のように宣言されている。
 
 ~~~c++
-template < class RandomAccessIterator1,
-            class Hash = hash<typename iterator_traits<RandomAccessIterator1>::value_type>,
-            class BinaryPredicate = equal_to<> >
+template <
+    class RandomAccessIterator1,
+    class Hash = hash<
+        typename iterator_traits<RandomAccessIterator1>::value_type>,
+    class BinaryPredicate = equal_to<> >
 class boyer_moore_searcher {
 public:
     // コンストラクター
     boyer_moore_searcher(
-        RandomAccessIterator1 pat_first, RandomAccessIterator1 pat_last,
+        RandomAccessIterator1 pat_first,
+        RandomAccessIterator1 pat_last,
         Hash hf = Hash(),
         BinaryPredicate pred = BinaryPredicate() ) ;
 
     // operator ()
     template <class RandomAccessIterator2>
     pair<RandomAccessIterator2, RandomAccessIterator2>
-    operator()(RandomAccessIterator2 first, RandomAccessIterator2 last) const;
+    operator()( RandomAccessIterator2 first,
+                RandomAccessIterator2 last) const;
 } ;
 ~~~
 
@@ -91,7 +98,8 @@ boyer_moore_searcherは、文字列以外にも適用できる汎用的な設計
 int main()
 {
     std::string pattern("fox") ;
-    std::boyer_moore_searcher fox_searcher( std::begin(pattern), std::end(pattern) ) ;
+    std::boyer_moore_searcher
+        fox_searcher( std::begin(pattern), std::end(pattern) ) ;
 
     std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
@@ -112,21 +120,25 @@ Boyer-Moore-Horspoolアルゴリズムは内部テーブルに使うメモリー
 クラスboyer_moore_horspool_searcherの宣言は以下の通り。
 
 ~~~c++
-template <  class RandomAccessIterator1,
-            class Hash = hash<typename iterator_traits<RandomAccessIterator1>::value_type>,
-            class BinaryPredicate = equal_to<> >
+template <
+    class RandomAccessIterator1,
+    class Hash = hash<
+        typename iterator_traits<RandomAccessIterator1>::value_type>,
+    class BinaryPredicate = equal_to<> >
 class boyer_moore_horspool_searcher {
 public:
     // コンストラクター
     boyer_moore_horspool_searcher(
-        RandomAccessIterator1 pat_first, RandomAccessIterator1 pat_last,
+        RandomAccessIterator1 pat_first,
+        RandomAccessIterator1 pat_last,
         Hash hf = Hash(),
         BinaryPredicate pred = BinaryPredicate() );
 
     // operator () 
     template <class RandomAccessIterator2>
     pair<RandomAccessIterator2, RandomAccessIterator2>
-    operator()(RandomAccessIterator2 first, RandomAccessIterator2 last) const;
+    operator()( RandomAccessIterator2 first,
+                RandomAccessIterator2 last) const;
 } ;
 ~~~
 
@@ -139,11 +151,13 @@ public:
 int main()
 {
     std::string pattern("fox") ;
-    std::boyer_moore_horspool_searcher fox_searcher( std::begin(pattern), std::end(pattern) ) ;
+    std::boyer_moore_horspool_searcher
+        fox_searcher( std::begin(pattern), std::end(pattern) ) ;
 
     std::string corpus = "The quick brown fox jumps over the lazy dog" ;
 
-    auto[first, last] = fox_searcher( std::begin(corpus), std::end(corpus) ) ;
+    auto[first, last] = fox_searcher(   std::begin(corpus),
+                                        std::end(corpus) ) ;
     std::string fox( first, last ) ;
 }
 ~~~

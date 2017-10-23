@@ -30,13 +30,16 @@ class memory_resource {
 public:
     virtual ~ memory_resource();
     void* allocate(size_t bytes, size_t alignment = max_align);
-    void deallocate(void* p, size_t bytes, size_t alignment = max_align);
+    void deallocate(void* p, size_t bytes,
+                    size_t alignment = max_align);
     bool is_equal(const memory_resource& other) const noexcept;
 
 private:
     virtual void* do_allocate(size_t bytes, size_t alignment) = 0;
-    virtual void do_deallocate(void* p, size_t bytes, size_t alignment) = 0;
-    virtual bool do_is_equal(const memory_resource& other) const noexcept = 0;
+    virtual void do_deallocate( void* p, size_t bytes,
+                                size_t alignment) = 0;
+    virtual bool do_is_equal(const memory_resource& other)
+        const noexcept = 0;
 };
 
 }
@@ -101,7 +104,8 @@ public:
 
 private:
     virtual void* do_allocate(size_t bytes, size_t alignment) = 0;
-    virtual void do_deallocate(void* p, size_t bytes, size_t alignment) = 0;
+    virtual void do_deallocate( void* p, size_t bytes,
+                                size_t alignment) = 0;
     virtual bool do_is_equal(const memory_resource& other) const noexcept = 0;
 };
 ~~~
@@ -125,7 +129,8 @@ public :
 private :
     // ストレージの確保
     // 失敗した場合std::bad_allocをthrowする
-    virtual void * do_allocate( std::size_t bytes, std::size_t alignment ) override
+    virtual void * 
+    do_allocate( std::size_t bytes, std::size_t alignment ) override
     {
         void * ptr = std::malloc( bytes ) ;
         if ( ptr == nullptr )
@@ -135,14 +140,19 @@ private :
     }
 
     // ストレージの解放
-    virtual void do_deallocate( void * p, std::size_t bytes, std::size_t alignment ) override
+    virtual void 
+    do_deallocate(  void * p, std::size_t bytes, 
+                    std::size_t alignment ) override
     {
         std::free( p ) ;
     }
 
-    virtual bool do_is_equal( const memory_resource & other ) const noexcept override
+    virtual bool 
+    do_is_equal( const memory_resource & other )
+        const noexcept override
     {
-        return dynamic_cast< const malloc_resource * >( &other ) != nullptr ;
+        return dynamic_cast< const malloc_resource * >
+                    ( &other ) != nullptr ;
     }
 
 } ;
@@ -186,11 +196,13 @@ int main()
     }
     else
     { // モノトニックバッファーを使う
-        mono = std::make_unique< std::pmr::monotonic_buffer_resource >( std::pmr::get_default_resource() ) ;
+        mono = std::make_unique< std::pmr::monotonic_buffer_resource >
+                ( std::pmr::get_default_resource() ) ;
         mem = mono.get() ;
     }
 
-    std::vector< int, std::pmr::polymorphic_allocator<int> > v( std::pmr::polymorphic_allocator<int>( mem ) ) ;
+    std::vector< int, std::pmr::polymorphic_allocator<int> >
+        v( std::pmr::polymorphic_allocator<int>( mem ) ) ;
 }
 ~~~
 
@@ -347,20 +359,24 @@ public :
         // 大きな連続したストレージを確保
     }
 
-    virtual void * do_allocate( std::size_t bytes, std::size_t alignment ) override
+    virtual void * 
+    do_allocate( std::size_t bytes, std::size_t alignment ) override
     {
         std::scoped_lock lock( m ) ; 
         // リンクリストをたどり、十分な大きさの未使用領域を探し、リンクリスト構造体を構築して返す
         // アライメント要求に注意
     }
 
-    virtual void * do_allocate( std::size_t bytes, std::size_t alignment ) override
+    virtual void * 
+    do_allocate( std::size_t bytes, std::size_t alignment ) override
     {
         std::scoped_lock lock( m ) ;
         // リンクリストから該当する部分を削除
     }
 
-    virtual bool do_is_equal( const memory_resource & other ) const noexcept override
+    virtual bool 
+    do_is_equal( const memory_resource & other )
+        const noexcept override
     { 
     // *thisとotherで相互にストレージを解放できるかどうか返す
     }
@@ -476,7 +492,8 @@ class synchronized_pool_resource : public memory_resource
 {
     std::mutex m ;
 
-    virtual void * do_allocate( size_t size, size_t alignment ) override
+    virtual void * 
+    do_allocate( size_t size, size_t alignment ) override
     {
         // 同期する
         std::scoped_lock l(m) ;
@@ -486,7 +503,8 @@ class synchronized_pool_resource : public memory_resource
 
 class unsynchronized_pool_resource : public memory_resource
 {
-    virtual void * do_allocate( size_t size, size_t alignment ) override
+    virtual void * 
+    do_allocate( size_t size, size_t alignment ) override
     {
         // 同期しない
         return do_allocate_impl( size, alignment ) ;
@@ -595,14 +613,16 @@ class monotonic_buffer_resource : public memory_resource
     // 現在の未使用ストレージの先頭へのポインター
     std::byte * current ;
 
-    virtual void * do_allocate( size_t bytes, size_t alignment ) override
+    virtual void * 
+    do_allocate( size_t bytes, size_t alignment ) override
     {
         void * result = static_cast<void *>(current) ;
         current += bytes ; // 必要であればアライメント調整
         return result ;
     }
 
-    virtual void do_deallocate( void * ptr, size_t bytes, size_t alignment ) override 
+    virtual void 
+    do_deallocate( void * ptr, size_t bytes, size_t alignment ) override 
     {
         // 何もしない
     }
@@ -645,7 +665,8 @@ int main()
 int main()
 {
     std::byte initial_buffer[10] ;
-    std::pmr::monotonic_buffer_resource mem( initial_buffer, 10, std::pmr::get_default_resource() ) ;
+    std::pmr::monotonic_buffer_resource 
+        mem( initial_buffer, 10, std::pmr::get_default_resource() ) ;
 
     // 初期バッファーから確保
     mem.allocate( 1 ) ;
@@ -668,28 +689,34 @@ int main()
 ~~~c++
 
 explicit monotonic_buffer_resource(memory_resource *upstream);
-monotonic_buffer_resource(size_t initial_size, memory_resource *upstream);
-monotonic_buffer_resource(void *buffer, size_t buffer_size, memory_resource *upstream);
+monotonic_buffer_resource(  size_t initial_size,
+                            memory_resource *upstream);
+monotonic_buffer_resource(  void *buffer, size_t buffer_size,
+                            memory_resource *upstream);
 
 
 monotonic_buffer_resource()
     : monotonic_buffer_resource(get_default_resource()) {}
 explicit monotonic_buffer_resource(size_t initial_size)
-    : monotonic_buffer_resource(initial_size, get_default_resource()) {}
+    : monotonic_buffer_resource(initial_size,
+                                get_default_resource()) {}
 monotonic_buffer_resource(void *buffer, size_t buffer_size)
-    : monotonic_buffer_resource(buffer, buffer_size, get_default_resource()) {}
+    : monotonic_buffer_resource(buffer, buffer_size,
+                                get_default_resource()) {}
 ~~~
 
 初期バッファーを取らないコンストラクターは以下の通り。
 
 ~~~c++
 explicit monotonic_buffer_resource(memory_resource *upstream);
-monotonic_buffer_resource(size_t initial_size, memory_resource *upstream);
+monotonic_buffer_resource(  size_t initial_size,
+                            memory_resource *upstream);
 
 monotonic_buffer_resource()
     : monotonic_buffer_resource(get_default_resource()) {}
 explicit monotonic_buffer_resource(size_t initial_size)
-    : monotonic_buffer_resource(initial_size, get_default_resource()) {}
+    : monotonic_buffer_resource(initial_size,
+                                get_default_resource()) {}
 ~~~
 
 initial_sizeは、上流メモリーリソースから最初に確保するバッファーのサイズ(初期サイズ)のヒントとなる。実装はこのサイズか、あるいは実装依存のサイズをバッファーとして確保する。
@@ -701,10 +728,12 @@ size_tひとつだけを取るコンストラクターは、初期サイズだ�
 初期バッファーをとるコンストラクターは以下の通り。
 
 ~~~c++
-monotonic_buffer_resource(void *buffer, size_t buffer_size, memory_resource *upstream);
+monotonic_buffer_resource(  void *buffer, size_t buffer_size,
+                            memory_resource *upstream);
 
 monotonic_buffer_resource(void *buffer, size_t buffer_size)
-    : monotonic_buffer_resource(buffer, buffer_size, get_default_resource()) {}
+    : monotonic_buffer_resource(buffer, buffer_size,
+                                get_default_resource()) {}
 ~~~
 
 初期バッファーは先頭アドレスをvoid *型で渡し、そのサイズをsize_t型で渡す。

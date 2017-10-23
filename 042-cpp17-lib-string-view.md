@@ -408,10 +408,17 @@ u16string operator""s(const char16_t* str, size_t len);
 u32string operator""s(const char32_t* str, size_t len);
 wstring operator""s(const wchar_t* str, size_t len);
 
-constexpr string_view operator""sv(const char* str, size_t len) noexcept;
-constexpr u16string_view operator""sv(const char16_t* str, size_t len) noexcept;
-constexpr u32string_view operator""sv(const char32_t* str, size_t len) noexcept;
-constexpr wstring_view operator""sv(const wchar_t* str, size_t len) noexcept;
+constexpr string_view
+operator""sv(const char* str, size_t len) noexcept;
+
+constexpr u16string_view
+operator""sv(const char16_t* str, size_t len) noexcept;
+
+constexpr u32string_view
+operator""sv(const char32_t* str, size_t len) noexcept;
+
+constexpr wstring_view
+operator""sv(const wchar_t* str, size_t len) noexcept;
 ~~~
 
 以下のように使う。

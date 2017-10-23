@@ -24,7 +24,9 @@ struct Data
 struct Data
 {
     int counter ;
-    std::byte padding[std::hardware_destructive_interference_size - sizeof(int)] ;
+    std::byte padding[
+        std::hardware_destructive_interference_size - sizeof(int)
+    ] ;
     int status ;
 } ;
 ~~~
@@ -37,8 +39,10 @@ struct Data
 
 ~~~c++
 namespace std {
-    inline constexpr size_t hardware_destructive_interference_size = 実装依存 ;
-    inline constexpr size_t hardware_constructive_interference_size = 実装依存 ;
+    inline constexpr size_t
+        hardware_destructive_interference_size = 実装依存 ;
+    inline constexpr size_t
+        hardware_constructive_interference_size = 実装依存 ;
 }
 ~~~
 

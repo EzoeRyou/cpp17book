@@ -33,10 +33,12 @@ int main()
 
 ~~~c++
 template <class ForwardIterator>
-void uninitialized_default_construct(ForwardIterator first, ForwardIterator last);
+void uninitialized_default_construct(
+    ForwardIterator first, ForwardIterator last);
 
 template <class ForwardIterator, class Size>
-ForwardIterator uninitialized_default_construct_n(ForwardIterator first, Size n);
+ForwardIterator uninitialized_default_construct_n(
+    ForwardIterator first, Size n);
 ~~~
 
 [first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーをtypename iterator_traits\<ForwardIterator\>::value_typeでデフォルト初期化する。2つめのアルゴリズムはfirstからn個をデフォルト初期化する。
@@ -59,10 +61,12 @@ int main()
 
 ~~~c++
 template <class ForwardIterator>
-void uninitialized_value_construct(ForwardIterator first, ForwardIterator last);
+void uninitialized_value_construct(
+    ForwardIterator first, ForwardIterator last);
 
 template <class ForwardIterator, class Size>
-ForwardIterator uninitialized_value_construct_n(ForwardIterator first, Size n);
+ForwardIterator uninitialized_value_construct_n(
+    ForwardIterator first, Size n);
 ~~~
 
 使い方はuninitialized_default_constructと同じ。ただし、こちらはデフォルト初期化ではなく値初期化する。
@@ -72,11 +76,13 @@ ForwardIterator uninitialized_value_construct_n(ForwardIterator first, Size n);
 ~~~c++
 template <class InputIterator, class ForwardIterator>
 ForwardIterator
-uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator result);
+uninitialized_copy( InputIterator first, InputIterator last,
+                    ForwardIterator result);
 
 template <class InputIterator, class Size, class ForwardIterator>
 ForwardIterator
-uninitialized_copy_n(InputIterator first, Size n, ForwardIterator result);
+uninitialized_copy_n(   InputIterator first, Size n,
+                        ForwardIterator result);
 ~~~
 
 [first, last)の範囲、もしくはfirstからn個の範囲の値を、resultの指す未初期化のメモリーにコピー構築する。
@@ -103,11 +109,13 @@ int main()
 ~~~c++
 template <class InputIterator, class ForwardIterator>
 ForwardIterator
-uninitialized_move(InputIterator first, InputIterator last, ForwardIterator result);
+uninitialized_move( InputIterator first, InputIterator last,
+                    ForwardIterator result);
 
 template <class InputIterator, class Size, class ForwardIterator>
 pair<InputIterator, ForwardIterator>
-uninitialized_move_n(InputIterator first, Size n, ForwardIterator result);
+uninitialized_move_n(   InputIterator first, Size n,
+                        ForwardIterator result);
 ~~~
 
 使い方はuninitialized_copyと同じ。ただしこちらはコピーではなくムーブする。
@@ -116,10 +124,14 @@ uninitialized_move_n(InputIterator first, Size n, ForwardIterator result);
 
 ~~~c++
 template <class ForwardIterator, class T>
-void uninitialized_fill(ForwardIterator first, ForwardIterator last, const T& x);
+void uninitialized_fill(
+    ForwardIterator first, ForwardIterator last,
+    const T& x);
 
 template <class ForwardIterator, class Size, class T>
-ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& x);
+ForwardIterator uninitialized_fill_n(
+    ForwardIterator first, Size n,
+    const T& x);
 ~~~
 
 [first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーを、コンストラクターに実引数xを与えて構築する。

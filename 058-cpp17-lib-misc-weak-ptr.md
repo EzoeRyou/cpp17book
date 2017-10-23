@@ -21,7 +21,9 @@ template < typename Shared_ptr >
 void f( Shared_ptr sptr )
 {
     // C++14
-    auto wptr1 = std::weak_ptr< typename Shared_ptr::element_type >( sptr ) ;
+    auto wptr1 = std::weak_ptr<
+                    typename Shared_ptr::element_type
+                >( sptr ) ;
 
     // C++17
     auto wptr2 = typename Shared_ptr::weak_type( sptr ) ;

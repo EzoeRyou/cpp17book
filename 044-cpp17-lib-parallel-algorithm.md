@@ -40,12 +40,20 @@ bool double_is_all_of_less_than_100( Container const & input )
     auto first = std::begin(input) ;
     auto last = first + (input.size()/2) ;
 
-    auto r1 = std::async( [=]{ return std::all_of( first, last, [](auto x) { return x < 100 ; } ) ; } ) ;
+    auto r1 = std::async( [=]
+    {
+        return std::all_of( first, last,
+                            [](auto x) { return x < 100 ; } ) ; 
+    } ) ;
 
     first = last ;
     last = std::end(input) ;
 
-    auto r2 = std::async( [=]{ return std::all_of( first, last, [](auto x) { return x < 100 ; } ) ; } ) ;
+    auto r2 = std::async( [=]
+    {
+        return std::all_of( first, last,
+                            [](auto x) { return x < 100 ; } ) ;
+    } ) ;
 
     return r1.get() && r2.get() ;
 }
@@ -72,7 +80,11 @@ bool parallel_is_all_of_less_than_100( Container const & input )
 
     for ( auto & f : futures )
     {
-        f = std::async( [=]{ return std::all_of( first, last, [](auto x){ return x < 100 ; } ) ; } ) ;
+        f = std::async( [=]
+        {
+            return std::all_of( first, last,
+                                [](auto x){ return x < 100 ; } ) ;
+        } ) ;
 
         first = last ;
         last = first + step ;
@@ -105,8 +117,10 @@ bool all_of(InputIterator first, InputIterator last, Predicate pred);
 並列アルゴリズム版のall_ofは以下のような宣言になる。
 
 ~~~c++
-template <class ExecutionPolicy, class ForwardIterator, class Predicate>
-bool all_of(ExecutionPolicy&& exec, ForwardIterator first, ForwardIterator last, Predicate pred);
+template <  class ExecutionPolicy, class ForwardIterator,
+            class Predicate>
+bool all_of(ExecutionPolicy&& exec, ForwardIterator first,
+            ForwardIterator last, Predicate pred);
 ~~~
 
 並列アルゴリズムには、テンプレート仮引数としてExecutionPolicyが追加されていて第一引数に取る。これを実行時ポリシーと呼ぶ。
@@ -219,10 +233,17 @@ int main()
 ~~~cpp
 // 実装イメージ
 
-template < typename ExecutionPolicy, typename ForwardIterator, typename Predicate >
-bool all_of( ExecutionPolicy && exec, ForwardIterator first, ForwardIterator last, Predicate pred )
+template <  typename ExecutionPolicy,
+            typename ForwardIterator,
+            typename Predicate >
+bool all_of(    ExecutionPolicy && exec,
+                ForwardIterator first, ForwardIterator last,
+                Predicate pred )
 {
-    if constexpr ( std::is_same_v< ExecutionPolicy, std::execution::parallel_policy > )
+    if constexpr (
+        std::is_same_v< ExecutionPolicy,
+                        std::execution::parallel_policy >
+    )
     {
         std::vector c( first, last ) ;
         do_all_of_par( std::begin(c), std::end(c), pred ) ;
@@ -269,7 +290,9 @@ int main()
 
     std::vector<int> c = { 1,2,3,4,5 } ;
 
-    std::for_each( std::execution::par_unseq, std::begin(c), std::end(c),
+    std::for_each(
+        std::execution::par_unseq,
+        std::begin(c), std::end(c),
         [&]( auto x ) {
             std::scoped_lock l(m) ;
             sum += x ; 
@@ -295,7 +318,8 @@ C++では、ストレージの確保解放以外の同期する標準ライブ�
 ~~~c++
 namespace std {
 template<class T> struct is_execution_policy;
-template<class T> inline constexpr bool is_execution_policy_v = is_execution_policy<T>::value;
+template<class T> inline constexpr bool
+    is_execution_policy_v = is_execution_policy<T>::value;
 }
 
 namespace std::execution {
@@ -319,7 +343,8 @@ std::is_execution_policy\<T\>はTが実行ポリシー型であるかどうか�
 // false
 constexpr bool b1 = std::is_execution_policy_v<int> ;
 // true
-constexpr bool b2 = std::is_execution_policy_v<std::execution::sequenced_policy> ;
+constexpr bool b2 = 
+    std::is_execution_policy_v<std::execution::sequenced_policy> ;
 ~~~
 
 #### シーケンス実行ポリシー

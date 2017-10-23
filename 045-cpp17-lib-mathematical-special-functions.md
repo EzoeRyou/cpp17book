@@ -134,9 +134,10 @@ $l$をl、$m$をm、$x$をxとする。
 ## 球面ルジャンドル陪関数(Spherical associated Legendre functions)
 
 ~~~c++
-double       sph_legendre(unsigned l, unsigned m, double theta);
-float        sph_legendref(unsigned l, unsigned m, float theta);
-long double  sph_legendrel(unsigned l, unsigned m, long double theta);
+double       sph_legendre(  unsigned l, unsigned m, double theta);
+float        sph_legendref( unsigned l, unsigned m, float theta);
+long double  sph_legendrel( unsigned l, unsigned m,
+                            long double theta);
 ~~~
 
 効果：実引数l, m, theta(thetaの単位はラジアン)に対する球面ルジャンドル陪関数(Spherical associated Legendre functions)を計算する。
@@ -171,7 +172,8 @@ $l$をl、$m$をm、$\theta$をthetaとする。
 #include <cmath>
 #include <complex>
 
-std::complex<double> spherical_harmonics(unsigned l, unsigned m, double theta, double phi)
+std::complex<double>
+spherical_harmonics(unsigned l, unsigned m, double theta, double phi)
 {
     return std::sph_legendre(l, m, theta) * std::polar(1.0, m * phi) ;
 }
@@ -338,9 +340,10 @@ $k$をk、$\phi$をphiとする。
 ## 第3種不完全楕円積分(Incomplete elliptic integral of the third kind) {#sf.cmath.ellint_3}
 
 ~~~c++
-double       ellint_3(double k, double nu, double phi);
-float        ellint_3f(float k, float nu, float phi);
-long double  ellint_3l(long double k, long double nu, long double phi);
+double       ellint_3(  double k, double nu, double phi);
+float        ellint_3f( float k, float nu, float phi);
+long double  ellint_3l( long double k, long double nu,
+                        long double phi);
 ~~~
 
 効果：実引数k, nu, phi(phiの単位はラジアン)に対する第3種不完全楕円積分(Incomplete elliptic integral of the third kind)を計算する。

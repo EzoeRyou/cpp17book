@@ -295,7 +295,11 @@ int main()
     std::vector<int> v ;
     std::list<int> l ;
     std::deque<int> d ;
-    std::variant< std::vector<int>, std::list<int>, std::deque<int> > val ;
+    std::variant< 
+        std::vector<int>, 
+        std::list<int>,
+        std::deque<int>
+    > val ;
 
     val = v ;
     val = l ;
@@ -491,7 +495,8 @@ variant_alternative_tというテンプレートエイリアスが以下のよ�
 
 ~~~c++
 template <size_t I, class T>
-    using variant_alternative_t = typename variant_alternative<I, T>::type;
+    using variant_alternative_t 
+        = typename variant_alternative<I, T>::type ;
 ~~~
 
 これをつかえば、以下のようにも書ける。
@@ -728,14 +733,17 @@ int main()
 
 ~~~c++
 template <class... Types>
-constexpr bool operator == (const variant<Types...>& v, const variant<Types...>& w)
+constexpr bool 
+operator == (const variant<Types...>& v, const variant<Types...>& w)
 {
     if ( v.index() != w.index() )
         return false ;
     else if ( v.valueless_by_exception() )
         return true ;
     else
-        return std::visit( []( auto && a, auto && b ){ return a == b ; }, v, w ) ;
+        return std::visit( 
+            []( auto && a, auto && b ){ return a == b ; },
+            v, w ) ;
 }
 ~~~
 
@@ -784,7 +792,8 @@ operator \<は以下のような実装になる。
 
 ~~~c++
 template <class... Types>
-constexpr bool operator<(const variant<Types...>& v, const variant<Types...>& w)
+constexpr bool 
+operator<(const variant<Types...>& v, const variant<Types...>& w)
 {
     if ( w.valueless_by_exception() )
         return false ;
@@ -795,7 +804,9 @@ constexpr bool operator<(const variant<Types...>& v, const variant<Types...>& w)
     else if ( v.index() > w.index() )
         return false ;
     else
-        return std::visit( []( auto && a, auto && b ){ return a < b ; }, v, w ) ;
+        return std::visit( 
+            []( auto && a, auto && b ){ return a < b ; },
+            v, w ) ;
 }
 ~~~
 
@@ -813,7 +824,8 @@ int main()
     val v(42) ;
     val w(3.14) ;
 
-    auto visitor = []( auto a, auto b ) { std::cout << a << b << '\n' ; } ;
+    auto visitor =  []( auto a, auto b ) 
+                    { std::cout << a << b << '\n' ; } ;
 
     // visitor( 42, 3.14 )が呼ばれる
     std::visit( visitor, v, w ) ;

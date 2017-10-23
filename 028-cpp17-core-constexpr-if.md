@@ -189,7 +189,9 @@ distance( Iterator first, Iterator last )
 template < typename Iterator >
 constexpr bool is_random_access_iterator =
     std::is_same_v<
-        typename std::iterator_traits< std::decay_t<Iterator> >::iterator_category,
+        typename std::iterator_traits< 
+            std::decay_t<Iterator> 
+        >::iterator_category,
         std::random_access_iterator_tag > ;
 ~~~
 
@@ -200,7 +202,9 @@ constexpr bool is_random_access_iterator =
 template < typename Iterator >
 constexpr bool is_random_access_iterator =
     std::is_same_v<
-        typename std::iterator_traits< std::decay_t<Iterator> >::iterator_category,
+        typename std::iterator_traits< 
+            std::decay_t<Iterator>
+        >::iterator_category,
         std::random_access_iterator_tag > ;
 
 // distance

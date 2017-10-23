@@ -37,10 +37,16 @@ int main()
     using namespace std ;
 
     // is_void<void>を基本クラスに持つ
-    using t1 = conjunction< is_same<int, int>, is_integral<int>, is_void<void> > ;
+    using t1 =
+        conjunction<
+            is_same<int, int>, is_integral<int>,
+            is_void<void> > ;
 
     // is_integral<double>を基本クラスに持つ
-    using t2 = conjunction< is_same<int, int>, is_integral<double>, is_void<void> > ;
+    using t2 =
+        conjunction<
+            is_same<int, int>, is_integral<double>,
+            is_void<void> > ;
 
 }
 ~~~
@@ -61,11 +67,16 @@ int main()
     using namespace std ;
 
     // is_same<int,int>を基本クラスに持つ
-    using t1 = disjunction< is_same<int, int>, is_integral<int>, is_void<void> > ;
+    using t1 =
+        disjunction<
+            is_same<int, int>, is_integral<int>,
+            is_void<void> > ;
 
     // is_void<int>を基本クラスに持つ
-    using t2 = disjunction< is_same<int, double>, is_integral<double>, is_void<int> > ;
-
+    using t2 =
+        disjunction<
+            is_same<int, double>, is_integral<double>,
+            is_void<int> > ;
 }
 ~~~
 
@@ -124,19 +135,25 @@ int f( int, double ) ;
 int main()
 {
     // true
-    constexpr bool b1 = std::is_invocable< decltype(&f), int, double >{} ;
+    constexpr bool b1 =
+        std::is_invocable< decltype(&f), int, double >{} ;
     // true
-    constexpr bool b2 = std::is_invocable< decltype(&f), int, int >{} ;
+    constexpr bool b2 =
+        std::is_invocable< decltype(&f), int, int >{} ;
 
     // false
-    constexpr bool b3 = std::is_invocable< decltype(&f), int >{} ;
+    constexpr bool b3 =
+        std::is_invocable< decltype(&f), int >{} ;
     // false
-    constexpr bool b4 = std::is_invocable< decltype(&f), int, std::string >{} ;
+    constexpr bool b4 =
+        std::is_invocable< decltype(&f), int, std::string >{} ;
     
     // true
-    constexpr bool b5 = std::is_invocable_r< int, decltype(&f), int, double >{} ;
+    constexpr bool b5 = 
+        std::is_invocable_r< int, decltype(&f), int, double >{} ;
     // false
-    constexpr bool b6 = std::is_invocable_r< double, decltype(&f), int, double >{} ;
+    constexpr bool b6 =
+        std::is_invocable_r< double, decltype(&f), int, double >{} ;
 }
 ~~~
 

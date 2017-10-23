@@ -2,9 +2,11 @@
 
 ~~~c++
 template<class T>
-constexpr const T& clamp(const T& v, const T& lo, const T& hi);
+constexpr const T&
+clamp(const T& v, const T& lo, const T& hi);
 template<class T, class Compare>
-constexpr const T& clamp(const T& v, const T& lo, const T& hi, Compare comp);
+constexpr const T&
+clamp(const T& v, const T& lo, const T& hi, Compare comp);
 ~~~
 
 ヘッダーファイル\<algorithm\>に追加されたclamp(v, lo, hi)は値vがloより小さい場合はloを、hiより高い場合はhiを、それ以外の場合はvを返す。

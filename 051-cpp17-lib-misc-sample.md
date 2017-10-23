@@ -47,7 +47,8 @@ int main()
     sample( std::begin(pop), std::end(pop), std::begin(out), 10, g ) ;
 
     // 標本を出力
-    std::copy( std::begin(out), std::end(out), std::ostream_iterator<int>(std::cout, ", ") ) ;
+    std::copy(  std::begin(out), std::end(out),
+                std::ostream_iterator<int>(std::cout, ", ") ) ;
 }
 ~~~
 
@@ -273,9 +274,10 @@ int main()
 
     // PopulationIteratorは入力イテレーターしか満たさない
     // SampleIteratorにはランダムアクセスイテレーターが必要
-    std::sample(    std::istream_iterator<int>(std::cin), std::istream_iterator<int>{},
-                    std::begin(sample), 100,
-                    g ) ;
+    std::sample(
+        std::istream_iterator<int>(std::cin),
+        std::istream_iterator<int>{},
+        std::begin(sample), 100, g ) ;
 
 }
 ~~~
@@ -292,7 +294,8 @@ int main()
     std::list<int> sample(100) ;
     std::knuth_b g ;
 
-    std::sample( std::begin(input), std::end(input), std::begin(sample), 100, g ) ;
+    std::sample(    std::begin(input), std::end(input),
+                    std::begin(sample), 100, g ) ;
 }
 ~~~
 

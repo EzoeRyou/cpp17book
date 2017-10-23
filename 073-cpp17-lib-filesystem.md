@@ -479,7 +479,8 @@ int main()
         if ( file_status.type() == file_type::regular )
             ++regular_files ;
 
-        constexpr auto exec_bits = perms::owner_exec | perms::group_exec | perms::others_exec ;
+        constexpr auto exec_bits = 
+            perms::owner_exec | perms::group_exec | perms::others_exec ;
 
         auto permissions = file_status.permissions() ;
         if ( (  permissions != perms::unknown) &&
@@ -487,8 +488,12 @@ int main()
             ++execs ;
     } ) ;
 
-    std::cout << "Current directory has " << regular_files << " regular files.\n" ;
-    std::cout << execs << " files are executable.\n" ;
+    std::cout
+        << "Current directory has "
+        << regular_files
+        << " regular files.\n" ;
+        << execs
+        << " files are executable.\n" ;
 }
 ~~~
 
@@ -594,7 +599,8 @@ int main()
 {
     using namespace std::filesystem ;
     directory_iterator iter("."), end ;
-    std::copy( iter, end, std::ostream_iterator<path>(std::cout, "\n") ) ;
+    std::copy( iter, end,
+        std::ostream_iterator<path>(std::cout, "\n") ) ;
 }
 ~~~
 
@@ -667,7 +673,8 @@ int main()
     using namespace std::filesystem ; 
     recursive_directory_iterator iter("."), end ;
 
-    std::copy( iter, end, std::ostream_iterator<path>(std::cout, "\n") ) ;
+    std::copy(  iter, end,
+                std::ostream_iterator<path>(std::cout, "\n") ) ;
 }
 ~~~
 
@@ -689,9 +696,11 @@ skip_permission_denied          パーミッション違反のディレクトリ
 int main()
 {
     using namespace std::filesystem ; 
-    recursive_directory_iterator iter("/", directory_options::skip_permission_denied), end ;
+    recursive_directory_iterator
+        iter("/", directory_options::skip_permission_denied), end ;
 
-    std::copy( iter, end, std::ostream_iterator<path>(std::cout, "\n") ) ;
+    std::copy(  iter, end,
+                std::ostream_iterator<path>(std::cout, "\n") ) ;
 }
 ~~~
 
@@ -705,7 +714,8 @@ int main()
     // 自分自身を含むディレクトリーに対するシンボリックリンク
     create_symlink(".", "foo") ;
 
-    recursive_directory_iterator iter(".", directory_options::follow_directory_symlink), end ;
+    recursive_directory_iterator
+        iter(".", directory_options::follow_directory_symlink), end ;
 
     // エラー、もしくは終了しない
     std::copy( iter, end, std::ostream_iterator<path>(std::cout) ) ;
@@ -965,8 +975,12 @@ bool create_directory(const path& p, error_code& ec) noexcept;
 pの指すディレクトリーをひとつ作成する。新しいディレクトリーが作成できた場合はtrueを、作成できなかった場合はfalseを返す。pが既存のディレクトリーを指していて新しいディレクトリーが作成できなかった場合はエラーにはならない。単にfalseが返る。
 
 ~~~c++
-bool create_directory(const path& p, const path& existing_p);
-bool create_directory(const path& p, const path& existing_p, error_code& ec) noexcept;
+bool create_directory(
+    const path& p, const path& existing_p);
+
+bool create_directory(
+    const path& p, const path& existing_p,
+    error_code& ec) noexcept;
 ~~~
 
 新しく作成するディレクトリーpのアトリビュートを既存のディレクトリーexisting_pと同じものにする。
@@ -995,8 +1009,11 @@ int main()
 #### create_directory_symlink
 
 ~~~c++
-void create_directory_symlink(const path& to, const path& new_symlink);
-void create_directory_symlink(const path& to, const path& new_symlink, error_code& ec) noexcept;
+void create_directory_symlink(
+    const path& to, const path& new_symlink);
+void create_directory_symlink(
+    const path& to, const path& new_symlink,
+    error_code& ec) noexcept;
 ~~~
 
 ディレクトリーtoに解決されるシンボリックリンクnew_symlinkを作成する。
@@ -1008,8 +1025,11 @@ void create_directory_symlink(const path& to, const path& new_symlink, error_cod
 #### create_symlink
 
 ~~~c++
-void create_symlink(const path& to, const path& new_symlink);
-void create_symlink(const path& to, const path& new_symlink, error_code& ec) noexcept;
+void create_symlink(
+    const path& to, const path& new_symlink);
+void create_symlink(
+    const path& to, const path& new_symlink,
+    error_code& ec) noexcept;
 ~~~
 
 ファイルパスtoに解決されるシンボリックリンクnew_symlinkを作成する。
@@ -1017,8 +1037,11 @@ void create_symlink(const path& to, const path& new_symlink, error_code& ec) noe
 #### create_hard_link
 
 ~~~c++
-void create_hard_link(const path& to, const path& new_hard_link);
-void create_hard_link(const path& to, const path& new_hard_link, error_code& ec) noexcept;
+void create_hard_link(
+    const path& to, const path& new_hard_link);
+void create_hard_link(
+    const path& to, const path& new_hard_link,
+    error_code& ec) noexcept;
 ~~~
 
 ファイルパスtoに解決されるハードリンクnew_hard_linkを作成する。
@@ -1028,10 +1051,14 @@ void create_hard_link(const path& to, const path& new_hard_link, error_code& ec)
 #### copy_file
 
 ~~~c++
-bool copy_file(const path& from, const path& to);
-bool copy_file(const path& from, const path& to, error_code& ec) noexcept;
-bool copy_file(const path& from, const path& to, copy_options options);
-bool copy_file(const path& from, const path& to, copy_options options, error_code& ec) noexcept;
+bool copy_file( const path& from, const path& to);
+bool copy_file( const path& from, const path& to,
+                error_code& ec) noexcept;
+bool copy_file( const path& from, const path& to,
+                copy_options options);
+bool copy_file( const path& from, const path& to,
+                copy_options options,
+                error_code& ec) noexcept;
 ~~~
 
 ファイルパスfromのファイルをファイルパスtoにコピーする。
@@ -1049,10 +1076,14 @@ update_existing     既存のファイルが上書きしようとするファイ
 #### copy
 
 ~~~c++
-void copy(const path& from, const path& to);
-void copy(const path& from, const path& to, error_code& ec) noexcept;
-void copy(const path& from, const path& to, copy_options options);
-void copy(const path& from, const path& to, copy_options options, error_code& ec) noexcept;
+void copy(  const path& from, const path& to);
+void copy(  const path& from, const path& to,
+            error_code& ec) noexcept;
+void copy(  const path& from, const path& to,
+            copy_options options);
+void copy(  const path& from, const path& to,
+            copy_options options,
+            error_code& ec) noexcept;
 ~~~
 
 ファイルパスfromのファイルをファイルパスtoにコピーする。
@@ -1088,8 +1119,11 @@ create_hard_links   ファイルをコピーするのではなく、ハードリ
 #### copy_symlink
 
 ~~~c++
-void copy_symlink(const path& existing_symlink, const path& new_symlink);
-void copy_symlink(const path& existing_symlink, const path& new_symlink, error_code& ec) noexcept;
+void copy_symlink(  const path& existing_symlink,
+                    const path& new_symlink);
+void copy_symlink(  const path& existing_symlink,
+                    const path& new_symlink,
+                    error_code& ec) noexcept;
 ~~~
 
 existing_symlinkをnew_symlinkにコピーする。
@@ -1130,9 +1164,13 @@ pがディレクトリーではないファイルを指す場合、pが削除さ
 #### permissions
 
 ~~~c++
-void permissions(const path& p, perms prms, perm_options opts=perm_options::replace);
-void permissions(const path& p, perms prms, error_code& ec) noexcept;
-void permissions(const path& p, perms prms, perm_options opts, error_code& ec);
+void permissions(   const path& p, perms prms,
+                    perm_options opts=perm_options::replace);
+void permissions(   const path& p, perms prms,
+                    error_code& ec) noexcept;
+void permissions(   const path& p, perms prms,
+                    perm_options opts,
+                    error_code& ec);
 ~~~
 
 ファイルパスpのパーミッションを変更する。
@@ -1172,7 +1210,8 @@ perm_options opts = perm_options::replace | perm_options::nofollow ;
 
 ~~~c++
 void rename(const path& old_p, const path& new_p);
-void rename(const path& old_p, const path& new_p, error_code& ec) noexcept;
+void rename(const path& old_p, const path& new_p,
+            error_code& ec) noexcept;
 ~~~
 
 ファイルold_pをファイルnew_pにリネームする。
@@ -1244,8 +1283,9 @@ old_pがシンボリックリンクの場合、フォロー先ではなくシン
 #### resize_file
 
 ~~~c++
-void resize_file(const path& p, uintmax_t new_size);
-void resize_file(const path& p, uintmax_t new_size, error_code& ec) noexcept;
+void resize_file(   const path& p, uintmax_t new_size);
+void resize_file(   const path& p, uintmax_t new_size,
+                    error_code& ec) noexcept;
 ~~~
 
 ファイルパスpathの指すファイルのファイルサイズをnew_sizeにする。
@@ -1364,7 +1404,8 @@ statusと同じだが、pがシンボリックリンクの場合、そのシン�
 
 ~~~c++
 bool equivalent(const path& p1, const path& p2);
-bool equivalent(const path& p1, const path& p2, error_code& ec) noexcept;
+bool equivalent(const path& p1, const path& p2,
+                error_code& ec) noexcept;
 ~~~
 
 p1とp2が物理ファイルシステム上、同一のファイルである場合、trueを返す。そうでない場合falseを返す。
@@ -1407,15 +1448,17 @@ pの指すファイルのハードリンク数を返す。
 #### last_write_time
 
 ~~~c++
-file_time_type last_write_time(const path& p);
-file_time_type last_write_time(const path& p, error_code& ec) noexcept;
+file_time_type last_write_time( const path& p);
+file_time_type last_write_time( const path& p,
+                                error_code& ec) noexcept;
 ~~~
 
 pの指すファイルの最終更新日時を返す。
 
 ~~~c++
-void last_write_time(const path& p, file_time_type new_time);
-void last_write_time(const path& p, file_time_type new_time, error_code& ec) noexcept;
+void last_write_time(   const path& p, file_time_type new_time);
+void last_write_time(   const path& p, file_time_type new_time,
+                        error_code& ec) noexcept;
 ~~~
 
 pの指すファイルの最終更新日時をnew_timeにする。
@@ -1467,7 +1510,8 @@ int main()
 
     // 最終更新日時を文字列で得る
     auto time_point_value = last_write_time( "foo" ) ;
-    time_t time_t_value = system_clock::to_time_t( time_point_value ) ;
+    time_t time_t_value =
+        system_clock::to_time_t( time_point_value ) ;
     std::cout << ctime( &time_t_value ) << '\n' ;
 
    

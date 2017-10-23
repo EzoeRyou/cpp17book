@@ -6,10 +6,14 @@ mapとunordered_mapに、try_emplaceとinsert_or_assignという2つのメンバ
 
 ~~~c++
 template <class... Args>
-pair<iterator, bool> try_emplace(const key_type& k, Args&&... args);
+pair<iterator, bool>
+try_emplace(const key_type& k, Args&&... args);
 
 template <class... Args>
-iterator try_emplace(const_iterator hint, const key_type& k, Args&&... args);
+iterator
+try_emplace(
+    const_iterator hint,
+    const key_type& k, Args&&... args);
 ~~~
 
 従来のemplaceは、キーに対応する要素が存在しない場合、要素がargsからemplace構築されて追加される。もし、キーに対応する要素が存在する場合、要素は追加されない。要素が追加されない時、argsがムーブされるかどうかは実装定義である。
@@ -58,10 +62,14 @@ int main()
 
 ~~~c++
 template <class M>
-pair<iterator, bool> insert_or_assign(const key_type& k, M&& obj);
+pair<iterator, bool>
+insert_or_assign(const key_type& k, M&& obj);
 
 template <class M>
-iterator insert_or_assign(const_iterator hint, const key_type& k, M&& obj);
+iterator
+insert_or_assign(
+    const_iterator hint,
+    const key_type& k, M&& obj);
 ~~~
 
 insert_or_assignはkeyに連想された要素が存在する場合は要素を代入し、存在しない場合は要素を追加する。operator []との違いは、要素が代入されたか追加されたかが、戻り値のpairのboolでわかるということだ。
