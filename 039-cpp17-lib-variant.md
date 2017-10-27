@@ -124,7 +124,7 @@ variantはテンプレート実引数で保持したい型を与える。
 ~~~cpp
 std::variant< char, short, int, long > v1 ;
 std::variant< int, double, std::string > v2 ;
-std::variant< std::vector<int>. std::list<int> > v3 ;
+std::variant< std::vector<int>, std::list<int> > v3 ;
 ~~~
 
 ### variantの初期化

@@ -211,7 +211,7 @@ int main()
 #### make_any\<T\> : T型のanyを作る
 
 ~~~c++
-emplate <class T, class... Args>
+template <class T, class... Args>
 any make_any(Args&& ...args);
 
 template <class T, class U, class... Args>
