@@ -40,7 +40,7 @@ int main()
     b = std::byte( 1 ) ;
     b = std::byte{ 1 } ;
     b = static_cast< std::byte >( 1 ) ;
-    b = static_cast< std::byte >( 0b11110000 ) ; // アルファベットの'l'
+    b = static_cast< std::byte >( 0b11110000 ) ;
 }
 ~~~
 
