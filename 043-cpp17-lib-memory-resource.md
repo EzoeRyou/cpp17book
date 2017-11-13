@@ -368,7 +368,7 @@ public :
     }
 
     virtual void * 
-    do_allocate( std::size_t bytes, std::size_t alignment ) override
+    do_deallocate( std::size_t bytes, std::size_t alignment ) override
     {
         std::scoped_lock lock( m ) ;
         // リンクリストから該当する部分を削除
