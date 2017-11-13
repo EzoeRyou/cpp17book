@@ -1,6 +1,6 @@
 ## コンテナーアクセス関数
 
-ヘッダーファイル\<iterator\>に、コンテナーアクセス関数として、フリー関数版のsize, empty, dataが追加された。それぞれ、メンバー関数のsize, empty, dataを呼び出す。
+ヘッダーファイル`<iterator>`に、コンテナーアクセス関数として、フリー関数版の`size`, `empty`, `data`が追加された。それぞれ、メンバー関数の`size`, `empty`, `data`を呼び出す。
 
 ~~~cpp
 int main()
@@ -13,7 +13,7 @@ int main()
 }
 ~~~
 
-このフリー関数は配列やstd::initializer_list\<T\>にも使える。
+このフリー関数は配列や`std::initializer_list<T>`にも使える。
 
 ~~~cpp
 int main()

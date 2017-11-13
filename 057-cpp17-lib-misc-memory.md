@@ -1,6 +1,6 @@
 ## メモリー管理アルゴリズム
 
-C++17ではヘッダーファイル\<memory\>にメモリー管理用のアルゴリズムが追加された。
+C++17ではヘッダーファイル`<memory>`にメモリー管理用のアルゴリズムが追加された。
 
 ### addressof
 
@@ -8,7 +8,7 @@ C++17ではヘッダーファイル\<memory\>にメモリー管理用のアル�
 template <class T> constexpr T* addressof(T& r) noexcept;
 ~~~
 
-addressofはC++17以前からもある。addressof(r)はrのポインターを取得する。たとえ、rの型がoperator &をオーバーロードしていても正しいポインターを取得できる。
+`addressof`はC++17以前からもある。`addressof(r)`は`r`のポインターを取得する。たとえ、`r`の型が`operator &`をオーバーロードしていても正しいポインターを取得できる。
 
 ~~~cpp
 struct S
@@ -41,7 +41,7 @@ ForwardIterator uninitialized_default_construct_n(
     ForwardIterator first, Size n);
 ~~~
 
-[first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーをtypename iterator_traits\<ForwardIterator\>::value_typeでデフォルト初期化する。2つめのアルゴリズムはfirstからn個をデフォルト初期化する。
+`[first, last)`の範囲、もしくは`first`から`n`個の範囲の未初期化のメモリーを`typename iterator_traits<ForwardIterator>::value_type`でデフォルト初期化する。2つめのアルゴリズムは`first`から`n`個をデフォルト初期化する。
 
 ~~~cpp
 int main()
@@ -69,7 +69,7 @@ ForwardIterator uninitialized_value_construct_n(
     ForwardIterator first, Size n);
 ~~~
 
-使い方はuninitialized_default_constructと同じ。ただし、こちらはデフォルト初期化ではなく値初期化する。
+使い方は`uninitialized_default_construct`と同じ。ただし、こちらはデフォルト初期化ではなく値初期化する。
 
 ### uninitialized_copy
 
@@ -85,7 +85,7 @@ uninitialized_copy_n(   InputIterator first, Size n,
                         ForwardIterator result);
 ~~~
 
-[first, last)の範囲、もしくはfirstからn個の範囲の値を、resultの指す未初期化のメモリーにコピー構築する。
+`[first, last)`の範囲、もしくは`first`から`n`個の範囲の値を、`result`の指す未初期化のメモリーにコピー構築する。
 
 ~~~cpp
 int main()
@@ -118,7 +118,7 @@ uninitialized_move_n(   InputIterator first, Size n,
                         ForwardIterator result);
 ~~~
 
-使い方はuninitialized_copyと同じ。ただしこちらはコピーではなくムーブする。
+使い方は`uninitialized_copy`と同じ。ただしこちらはコピーではなくムーブする。
 
 ### uninitialized_fill
 
@@ -134,7 +134,7 @@ ForwardIterator uninitialized_fill_n(
     const T& x);
 ~~~
 
-[first, last)の範囲、もしくはfirstからn個の範囲の未初期化のメモリーを、コンストラクターに実引数xを与えて構築する。
+`[first, last)`の範囲、もしくは`first`から`n`個の範囲の未初期化のメモリーを、コンストラクターに実引数`x`を与えて構築する。
 
 
 ### destory
@@ -144,7 +144,7 @@ template <class T>
 void destroy_at(T* location);
 ~~~
 
-location-\>~T()を呼び出す
+`location->~T()`を呼び出す
 
 ~~~c++
 template <class ForwardIterator>
@@ -154,4 +154,4 @@ template <class ForwardIterator, class Size>
 ForwardIterator destroy_n(ForwardIterator first, Size n);
 ~~~
 
-[first, last)の範囲、もしくはfirstからn個の範囲にdestroy_atを呼び出す。
+`[first, last)`の範囲、もしくは`first`から`n`個の範囲に`destroy_at`を呼び出す。

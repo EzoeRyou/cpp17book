@@ -1,13 +1,13 @@
 ## サイズ付き解放関数
 
-C++14ではoperator deleteのオーバーロードに、解放すべきストレージのサイズを取得できるオーバーロードが追加された。
+C++14では`operator delete`のオーバーロードに、解放すべきストレージのサイズを取得できるオーバーロードが追加された。
 
 ~~~c++
 void operator delete    ( void *, std::size_t ) noexcept ;
 void operator delete[]  ( void *, std::size_t ) noexcept ;
 ~~~
 
-第二引数はstd::size_t型で、第一引数で指定されたポインターが指す解放すべきストレージのサイズが与えられる。
+第二引数は`std::size_t`型で、第一引数で指定されたポインターが指す解放すべきストレージのサイズが与えられる。
 
 
 例えば以下のように使える。
@@ -37,4 +37,4 @@ int main()
 }
 ~~~
 
-機能テストマクロは__cpp_sized_deallocation, 値は201309。
+機能テストマクロは`__cpp_sized_deallocation`, 値は201309。

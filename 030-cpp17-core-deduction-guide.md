@@ -78,7 +78,7 @@ Container( Iterator, Iterator )
 -> Container< typename std::iterator_traits< Iterator >::value_type > ;
 ~~~
 
-C++コンパイラーはこの推定ガイドを使って、Container\<T\>::Container(Iterator, Iterator)からは、Tをstd::iterator_traits\<Iterator\>::value_typeとして推定すればいいのだと判断できる。
+C++コンパイラーはこの推定ガイドを使って、`Container<T>::Container(Iterator, Iterator)`からは、`T`を`std::iterator_traits<Iterator>::value_type`として推定すればいいのだと判断できる。
 
 例えば、初期化リストに対応するには以下のように書く。
 
@@ -106,6 +106,6 @@ int main()
 }
 ~~~
 
-C++コンパイラーはこの推定ガイドから、Container\<T\>::Container( std::initializer_list\<T\> )の場合はTをTとして推定すればよいことがわかる。
+C++コンパイラーはこの推定ガイドから、`Container<T>::Container( std::initializer_list<T> )`の場合は`T`を`T`として推定すればよいことがわかる。
 
-機能テストマクロは__cpp_deduction_guides, 値は201606。
+機能テストマクロは`__cpp_deduction_guides`, 値は201606。

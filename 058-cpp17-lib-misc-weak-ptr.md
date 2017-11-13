@@ -1,6 +1,6 @@
 ## shared_ptr::weak_type
 
-C++17ではshared_ptrにweak_typeというネストされた型名が追加された。これはshared_ptrに対するweak_ptrのtypedef名となっている。
+C++17では`shared_ptr`に`weak_type`というネストされた型名が追加された。これは`shared_ptr`に対する`weak_ptr`の`typedef`名となっている。
 
 ~~~c++
 namespace std {

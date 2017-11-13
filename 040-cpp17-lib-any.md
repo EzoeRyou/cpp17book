@@ -2,7 +2,7 @@
 
 ### 使い方
 
-ヘッダーファイル\<any\>で定義されているstd::anyは、ほとんどどんな型の値でも保持できるクラスだ。
+ヘッダーファイル`<any>`で定義されている`std::any`は、ほとんどどんな型の値でも保持できるクラスだ。
 
 ~~~cpp
 #include <any>
@@ -23,11 +23,11 @@ int main()
 }
 ~~~
 
-anyが保持できない型は、コピー構築できない型だ。
+`any`が保持できない型は、コピー構築できない型だ。
 
 ### anyの構築と破棄
 
-クラスanyはテンプレートではない。そのため宣言は単純だ。
+クラス`any`はテンプレートではない。そのため宣言は単純だ。
 
 ~~~cpp
 int main()
@@ -41,13 +41,13 @@ int main()
 }
 ~~~
 
-anyが保持する型を事前に指定する必要はない。
+`any`が保持する型を事前に指定する必要はない。
 
-クラスanyを破棄すると、その時保持していた値が適切に破棄される。
+クラス`any`を破棄すると、その時保持していた値が適切に破棄される。
 
 ### in_place_typeコンストラクター
 
-anyのコンストラクターでemplaceをするためにin_place_typeが使える。
+`any`のコンストラクターで`emplace`をするために`in_place_type`が使える。
 
 
 ~~~cpp
@@ -65,7 +65,7 @@ int main()
 
 ### anyへの代入
 
-anyへの代入も普通のプログラマーの期待通りの動きをする。
+`any`への代入も普通のプログラマーの期待通りの動きをする。
 
 
 ~~~cpp
@@ -92,7 +92,7 @@ decay_t<T>& emplace(Args&&... args);
 ~~~
 
 
-anyはemplaceメンバー関数をサポートしている。
+`any`は`emplace`メンバー関数をサポートしている。
 
 
 
@@ -118,7 +118,7 @@ int main()
 void reset() noexcept ; 
 ~~~
 
-anyのresetメンバー関数は、anyの保持してある値を破棄する。resetを呼び出した後のanyは値を保持しない。
+`any`の`reset`メンバー関数は、`any`の保持してある値を破棄する。`reset`を呼び出した後の`any`は値を保持しない。
 
 
 ~~~cpp
@@ -136,7 +136,7 @@ int main()
 
 #### swap : スワップ
 
-anyはswapメンバー関数をサポートしている。
+`any`は`swap`メンバー関数をサポートしている。
 
 ~~~cpp
 int main()
@@ -160,7 +160,7 @@ int main()
 bool has_value() const noexcept;
 ~~~
 
-anyのhas_valueメンバー関数はanyが値を保持しているかどうかを調べる。値を保持しているならばtrueを、保持していないならばfalseを返す。
+`any`の`has_value`メンバー関数は`any`が値を保持しているかどうかを調べる。値を保持しているならば`true`を、保持していないならば`false`を返す。
 
 ~~~cpp
 int main()
@@ -186,7 +186,7 @@ int main()
 const type_info& type() const noexcept;
 ~~~
 
-typeメンバー関数は、保持している型Tのtypeid(T)を返す。値を保持していない場合、typeid(void)を返す。
+`type`メンバー関数は、保持している型`T`の`typeid(T)`を返す。値を保持していない場合、`typeid(void)`を返す。
 
 ~~~cpp
 int main()
@@ -219,7 +219,7 @@ any make_any(initializer_list<U> il, Args&& ...args);
 ~~~
 
 
-make_any\<T\>( args... )はT型をコンストラクター実引数args...で構築した値を保持するanyを返す。
+`make_any<T>( args... )`は`T`型をコンストラクター実引数`args...`で構築した値を保持する`any`を返す。
 
 ~~~cpp
 struct X
@@ -247,7 +247,7 @@ template<class T> T any_cast(any& operand);
 template<class T> T any_cast(any&& operand);
 ~~~
 
-any_cast\<T\>(operand)はoperandが保持している値を返す。
+`any_cast<T>(operand)`は`operand`が保持している値を返す。
 
 ~~~cpp
 int main()
@@ -258,7 +258,7 @@ int main()
 }
 ~~~
 
-any_cast\<T\>で指定したT型が、anyが保持している型ではない場合、std::bad_any_castがthrowされる。
+`any_cast<T>`で指定した`T`型が、`any`が保持している型ではない場合、`std::bad_any_cast`が`throw`される。
 
 ~~~cpp
 int main()
@@ -281,7 +281,7 @@ template<class T>
 T* any_cast(any* operand) noexcept;
 ~~~
 
-any_cast\<T\>にanyへのポインターを渡すと、Tへのポインター型が返される。anyがT型を保持している場合はT型を参照するポインターが返る。保持していない場合は、nullptrが返る。
+`any_cast<T>`に`any`へのポインターを渡すと、`T`へのポインター型が返される。`any`が`T`型を保持している場合は`T`型を参照するポインターが返る。保持していない場合は、`nullptr`が返る。
 
 ~~~cpp
 int main()

@@ -2,7 +2,7 @@
 
 ### 使い方
 
-ヘッダーファイル\<variant\>で定義されているvariantは、型安全なunionとして使うことができる。
+ヘッダーファイル`<variant>`で定義されている`variant`は、型安全な`union`として使うことができる。
 
 ~~~cpp
 #include <variant>
@@ -34,7 +34,7 @@ int main()
 
 ### 型非安全な古典的union
 
-C++が従来から持っている古典的なunionは、複数の型のいずれかひとつだけの値を格納する型だ。unionのサイズはデータメンバーのいずれかの型をひとつ表現できるだけのサイズとなる。
+C++が従来から持っている古典的な`union`は、複数の型のいずれかひとつだけの値を格納する型だ。`union`のサイズはデータメンバーのいずれかの型をひとつ表現できるだけのサイズとなる。
 
 ~~~cpp
 union U
@@ -52,11 +52,11 @@ struct S
 }
 ~~~
 
-この場合、sizeof(U)は
+この場合、`sizeof(U)`は
 
 $$\text{sizeof(U)} = \max \{ \text{sizeof(int)}, \text{sizeof(double)}, \text{sizeof(std::string)} \} + \text{パディングなど}$$
 
-になる。sizeof(S)は、
+になる。`sizeof(S)`は、
 
 $$\text{sizeof(S)} = \text{sizeof(int)} + \text{sizeof(double)} + \text{sizeof(std::string)} + \text{パディングなど}$$
 
@@ -64,9 +64,9 @@ $$\text{sizeof(S)} = \text{sizeof(int)} + \text{sizeof(double)} + \text{sizeof(s
 
 
 
-unionはメモリ効率がよい。unionはvariantと違い型非安全だ。どの型の値を保持しているかという情報は保持しないので、利用者が適切に管理しなければならない。
+`union`はメモリ効率がよい。`union`は`variant`と違い型非安全だ。どの型の値を保持しているかという情報は保持しないので、利用者が適切に管理しなければならない。
 
-試しに、冒頭のコードをunionで書くと、以下のようになる。
+試しに、冒頭のコードを`union`で書くと、以下のようになる。
 
 ~~~cpp
 union U
@@ -115,11 +115,11 @@ int main()
 }
 ~~~
 
-このようなコードは書きたくない。variantを使えば、このような面倒で冗長なコードを書かずに、型安全にunionと同等機能を実現できる。
+このようなコードは書きたくない。`variant`を使えば、このような面倒で冗長なコードを書かずに、型安全に`union`と同等機能を実現できる。
 
 ### variantの宣言
 
-variantはテンプレート実引数で保持したい型を与える。
+`variant`はテンプレート実引数で保持したい型を与える。
 
 ~~~cpp
 std::variant< char, short, int, long > v1 ;
@@ -131,7 +131,7 @@ std::variant< std::vector<int>, std::list<int> > v3 ;
 
 #### デフォルト初期化
 
-variantはデフォルト構築すると、最初に与えた型の値をデフォルト構築して保持する。
+`variant`はデフォルト構築すると、最初に与えた型の値をデフォルト構築して保持する。
 
 ~~~cpp
 // int
@@ -140,7 +140,7 @@ std::variant< int, double > v1 ;
 std::variant< double, int > v2 ;
 ~~~
 
-variantにデフォルト構築できない型を最初に与えると、variantもデフォルト構築できない。
+`variant`にデフォルト構築できない型を最初に与えると、`variant`もデフォルト構築できない。
 
 ~~~c++
 // デフォルト構築できない型
@@ -155,7 +155,7 @@ std::variant< non_default_constructible > v ;
 ~~~
 
 
-デフォルト構築できない型だけを保持するvariantをデフォルト構築するためには、最初の型をデフォルト構築可能な型にすればよい。
+デフォルト構築できない型だけを保持する`variant`をデフォルト構築するためには、最初の型をデフォルト構築可能な型にすればよい。
 
 ~~~cpp
 struct A { A() = delete ; } ;
@@ -172,7 +172,7 @@ int main()
 }
 ~~~
 
-このような場合に、Emptyのようなクラスをわざわざ独自に定義するのは面倒なので、標準ライブラリにはstd::monostateクラスが以下のように定義されている。
+このような場合に、`Empty`のようなクラスをわざわざ独自に定義するのは面倒なので、標準ライブラリには`std::monostate`クラスが以下のように定義されている。
 
 ~~~c++
 namespace std {
@@ -187,11 +187,11 @@ namespace std {
 std::variant< std::monostate, A, B, C > v ;
 ~~~
 
-std::monostateはvariantの最初のテンプレート実引数として使うことでvariantをデフォルト構築可能にするための型だ。それ以上の意味はない。
+`std::monostate`は`variant`の最初のテンプレート実引数として使うことで`variant`をデフォルト構築可能にするための型だ。それ以上の意味はない。
 
 #### コピー初期化
 
-variantに同じ型のvariantを渡すと、コピー/ムーブする。
+`variant`に同じ型の`variant`を渡すと、コピー/ムーブする。
 
 ~~~cpp
 int main()
@@ -204,7 +204,7 @@ int main()
 
 #### variantのコンストラクターに値を渡した場合
 
-variantのコンストラクターに上記以外の値を渡した場合、variantのテンプレート実引数に指定した型の中から、オーバーロード解決により最適な型が選ばれ、その型の値に変換され、値を保持する。
+`variant`のコンストラクターに上記以外の値を渡した場合、`variant`のテンプレート実引数に指定した型の中から、オーバーロード解決により最適な型が選ばれ、その型の値に変換され、値を保持する。
 
 ~~~cpp
 using val = std::variant< int, double, std::string > ;
@@ -228,7 +228,7 @@ int main()
 
 #### in_place_typeによるemplace構築
 
-variantのコンストラクターの第一引数にstd::in_place_type\<T\>を渡すことにより、T型の要素を構築するためにT型のコンストラクターに渡す実引数を指定できる。
+`variant`のコンストラクターの第一引数に`std::in_place_type<T>`を渡すことにより、`T`型の要素を構築するために`T`型のコンストラクターに渡す実引数を指定できる。
 
 ほとんどの型はコピーかムーブができる。
 
@@ -247,7 +247,7 @@ int main()
 }
 ~~~
 
-しかし、もし型Xがコピーもムーブもできない型だったとしたら、上記のコードは動かない。
+しかし、もし型`X`がコピーもムーブもできない型だったとしたら、上記のコードは動かない。
 
 ~~~cpp
 struct X
@@ -266,7 +266,7 @@ int main()
 }
 ~~~
 
-このような場合、variantが内部でXを構築する際に、構築に必要なコンストラクターの実引数を渡して、variantにXを構築させる必要がある。そのためにstd::in_place_type\<T\>が使える。Tに構築したい型を指定して第一引数とし、第二引数以降をTのコンストラクターに渡す値にする。
+このような場合、`variant`が内部で`X`を構築する際に、構築に必要なコンストラクターの実引数を渡して、`variant`に`X`を構築させる必要がある。そのために`std::in_place_type<T>`が使える。`T`に構築したい型を指定して第一引数とし、第二引数以降を`T`のコンストラクターに渡す値にする。
 
 
 ~~~cpp
@@ -287,7 +287,7 @@ int main()
 
 ### variantの破棄
 
-variantのデストラクターは、そのときに保持している値を適切に破棄してくれる。
+`variant`のデストラクターは、そのときに保持している値を適切に破棄してくれる。
 
 ~~~cpp
 int main()
@@ -309,16 +309,16 @@ int main()
 }
 ~~~
 
-variantのユーザーは何もする必要がない。
+`variant`のユーザーは何もする必要がない。
 
 
 ### variantの代入
 
-variantの代入はとても自然だ。variantを渡せばコピーするし、値を渡せばオーバーロード解決に従って適切な型の値を保持する。
+`variant`の代入はとても自然だ。`variant`を渡せばコピーするし、値を渡せばオーバーロード解決に従って適切な型の値を保持する。
 
 ### variantのemplace
 
-variantはemplaceをサポートしている。variantの場合、構築すべき型を知らせる必要があるので、emplace\<T\>のTで構築すべき型を指定する。
+`variant`は`emplace`をサポートしている。`variant`の場合、構築すべき型を知らせる必要があるので、`emplace<T>`の`T`で構築すべき型を指定する。
 
 
 ~~~cpp
@@ -348,7 +348,7 @@ int main()
 constexpr bool valueless_by_exception() const noexcept;
 ~~~
 
-valueless_by_exceptionメンバー関数は、variantが値を保持している場合、falseを返す。
+`valueless_by_exception`メンバー関数は、`variant`が値を保持している場合、`false`を返す。
 
 ~~~cpp
 void f( std::variant<int> & v )
@@ -365,7 +365,7 @@ void f( std::variant<int> & v )
 }
 ~~~
 
-variantはどの値も保持しない状態になることがある。例えば、std::stringはコピーにあたって動的なメモリ確保を行うかもしれない。variantがstd::stringをコピーする際に、動的メモリ確保に失敗した場合、コピーは失敗する。なぜならば、variantは別の型の値を構築する前に、以前の値を破棄しなければならないからだ。variantは値を持たない状態になりうる。
+`variant`はどの値も保持しない状態になることがある。例えば、`std::string`はコピーにあたって動的なメモリ確保を行うかもしれない。`variant`が`std::string`をコピーする際に、動的メモリ確保に失敗した場合、コピーは失敗する。なぜならば、`variant`は別の型の値を構築する前に、以前の値を破棄しなければならないからだ。`variant`は値を持たない状態になりうる。
 
 ~~~cpp
 int main()
@@ -391,7 +391,7 @@ int main()
 constexpr size_t index() const noexcept;
 ~~~
 
-indexメンバー関数は、variantに指定したテンプレート実引数のうち、現在variantが保持している値の型を0ベースのインデックスで返す。
+`index`メンバー関数は、`variant`に指定したテンプレート実引数のうち、現在`variant`が保持している値の型を0ベースのインデックスで返す。
 
 ~~~cpp
 int main()
@@ -406,7 +406,7 @@ int main()
 }
 ~~~
 
-もしvariantが値を保持しない場合、つまりvalueless_by_exception()がtrueを返す場合は、std::variant_nposを返す。
+もし`variant`が値を保持しない場合、つまり`valueless_by_exception()`が`true`を返す場合は、`std::variant_npos`を返す。
 
 ~~~cpp
 // variantが値を持っているかどうか確認する関数
@@ -420,11 +420,11 @@ void has_value( std::variant< Types ... > && v )
 }
 ~~~
 
-std::variant_nposの値は-1だ。
+`std::variant_npos`の値は$-1$だ。
 
 ### swap
 
-variantはswapに対応している。
+`variant`は`swap`に対応している。
 
 ~~~cpp
 int main()
@@ -438,7 +438,7 @@ int main()
 
 ### variant_size\<T\> : variantが保持できる型の数を取得
 
-std::variant_size\<T\>は、Tにvariant型を渡すと、variantが保持できる型の数を返してくれる。
+`std::variant_size<T>`は、`T`に`variant`型を渡すと、`variant`が保持できる型の数を返してくれる。
 
 ~~~cpp
 using t1 = std::variant<char> ;
@@ -453,7 +453,7 @@ constexpr std::size_t t2_size = std::variant_size<t2>::size ;
 constexpr std::size_t t2_size = std::variant_size<t3>::size ;
 ~~~
 
-variant_sizeはintegral_constantを基本クラスに持つクラスなので、デフォルト構築した結果をユーザー定義変換することでも値を取り出せる。
+`variant_sizeはintegral_constant`を基本クラスに持つクラスなので、デフォルト構築した結果をユーザー定義変換することでも値を取り出せる。
 
 ~~~cpp
 using type = std::variant<char, short, int> ;
@@ -461,7 +461,7 @@ using type = std::variant<char, short, int> ;
 constexpr std::size_t size = std::variant_size<type>{} ;
 ~~~
 
-variant_sizeを以下のようにラップした変数テンプレートも用意されている。
+`variant_size`を以下のようにラップした変数テンプレートも用意されている。
 
 ~~~c++
 template <class T>
@@ -478,7 +478,7 @@ constexpr std::size_t size = std::variant_size_v<type> ;
 
 ### variant_alternative\<I, T\> : インデックスから型を返す
 
-std::variant_alternative\<I, T\>はT型のvariantの保持できる型のうち、I番目の型をネストされた型名typeで返す。
+`std::variant_alternative<I, T>`は`T`型の`variant`の保持できる型のうち、`I`番目の型をネストされた型名`type`で返す。
 
 ~~~cpp
 using type = std::variant< char, short, int > ;
@@ -491,7 +491,7 @@ using t1 = std::variant_alternative< 1, type >::type ;
 using t2 = std::variant_alternative< 2, type >::type ;
 ~~~
 
-variant_alternative_tというテンプレートエイリアスが以下のように定義されている。
+`variant_alternative_t`というテンプレートエイリアスが以下のように定義されている。
 
 ~~~c++
 template <size_t I, class T>
@@ -515,7 +515,7 @@ using t2 = std::variant_alternative_t< 2, type > ;
 
 ### holds_alternative : variantが指定した型の値を保持しているかどうかの確認
 
-holds_alternative\<T\>(v)は、variant vがT型の値を保持しているかどうかを確認する。保持しているのであればtrueを、そうでなければfalseを返す。
+`holds_alternative<T>(v)`は、`variant v`が`T`型の値を保持しているかどうかを確認する。保持しているのであれば`true`を、そうでなければ`false`を返す。
 
 ~~~cpp
 int main()
@@ -530,7 +530,7 @@ int main()
 }
 ~~~
 
-型Tは実引数に与えられたvariantが保持できる型でなければならない。以下のようなコードはエラーとなる。
+型`T`は実引数に与えられた`variant`が保持できる型でなければならない。以下のようなコードはエラーとなる。
 
 
 ~~~c++
@@ -545,7 +545,7 @@ int main()
 
 ### get\<I\>(v) : インデックスから値の取得
 
-get\<I\>(v)は、variant vの型のインデックスからI番目の型の値を返す。インデックスは0ベースだ。
+`get<I>(v)`は、`variant v`の型のインデックスから`I`番目の型の値を返す。インデックスは0ベースだ。
 
 ~~~cpp
 int main()
@@ -568,7 +568,7 @@ int main()
 }
 ~~~
 
-Iがインデックスの範囲を超えているとエラーとなる。
+`I`がインデックスの範囲を超えているとエラーとなる。
 
 ~~~c++
 int main()
@@ -581,7 +581,7 @@ int main()
 }
 ~~~
 
-もし、variantが値を保持していない場合、つまりv.index() != Iの場合は、std::bad_variant_accessがthrowされる。
+もし、`variant`が値を保持していない場合、つまり`v.index() != I`の場合は、`std::bad_variant_access`が`throw`される。
 
 ~~~cpp
 int main()
@@ -599,7 +599,7 @@ int main()
 }
 ~~~
 
-getの実引数に渡すvariantがlvalueの場合は、戻り値はlvalueリファレンス、rvalueの場合は戻り値はrvalueリファレンスになる。
+`get`の実引数に渡す`variant`が`lvalue`の場合は、戻り値は`lvalue`リファレンス、`rvalue`の場合は戻り値は`rvalue`リファレンスになる。
 
 ~~~cpp
 int main()
@@ -613,7 +613,7 @@ int main()
 }
 ~~~
 
-getの実引数に渡すvariantがCV修飾されている場合、戻り値の型も実引数と同じくCV修飾される。
+`get`の実引数に渡す`variant`がCV修飾されている場合、戻り値の型も実引数と同じくCV修飾される。
 
 ~~~cpp
 int main()
@@ -633,7 +633,7 @@ int main()
 
 ### get\<T\>(v) : 型から値の取得
 
-get\<T\>(v)は、variant vの保有する型Tの値を返す。型Tの値を保持していない場合、std::bad_variant_accessがthrowされる。
+`get<T>(v)`は、`variant v`の保有する型`T`の値を返す。型`T`の値を保持していない場合、`std::bad_variant_access`が`throw`される。
 
 ~~~cpp
 int main()
@@ -653,11 +653,11 @@ int main()
 }
 ~~~
 
-その他はすべてget\<I\>と同じ。
+その他はすべて`get<I>`と同じ。
 
 ### get_if : 値を保持している場合に取得
 
-get_if\<I\>(vp)とget_if\<T\>(vp)は、variantへのポインターvpを実引数にとり、*vpがインデックスI、もしくは型Tの値を保持している場合、その値へのポインターを返す。
+`get_if<I>(vp)`と`get_if<T>(vp)`は、`variant`へのポインター`vp`を実引数にとり、`*vp`がインデックス`I`、もしくは型`T`の値を保持している場合、その値へのポインターを返す。
 
 ~~~cpp
 int main()
@@ -678,7 +678,7 @@ int main()
 }
 ~~~
 
-もし、vpがnullptrの場合、もしくは*vpが指定された値を保持していない場合は、nullptrを返す。
+もし、`vp`が`nullptr`の場合、もしくは`*vp`が指定された値を保持していない場合は、`nullptr`を返す。
 
 ~~~cpp
 int main()
@@ -696,21 +696,21 @@ int main()
 
 ### variantの比較
 
-variantは比較演算子がオーバーロードされているため比較できる。variant同士の比較は、一般のプログラマーは自然だと思う結果になるように実装されている。
+`variant`は比較演算子がオーバーロードされているため比較できる。`variant`同士の比較は、一般のプログラマーは自然だと思う結果になるように実装されている。
 
 #### 同一性の比較
 
-variantの同一性の比較のためには、variantのテンプレート実引数に与える型は自分自身と比較可能でなければならない。
+`variant`の同一性の比較のためには、`variant`のテンプレート実引数に与える型は自分自身と比較可能でなければならない。
 
-つまり、variant v, wに対して、式 get\<i\>(v) == get\<i\>(w) がすべてのiに対して妥当でなければならない。
+つまり、`variant v`, `w`に対して、式`get<i>(v) == get<i>(w)`がすべての`i`に対して妥当でなければならない。
 
-variant v, wの同一性の比較は、v == w の場合、以下のように行われる。
+`variant v`, `w`の同一性の比較は、`v == w`の場合、以下のように行われる。
 
-1. v.index() != w.index()ならば、false
-2. それ以外の場合、v.value_less_by_exception()ならば、true
-3. それ以外の場合、get\<i\>(v) == get\<i\>(w)。ただしiはv.index()
+1. `v.index() != w.index()`ならば、`false`
+2. それ以外の場合、`v.value_less_by_exception()`ならば、`true`
+3. それ以外の場合、`get<i>(v) == get<i>(w)`。ただし`i`は`v.index()`
 
-二つのvariantが別の型を保持している場合は等しくない。ともに値なしの状態であれば等しい。それ以外は保持している値同士が比較される。
+二つの`variant`が別の型を保持している場合は等しくない。ともに値なしの状態であれば等しい。それ以外は保持している値同士が比較される。
 
 ~~~cpp
 int main()
@@ -729,7 +729,7 @@ int main()
 }
 ~~~
 
-例えばoperator ==は以下のような実装になる。
+例えば`operator ==`は以下のような実装になる。
 
 ~~~c++
 template <class... Types>
@@ -747,26 +747,26 @@ operator == (const variant<Types...>& v, const variant<Types...>& w)
 }
 ~~~
 
-operator !=はこの逆だと考えてよい。
+`operator !=`はこの逆だと考えてよい。
 
 #### 大小比較
 
 
-variantの大小の比較のためには、variantのテンプレート実引数に与える型は自分自身と比較可能でなければならない。
+`variant`の大小の比較のためには、`variant`のテンプレート実引数に与える型は自分自身と比較可能でなければならない。
 
 
-つまり、operator \< の場合、variant v, wに対して、式 get\<i\>(v) \< get\<i\>(w) がすべてのiに対して妥当でなければならない。
+つまり、`operator <`の場合、`variant v`, `w`に対して、式`get<i>(v) < get<i>(w)`がすべての`i`に対して妥当でなければならない。
 
 
-variant v, wの大小比較は、v \< w の場合、以下のように行われる。
+`variant v`, `w`の大小比較は、`v < w`の場合、以下のように行われる。
 
-1. w.valueless_by_exception()ならば、false
-2. それ以外の場合、v.valueless_by_exception()ならば、true
-3. それ以外の場合、v.index() \< w.index()ならば、true
-4. それ以外の場合、v.index() \> w.index()ならば、false
-5. それ以外の場合、get\<i\>(v) \< get\<i\>(w)。ただしiはv.index()
+1. `w.valueless_by_exception()`ならば、`false`
+2. それ以外の場合、`v.valueless_by_exception()`ならば、`true`
+3. それ以外の場合、`v.index() < w.index()`ならば、`true`
+4. それ以外の場合、`v.index() > w.index()`ならば、`false`
+5. それ以外の場合、`get<i>(v) < get<i>(w)`。ただし`i`は`v.index()`
 
-値なしのvariantは最も小さいとみなされる。インデックスの小さいほうが小さいとみなされる。どちらも同じ型の値があるのであれば、値同士の比較となる。
+値なしの`variant`は最も小さいとみなされる。インデックスの小さいほうが小さいとみなされる。どちらも同じ型の値があるのであれば、値同士の比較となる。
 
 ~~~cpp
 int main()
@@ -788,7 +788,7 @@ int main()
 }
 ~~~
 
-operator \<は以下のような実装になる。
+`operator <`は以下のような実装になる。
 
 ~~~c++
 template <class... Types>
@@ -814,7 +814,7 @@ operator<(const variant<Types...>& v, const variant<Types...>& w)
 
 ### visit : variantが保持している値を受け取る。
 
-std::visitは、variantの保持している型を実引数に関数オブジェクトを呼んでくれるライブラリだ。
+`std::visit`は、`variant`の保持している型を実引数に関数オブジェクトを呼んでくれるライブラリだ。
 
 ~~~cpp
 int main()
@@ -834,16 +834,16 @@ int main()
 }
 ~~~
 
-このように、variantにどの型の値が保持されていても扱うことができる。
+このように、`variant`にどの型の値が保持されていても扱うことができる。
 
-std::visitは以下のように宣言されている。
+`std::visit`は以下のように宣言されている。
 
 ~~~c++
 template < class Visitor, class... Variants >
 constexpr auto visit( Visitor&& vis, Variants&&... vars ) ;
 ~~~
 
-第一引数に関数オブジェクトを渡し、第二引数以降にvariantを渡す。すると、vis( get\<i\>(vars)... )のように呼ばれる。
+第一引数に関数オブジェクトを渡し、第二引数以降に`variant`を渡す。すると、`vis( get<i>(vars)... )`のように呼ばれる。
 
 ~~~cpp
 int main()

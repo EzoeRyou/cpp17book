@@ -9,7 +9,7 @@ constexpr const T&
 clamp(const T& v, const T& lo, const T& hi, Compare comp);
 ~~~
 
-ヘッダーファイル\<algorithm\>に追加されたclamp(v, lo, hi)は値vがloより小さい場合はloを、hiより高い場合はhiを、それ以外の場合はvを返す。
+ヘッダーファイル`<algorithm>`に追加された`clamp(v, lo, hi)`は値`v`が`lo`より小さい場合は`lo`を、`hi`より高い場合は`hi`を、それ以外の場合は`v`を返す。
 
 ~~~cpp
 int main()
@@ -20,6 +20,6 @@ int main()
 }
 ~~~
 
-compを実引数に取るclampはcompを値の比較に使う
+`comp`を実引数に取る`clamp`は`comp`を値の比較に使う
 
-clampには浮動小数点数も使えるが、NaNは渡せない。
+`clamp`には浮動小数点数も使えるが、NaNは渡せない。
