@@ -142,7 +142,7 @@ public:
 } ;
 ~~~
 
-使い方はboyer_moore_horspool_searcherと変わらない。
+使い方はboyer_moore_searcherと変わらない。
 
 
 
