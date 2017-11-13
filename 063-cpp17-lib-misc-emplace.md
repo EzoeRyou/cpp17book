@@ -1,6 +1,6 @@
 ## emplaceの戻り値
 
-C++17ではシーケンスコンテナーのemplace_front/emplace_back、queueとstackのemplaceが構築した要素へのリファレンスを返すように変更された。
+C++17ではシーケンスコンテナーの`emplace_front`/`emplace_back`、`queue`と`stack`の`emplace`が構築した要素へのリファレンスを返すように変更された。
 
 そのため、C++14では以下のように書いていたコードが、
 

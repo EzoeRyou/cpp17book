@@ -1,6 +1,6 @@
 ## constexprラムダ式
 
-C++17ではラムダ式がconstexprになった。より正確に説明すると、ラムダ式のクロージャーオブジェクトのoperator ()は条件を満たす場合constexprになる。
+C++17ではラムダ式が`constexpr`になった。より正確に説明すると、ラムダ式のクロージャーオブジェクトの`operator ()`は条件を満たす場合`constexpr`になる。
 
 ~~~cpp
 int main()
@@ -11,7 +11,7 @@ int main()
 }
 ~~~
 
-constexprの条件を満たすラムダ式はコンパイル時定数を必要とする場所で使うことができる。例えばconstexpr変数や配列の添字やstatic_assertなどだ。
+`constexpr`の条件を満たすラムダ式はコンパイル時定数を必要とする場所で使うことができる。例えば`constexpr`変数や配列の添字や`static_assert`などだ。
 
 ~~~cpp
 int main()
@@ -24,7 +24,7 @@ int main()
 }
 ~~~
 
-constexprの条件を満たすのであれば、キャプチャーもできる。
+`constexpr`の条件を満たすのであれば、キャプチャーもできる。
 
 ~~~c++
 int main()
@@ -45,7 +45,7 @@ int main()
 
 以下の内容は上級者向けの解説であり、通常の読者は理解する必要がない。
 
-constexprラムダ式はSFINAEの文脈で使うことができない。
+`constexpr`ラムダ式はSFINAEの文脈で使うことができない。
 
 ~~~c++
 // エラー
@@ -66,6 +66,6 @@ void f()
 
 上級者向けの解説終わり。
 
-機能テストマクロは__cpp_constexpr, 値は201603。
+機能テストマクロは`__cpp_constexpr`, 値は201603。
 
-__cpp_constexprマクロの値は、C++11の時点で200704、C++14の時点で201304だ。
+`__cpp_constexpr`マクロの値は、C++11の時点で200704、C++14の時点で201304だ。

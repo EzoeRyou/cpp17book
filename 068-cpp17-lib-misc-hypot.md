@@ -6,9 +6,9 @@ double hypot(double x, double y, double z);
 long double hypot(long double x, long double y, long double z);
 ~~~
 
-ヘッダーファイル\<cmath\>に3次元のhypotが追加された。
+ヘッダーファイル`<cmath>`に3次元の`hypot`が追加された。
 
-戻り値：
+__戻り値__：
 
 $$
 \sqrt{x^2+y^2+z^2}

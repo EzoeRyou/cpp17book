@@ -1,6 +1,6 @@
 ## as_const: const性の付与
 
-as_constはヘッダーファイル\<utility\>で定義されている。
+`as_const`はヘッダーファイル`<utility>`で定義されている。
 
 ~~~c++
 template <class T> constexpr add_const_t<T>& as_const(T& t) noexcept
@@ -9,7 +9,7 @@ template <class T> constexpr add_const_t<T>& as_const(T& t) noexcept
 }
 ~~~
 
-as_constは引数として渡したlvalueリファレンスをconstなlvalueリファレンスにキャストする関数だ。const性を付与する手軽なヘルパー関数として使うことができる。
+`as_const`は引数として渡した`lvalue`リファレンスを`const`な`lvalue`リファレンスにキャストする関数だ。`const`性を付与する手軽なヘルパー関数として使うことができる。
 
 ~~~cpp
 // 1

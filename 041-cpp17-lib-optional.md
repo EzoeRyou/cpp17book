@@ -3,7 +3,7 @@
 
 ### 使い方
 
-ヘッダーファイル\<optional\>で定義されているoptional\<T\>は、T型の値を保有しているか、保有していないライブラリだ。
+ヘッダーファイル`<optional>`で定義されている`optional<T>`は、`T`型の値を保有しているか、保有していないライブラリだ。
 
 条件次第で値が用意できない場合が存在する。例えば割り算の結果の値を返す関数を考える。
 
@@ -19,11 +19,11 @@ int divide( int a, int b )
 }
 ~~~
 
-ゼロで除算はできないので、bの値が0の場合、この関数は値を用意することができない。問題は、int型のすべての値は通常の除算結果として使われるので、エラーであることを示す特別な値を返すこともできない。
+ゼロで除算はできないので、`b`の値が0の場合、この関数は値を用意することができない。問題は、`int`型のすべての値は通常の除算結果として使われるので、エラーであることを示す特別な値を返すこともできない。
 
 このような場合にエラーや値を通知する方法として、過去に様々な方法が考案された。例えば、ポインターやリファレンスを実引数として受け取る方法、グローバル変数を使う方法、例外だ。
 
-optionalはこのような値が用意できない場合に使える共通の方法を提供する。
+`optional`はこのような値が用意できない場合に使える共通の方法を提供する。
 
 ~~~cpp
 std::optional<int> divide( int a, int b )
@@ -54,7 +54,7 @@ int main()
 
 ### optionalのテンプレート実引数
 
-optional\<T\>はT型の値を保持するか、もしくは保持しない状態を取る。
+`optional<T>`は`T`型の値を保持するか、もしくは保持しない状態を取る。
 
 
 ~~~cpp
@@ -69,7 +69,7 @@ int main()
 
 ### optionalの構築
 
-optionalをデフォルト構築すると、値を保持しないoptionalになる。
+`optional`をデフォルト構築すると、値を保持しない`optional`になる。
 
 ~~~cpp
 int main()
@@ -79,7 +79,7 @@ int main()
 }
 ~~~
 
-コンストラクターの実引数にstd::nulloptを渡すと、値を保持しないoptionalになる。
+コンストラクターの実引数に`std::nullopt`を渡すと、値を保持しない`optional`になる。
 
 
 ~~~cpp
@@ -90,7 +90,7 @@ int main()
 }
 ~~~
 
-optional\<T\>のコンストラクターの実引数にT型に変換できる型を渡すと、T型の値に型変換して保持する。
+`optional<T>`のコンストラクターの実引数に`T`型に変換できる型を渡すと、`T`型の値に型変換して保持する。
 
 ~~~cpp
 int main()
@@ -107,7 +107,7 @@ int main()
 }
 ~~~
 
-T型からU型に型変換できるとき、optional\<T\>のコンストラクターにoptional\<U\>を渡すとUからTに型変換されてT型の値を保持するoptionalになる。
+`T`型から`U`型に型変換できるとき、`optional<T>`のコンストラクターに`optional<U>`を渡すと`U`から`T`に型変換されて`T`型の値を保持する`optional`になる。
 
 ~~~cpp
 int main()
@@ -120,7 +120,7 @@ int main()
 }
 ~~~
 
-optionalのコンストラクターの第一引数にstd::in_place_type\<T\>を渡すと、後続の引数を使ってT型のオブジェクトがemplace構築される。
+`optional`のコンストラクターの第一引数に`std::in_place_type<T>`を渡すと、後続の引数を使って`T`型のオブジェクトが`emplace`構築される。
 
 ~~~cpp
 struct X
@@ -137,13 +137,13 @@ int main()
 
 ### optionalの代入
 
-通常のプログラマーの期待通りの挙動をする。std::nulloptを代入すると値を保持しないoptionalになる。
+通常のプログラマーの期待通りの挙動をする。`std::nullopt`を代入すると値を保持しない`optional`になる。
 
 
 
 ### optionalの破棄
 
-optionalが破棄されるとき、保持している値があれば、適切に破棄される。
+`optional`が破棄されるとき、保持している値があれば、適切に破棄される。
 
 
 ~~~cpp
@@ -170,7 +170,7 @@ int main()
 
 ### swap
 
-optionalはswapに対応している。
+`optional`は`swap`に対応している。
 
 
 ~~~cpp
@@ -188,7 +188,7 @@ int main()
 constexpr bool has_value() const noexcept;
 ~~~
 
-has_valueメンバー関数はoptionalが値を保持している場合、trueを返す。
+`has_value`メンバー関数は`optional`が値を保持している場合、`true`を返す。
 
 
 ~~~cpp
@@ -209,7 +209,7 @@ int main()
 constexpr explicit operator bool() const noexcept;
 ~~~
 
-optionalを文脈上boolに変換すると、値を保持している場合にのみtrueとして評価される。
+`optional`を文脈上`bool`に変換すると、値を保持している場合にのみ`true`として評価される。
 
 ~~~c++
 int main()
@@ -243,7 +243,7 @@ constexpr T&& value() &&;
 constexpr const T&& value() const&&;
 ~~~
 
-valueメンバー関数はoptionalが値を保持している場合、値へのリファレンスを返す。値を保持していない場合、std::bad_optional_accessがthrowされる。
+`value`メンバー関数は`optional`が値を保持している場合、値へのリファレンスを返す。値を保持していない場合、`std::bad_optional_access`が`throw`される。
 
 
 ~~~cpp
@@ -271,7 +271,7 @@ template <class U> constexpr T value_or(U&& v) const&;
 template <class U> constexpr T value_or(U&& v) &&;
 ~~~
 
-value_or(v)メンバー関数は、optionalが値を保持している場合はその値を、保持していない場合はvを返す。
+`value_or(v)`メンバー関数は、`optional`が値を保持している場合はその値を、保持していない場合は`v`を返す。
 
 ~~~cpp
 int main()
@@ -290,7 +290,7 @@ int main()
 
 ### reset : 保持している値を破棄する
 
-resetメンバー関数を呼び出すと、保持している値がある場合破棄する。resetメンバー関数を呼び出した後のoptionalは値を保持しない状態になる。
+`reset`メンバー関数を呼び出すと、保持している値がある場合破棄する。`reset`メンバー関数を呼び出した後の`optional`は値を保持しない状態になる。
 
 
 ~~~cpp
@@ -310,11 +310,11 @@ int main()
 
 ### optional同士の比較
 
-optional\<T\>を比較するためには、T型のオブジェクト同士が比較できる必要がある。
+`optional<T>`を比較するためには、`T`型のオブジェクト同士が比較できる必要がある。
 
 #### 同一性の比較
 
-値を保持しない二つのoptionalは等しい。片方のみが値を保持しているoptionalは等しくない。両方とも値を保持しているoptionalは値による比較になる。
+値を保持しない二つの`optional`は等しい。片方のみが値を保持している`optional`は等しくない。両方とも値を保持している`optional`は値による比較になる。
 
 ~~~cpp
 int main()
@@ -341,11 +341,11 @@ int main()
 
 #### 大小比較
 
-optional同士の大小比較は、a \< bの場合
+`optional`同士の大小比較は、`a < b`の場合
 
-1. bが値を保持していなければfalse
-2. それ以外の場合で、aが値を保持していなければtrue
-3. それ以外の場合、aとbの保持している値同士の比較
+1. `b`が値を保持していなければ`false`
+2. それ以外の場合で、`a`が値を保持していなければ`true`
+3. それ以外の場合、`a`と`b`の保持している値同士の比較
 
 となる。
 
@@ -375,11 +375,11 @@ int main()
 
 ### optionalとstd::nulloptとの比較
 
-optionalとstd::nulloptとの比較は、std::nulloptが値を持っていないoptionalとして扱われる。
+`optional`と`std::nullopt`との比較は、`std::nullopt`が値を持っていない`optional`として扱われる。
 
 ### optional\<T\>とTの比較
 
-optional\<T\>とT型の比較をする場合、optionalは値を保持していなければならない。
+`optional<T>`と`T`型の比較をする場合、`optional`は値を保持していなければならない。
 
 ### make_optional\<T\> : optional\<T\>を返す
 
@@ -388,7 +388,7 @@ template <class T>
 constexpr optional<decay_t<T>> make_optional(T&& v);
 ~~~
 
-make_optional\<T\>(T t)はoptional\<T\>(t)を返す。
+`make_optional<T>(T t)`は`optional<T>(t)`を返す。
 
 ~~~cpp
 int main()
@@ -403,7 +403,7 @@ int main()
 
 ### make_optional\<T, Args ... \> : optional\<T\>をin_place_type構築して返す
 
-make_optionalの第一引数がT型ではない場合、in_place_type構築するオーバーロード関数が選ばれる。
+`make_optional`の第一引数がT型ではない場合、`in_place_type`構築するオーバーロード関数が選ばれる。
 
 ~~~cpp
 struct X

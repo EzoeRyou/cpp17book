@@ -1,12 +1,12 @@
 ## type_traits
 
-C++17では\<type_traits\>に機能追加が行われた。
+C++17では`<type_traits>`に機能追加が行われた。
 
 ### 変数テンプレート版traits
 
-C++17では、既存のtraitsに変数テンプレートを利用した_v版が追加された。
+C++17では、既存の`traits`に変数テンプレートを利用した`_v`版が追加された。
 
-例えば、is_integral\<T\>::valueと書く代わりにis_integral_v\<T\>と書くことができる。
+例えば、`is_integral<T>::value`と書く代わりに`is_integral_v<T>`と書くことができる。
 
 ~~~cpp
 template < typename T >
@@ -21,7 +21,7 @@ void f( T x )
 
 ### 論理演算traits
 
-C++17ではクラステンプレートconjunction, disjunction, negationが追加された。これはテンプレートメタプログラミングで論理積、論理和、否定を手軽に扱うためのtraitsだ。
+C++17ではクラステンプレート`conjunction`, `disjunction`, `negation`が追加された。これはテンプレートメタプログラミングで論理積、論理和、否定を手軽に扱うための`traits`だ。
 
 #### conjunction : 論理積
 
@@ -29,7 +29,7 @@ C++17ではクラステンプレートconjunction, disjunction, negationが追�
 template<class... B> struct conjunction;
 ~~~
 
-クラステンプレートconjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理積を適用する。conjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がfalseとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。
+クラステンプレート`conjunction<B1, B2, ..., BN>`はテンプレート実引数`B1`, `B2`, ... `BN`に論理積を適用する。`conjunction`はそれぞれのテンプレート実引数`Bi`に対して、`bool(Bi::value)`が`false`となる最初の型を基本クラスに持つか、あるいは最後の`BN`を基本クラスに持つ。
 
 ~~~cpp
 int main()
@@ -59,7 +59,7 @@ template<class... B> struct disjunction;
 ~~~
 
 
-クラステンプレートdisjunction\<B1, B2, ..., BN\>はテンプレート実引数B1, B2, ... BNに論理和を適用する。disjunctionはそれぞれのテンプレート実引数Biに対して、bool(Bi::value)がtrueとなる最初の型を基本クラスに持つか、あるいは最後のBNを基本クラスに持つ。
+クラステンプレート`disjunction<B1, B2, ..., BN>`はテンプレート実引数`B1`, `B2`, ... `BN`に論理和を適用する。`disjunction`はそれぞれのテンプレート実引数`Bi`に対して、`bool(Bi::value)`が`true`となる最初の型を基本クラスに持つか、あるいは最後の`BN`を基本クラスに持つ。
 
 ~~~cpp
 int main()
@@ -86,7 +86,7 @@ int main()
 template<class B> struct negation;
 ~~~
 
-クラステンプレートnegation\<B\>はBに否定を適用する。negationは基本クラスとしてbool_constant\<!bool\(B::value\)\>を持つ。
+クラステンプレート`negation<B>`は`B`に否定を適用する。`negation`は基本クラスとして`bool_constant<!bool(B::value)>`を持つ。
 
 ~~~cpp
 int main()
@@ -119,14 +119,14 @@ struct is_nothrow_invocable_r;
 ~~~
 
 
-is_invocableはテンプレート実引数で与えられた型FnがパラメーターパックArgTypesをパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値はRへ暗黙変換できるかどうかを確認するtraitsだ。呼び出せるのであればtrue_type、そうでなければfalse_typeを基本クラスに持つ。
+`is_invocable`はテンプレート実引数で与えられた型`Fn`がパラメーターパック`ArgTypes`をパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値は`R`へ暗黙変換できるかどうかを確認する`traits`だ。呼び出せるのであれば`true_type`、そうでなければ`false_type`を基本クラスに持つ。
 
 
-is_invocableは関数呼び出しした結果の戻り値の型については問わない。
+`is_invocable`は関数呼び出しした結果の戻り値の型については問わない。
 
-is_invocable_rは呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型がRへ暗黙変換できることが確認される。
+`is_invocable_r`は呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型が`R`へ暗黙変換できることが確認される。
 
-is_nothrow_invocableとis_nothrow_invocable_rは、関数呼び出し（および戻り値型Rへの暗黙変換）が無例外保証されていることも確認する。
+`is_nothrow_invocable`と`is_nothrow_invocable_r`は、関数呼び出し（および戻り値型Rへの暗黙変換）が無例外保証されていることも確認する。
 
 ~~~cpp
 
@@ -165,11 +165,11 @@ template <class T>
 struct has_unique_object_representations ;
 ~~~
 
-has_unique_object_representations\<T\>は、T型がトリビアルにコピー可能で、かつT型の同値である2つのオブジェクトの内部表現が同じ場合に、trueを返す。
+`has_unique_object_representations<T>`は、`T`型がトリビアルにコピー可能で、かつ`T`型の同値である2つのオブジェクトの内部表現が同じ場合に、`true`を返す。
 
-falseを返す例としては、オブジェクトがパディング(padding)と呼ばれるアライメント調整などのための値の表現に影響しないストレージ領域を持つ場合だ。パディングビットの値は同値に影響しないので、falseを返す。
+`false`を返す例としては、オブジェクトがパディング（padding）と呼ばれるアライメント調整などのための値の表現に影響しないストレージ領域を持つ場合だ。パディングビットの値は同値に影響しないので、`false`を返す。
 
-例えば以下のようなクラスXは、
+例えば以下のようなクラス`X`は、
 
 ~~~cpp
 struct X
@@ -192,7 +192,7 @@ struct X
 } ;
 ~~~
 
-この場合、unused_paddingの値には意味がなく、クラスXの同値比較には用いられない。この場合、std::has_unique_representations_v\<X\>はfalseになる。
+この場合、`unused_padding`の値には意味がなく、クラス`X`の同値比較には用いられない。この場合、`std::has_unique_representations_v<X>`は`false`になる。
 
 ### is_nothrow_swappable: 無例外swap可能か確認するtraits
 
@@ -204,6 +204,6 @@ template <class T, class U>
 struct is_nothrow_swappable_with;
 ~~~
 
-is_nothrow_swappable\<T\>はT型がswapで例外を投げないときにtrueを返す。
+`is_nothrow_swappable<T>`は`T`型が`swap`で例外を投げないときに`true`を返す。
 
-is_nothrow_swappable_with\<T, U\>は、T型とU型を相互にswapするときに例外を投げないときにtrueを返す。
+`is_nothrow_swappable_with<T, U>`は、`T`型と`U`型を相互に`swap`するときに例外を投げないときに`true`を返す。

@@ -2,7 +2,7 @@
 
 C++17では例外指定が関数型に組み込まれた。
 
-例外指定とはnoexceptのことだ。noexceptとnoexcept(true)が指定された関数は例外を外に投げない。
+例外指定とは`noexcept`のことだ。`noexcept`と`noexcept(true)`が指定された関数は例外を外に投げない。
 
 C++14ではこの例外指定は型システムに入っていなかった。そのため、無例外指定のついた関数へのポインター型は型システムで無例外を保証することができなかった。
 
@@ -47,4 +47,4 @@ void (*p3)() noexcept = &f ;
 void (*p4)() noexcept = &f ;
 ~~~
 
-機能テストマクロは__cpp_noexcept_function_type, 値は201510。
+機能テストマクロは`__cpp_noexcept_function_type`, 値は201510。

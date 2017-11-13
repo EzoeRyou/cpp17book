@@ -1,15 +1,15 @@
 ## make_from_tuple : tupleの要素を実引数にコンストラクターを呼び出す
 
-make_from_tupleはヘッダーファイル\<tuple\>で定義されている。
+`make_from_tuple`はヘッダーファイル`<tuple>`で定義されている。
 
 ~~~c++
 template <class T, class Tuple>
 constexpr T make_from_tuple(Tuple&& t);
 ~~~
 
-applyはtupleの要素を実引数に関数を呼び出すライブラリだが、make_from_tupleはtupleの要素を実引数にコンストラクターを呼び出すライブラリだ。
+`apply`は`tuple`の要素を実引数に関数を呼び出すライブラリだが、`make_from_tuple`は`tuple`の要素を実引数にコンストラクターを呼び出すライブラリだ。
 
-ある型Tと要素数Nのtuple tに対して、make_from_tuple\<T\>(t)は、T型をT( get\<0\>(t), get\<1\>(t), ... , get\<N-1\>(t) )のように構築して、構築したT型のオブジェクトを返す。
+ある型`T`と要素数`N`の`tuple t`に対して、`make_from_tuple<T>(t)`は、`T`型を`T( get<0>(t), get<1>(t), ... , get<N-1>(t) )`のように構築して、構築した`T`型のオブジェクトを返す。
 
 ~~~cpp
 class X

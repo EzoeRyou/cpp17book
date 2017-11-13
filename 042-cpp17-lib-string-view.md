@@ -1,10 +1,10 @@
 # string_view : 文字列ラッパー
 
-string_viewは、文字型(char, wchar_t, char16_t, char32_t)の連続した配列で表現された文字列に対する共通の文字列ビューを提供する。文字列は所有しない。
+`string_view`は、文字型（`char`, `wchar_t`, `char16_t`, `char32_t`）の連続した配列で表現された文字列に対する共通の文字列ビューを提供する。文字列は所有しない。
 
 ## 使い方
 
-連続した文字型の配列を使った文字列の表現方法には様々ある。C++では最も基本的な文字列の表現方法として、null終端された文字型の配列がある。
+連続した文字型の配列を使った文字列の表現方法には様々ある。C++では最も基本的な文字列の表現方法として、`null`終端された文字型の配列がある。
 
 ~~~c++
 char str[6] = { 'h', 'e', 'l', 'l', 'o', '\0' } ;
@@ -43,7 +43,7 @@ void process_string( string_type s ) ;
 void process_string( my_string_type s ) ;
 ~~~
 
-string_viewは様々な表現の文字列に対して共通のviewを提供することで、この問題を解決できる。もう関数のオーバーロードを大量に追加する必要はない。
+`string_view`は様々な表現の文字列に対して共通の`view`を提供することで、この問題を解決できる。もう関数のオーバーロードを大量に追加する必要はない。
 
 ~~~c++
 // 自作のstring_type
@@ -81,7 +81,7 @@ int main()
 
 ## basic_string_view
 
-std::stringがstd::basic_string\< CharT, Traits \>に対するstd::basic_string\<char\>であるように、std::string_viewも、その実態はstd::basic_string_viewの特殊化へのtypedef名だ。
+`std::stringがstd::basic_string< CharT, Traits >`に対する`std::basic_string<char>`であるように、`std::string_view`も、その実態は`std::basic_string_view`の特殊化への`typedef`名だ。
 
 ~~~c++
 // 本体
@@ -96,16 +96,16 @@ using wstring_view = basic_string_view<wchar_t>;
 ~~~
 
 
-なので、通常はbasic_string_viewではなく、string_viewとかu16string_viewなどのtypedef名を使うことになる。本書ではstring_viewだけを解説するが、その他のtypedef名も文字型が違うだけで同じだ。
+なので、通常は`basic_string_view`ではなく、`string_view`とか`u16string_view`などの`typedef`名を使うことになる。本書では`string_view`だけを解説するが、その他の`typedef`名も文字型が違うだけで同じだ。
 
 
 
 ## 文字列の所有、非所有
 
-string_viewは文字列を所有しない。所有というのは、文字列を表現するストレージの確保と破棄に責任を持つということだ。所有しないことの意味を説明するために、まず文字列を所有するライブラリについて説明する。
+`string_view`は文字列を所有しない。所有というのは、文字列を表現するストレージの確保と破棄に責任を持つということだ。所有しないことの意味を説明するために、まず文字列を所有するライブラリについて説明する。
 
 
-std::stringは文字列を所有する。std::string風のクラスの実装は、例えば以下のようになる。
+`std::string`は文字列を所有する。`std::string`風のクラスの実装は、例えば以下のようになる。
 
 
 ~~~cpp
@@ -150,9 +150,9 @@ public :
 } ;
 ~~~
 
-std::stringは文字列を表現するストレージを動的に確保し、所有する。コピーは別のストレージを確保する。ムーブするときはストレージの所有権を移す。デストラクターは所有しているストレージを破棄する。
+`std::string`は文字列を表現するストレージを動的に確保し、所有する。コピーは別のストレージを確保する。ムーブするときはストレージの所有権を移す。デストラクターは所有しているストレージを破棄する。
 
-std::string_viewは文字列を所有しない。std::string_view風のクラスの実装は、例えば以下のようになる。
+`std::string_view`は文字列を所有しない。`std::string_view`風のクラスの実装は、例えば以下のようになる。
 
 ~~~cpp
 class string_view
@@ -181,7 +181,7 @@ public :
 } ;
 ~~~
 
-string_viewに渡した連続した文字型の配列へのポインターの寿命は、渡した側が責任を持つ。つまり、以下のようなコードは間違っている。
+`string_view`に渡した連続した文字型の配列へのポインターの寿命は、渡した側が責任を持つ。つまり、以下のようなコードは間違っている。
 
 ~~~cpp
 std::string_view get_string()
@@ -195,7 +195,7 @@ std::string_view get_string()
 ~~~
 
 ## string_viewの構築
-string_viewの構築には4種類ある。
+`string_view`の構築には4種類ある。
 
 + デフォルト構築
 + null終端された文字型の配列へのポインター
@@ -208,7 +208,7 @@ string_viewの構築には4種類ある。
 constexpr basic_string_view() noexcept;
 ~~~
 
-string_viewのデフォルト構築は、空のstring_viewを作る。
+`string_view`のデフォルト構築は、空の`string_view`を作る。
 
 ~~~cpp
 int main()
@@ -224,7 +224,7 @@ int main()
 constexpr basic_string_view(const charT* str);
 ~~~
 
-このstring_viewのコンストラクターは、null終端された文字型へのポインターを受け取る。
+この`string_view`のコンストラクターは、`null`終端された文字型へのポインターを受け取る。
 
 ~~~cpp
 int main()
@@ -239,7 +239,7 @@ int main()
 constexpr basic_string_view(const charT* str, size_type len);
 ~~~
 
-このstring_viewのコンストラクターは、文字型の配列へのポインターと文字数を受け取る。ポインターはnull終端されていなくてもよい。
+この`string_view`のコンストラクターは、文字型の配列へのポインターと文字数を受け取る。ポインターは`null`終端されていなくてもよい。
 
 
 ~~~c++
@@ -253,9 +253,9 @@ int main()
 
 ## 文字列クラスからの変換関数
 
-他の文字列クラスからstring_viewを作るには、変換関数を使う。string_viewのコンストラクターは使わない。
+他の文字列クラスから`string_view`を作るには、変換関数を使う。`string_view`のコンストラクターは使わない。
 
-std::stringはstring_viewへの変換関数をサポートしている。独自の文字列クラスをstring_viewに対応させるにも変換関数を使う。例えば以下のように実装する。
+`std::string`は`string_view`への変換関数をサポートしている。独自の文字列クラスを`string_view`に対応させるにも変換関数を使う。例えば以下のように実装する。
 
 ~~~c++
 class string
@@ -270,7 +270,7 @@ public :
 } ;
 ~~~
 
-これにより、std::stringからstring_viewへの変換が可能になる。
+これにより、`std::string`から`string_view`への変換が可能になる。
 
 ~~~cpp
 int main()
@@ -280,9 +280,9 @@ int main()
 }
 ~~~
 
-コレと同じ方法を使えば、独自の文字列クラスもstring_viewに対応させることができる。
+コレと同じ方法を使えば、独自の文字列クラスも`string_view`に対応させることができる。
 
-std::stringはstring_viewを受け取るコンストラクターを持っているので、string_viewからstringへの変換もできる。
+`std::string`は`string_view`を受け取るコンストラクターを持っているので、`string_view`から`string`への変換もできる。
 
 ~~~cpp
 int main()
@@ -297,7 +297,7 @@ int main()
 
 ## string_viewの操作
 
-string_viewは既存の標準ライブラリのstringとほぼ同じ操作性を提供している。例えばイテレーターを取ることができるし、operator []で要素にアクセスできるし、size()で要素数が返るし、find()で検索もできる。
+`string_view`は既存の標準ライブラリの`string`とほぼ同じ操作性を提供している。例えばイテレーターを取ることができるし、`operator []`で要素にアクセスできるし、`size()`で要素数が返るし、`find()`で検索もできる。
 
 ~~~cpp
 template < typename T >
@@ -328,7 +328,7 @@ int main()
 }
 ~~~
 
-string_viewは文字列を所有しないので、文字列を書き換える方法を提供していない。
+`string_view`は文字列を所有しないので、文字列を書き換える方法を提供していない。
 
 ~~~c++
 int main()
@@ -347,7 +347,7 @@ int main()
 }
 ~~~
 
-string_viewは文字列を所有せず、ただ参照しているだけだからだ。
+`string_view`は文字列を所有せず、ただ参照しているだけだからだ。
 
 ~~~cpp
 int main()
@@ -366,18 +366,18 @@ int main()
 }
 ~~~
 
-string_viewはstringとほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。
+`string_view`は`string`とほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。
 
 ### remove_prefix/remove_suffix : 先頭、末尾の要素の削除
 
-string_viewは先頭と末尾からn個の要素を削除するメンバー関数を提供している。
+`string_view`は先頭と末尾から`n`個の要素を削除するメンバー関数を提供している。
 
 ~~~c++
 constexpr void remove_prefix(size_type n);
 constexpr void remove_suffix(size_type n);
 ~~~
 
-string_viewにとって、先頭と末尾からn個の要素を削除するのは、ポインターをn個ずらすだけなので、これは文字列を所有しないstring_viewでも行える操作だ。
+`string_view`にとって、先頭と末尾から`n`個の要素を削除するのは、ポインターを`n`個ずらすだけなので、これは文字列を所有しない`string_view`でも行える操作だ。
 
 ~~~cpp
 int main()
@@ -396,11 +396,11 @@ int main()
 }
 ~~~
 
-このメンバー関数は既存のstd::stringにも追加されている。
+このメンバー関数は既存の`std::string`にも追加されている。
 
 ## ユーザー定義リテラル
 
-std::stringとstd::string_viewにはユーザー定義リテラルが追加されている。
+`std::string`と`std::string_view`にはユーザー定義リテラルが追加されている。
 
 ~~~c++
 string operator""s(const char* str, size_t len);
