@@ -1,6 +1,6 @@
 ## std::uncaught_exceptions
 
-C++14までは、まだcatchされていない例外がある場合は、bool std::uncaught_exception()で判定することができた。
+C++14までは、まだ`catch`されていない例外がある場合は、`bool std::uncaught_exception()`で判定することができた。
 
 ~~~c++
 struct X
@@ -32,7 +32,7 @@ int main()
 }
 ~~~
 
-bool std::uncaught_exception()は、C++17では非推奨扱いになった。いずれ廃止される見込みだ。
+`bool std::uncaught_exception()`は、C++17では非推奨扱いになった。いずれ廃止される見込みだ。
 
 廃止の理由としては、単に以下のような例で役に立たないからだ。
 
@@ -49,7 +49,7 @@ struct X
 } ;
 ~~~
 
-このため、int std::uncaught_exceptions()が新たに追加された。この関数は現在catchされていない例外の個数を返す。
+このため、`int std::uncaught_exceptions()`が新たに追加された。この関数は現在`catch`されていない例外の個数を返す。
 
 ~~~c++
 struct X

@@ -1,8 +1,8 @@
 ## constexpr if文 : コンパイル時条件分岐
 
-constexpr if文はコンパイル時の条件分岐ができる機能だ。
+`constexpr if`文はコンパイル時の条件分岐ができる機能だ。
 
-constexpr if文は、通常のif文をif constexprで置き換える。
+`constexpr if`文は、通常の`if`文を`if constexpr`で置き換える。
 
 
 ~~~c++
@@ -15,9 +15,9 @@ if constexpr ( expression )
     statement ;
 ~~~
 
-constexpr if文という名前だが、実際に記述するときはif constexprだ。
+`constexpr if`文という名前だが、実際に記述するときは`if constexpr`だ。
 
-コンパイル時の条件分岐とは何を意味するのか。以下はconstexpr ifが**行わないもの**の一覧だ。
+コンパイル時の条件分岐とは何を意味するのか。以下は`constexpr if`が**行わないもの**の一覧だ。
 
 + 最適化
 + 非テンプレートコードにおける挙動の変化
@@ -39,7 +39,7 @@ void f( bool runtime_value )
 }
 ~~~
 
-この場合、runtime_valueがtrueの場合は関数do_true_thingが呼ばれ、falseの場合は関数do_false_thingが呼ばれる。
+この場合、`runtime_value`が`true`の場合は関数`do_true_thing`が呼ばれ、`false`の場合は関数`do_false_thing`が呼ばれる。
 
 実行時の条件分岐の条件には、コンパイル時定数を指定できる。
 
@@ -56,7 +56,7 @@ else
 do_true_thing() ;
 ~~~
 
-なぜならば、条件は常にtrueだからだ。このような最適化は実行時の条件分岐でもコンパイル時に行える。コンパイル時の条件分岐はこのような最適化が目的ではない。
+なぜならば、条件は常に`true`だからだ。このような最適化は実行時の条件分岐でもコンパイル時に行える。コンパイル時の条件分岐はこのような最適化が目的ではない。
 
 もう一度コード例に戻ろう。こんどは完全なコードをみてみよう。
 
@@ -76,7 +76,7 @@ void f( bool runtime_value )
 ~~~
 
 
-このコードはエラーになる。その理由は、do_false_thingという名前が宣言されていないからだ。C++コンパイラーは、コンパイル時にコードを以下の形に変形することで最適化することはできるが、
+このコードはエラーになる。その理由は、`do_false_thing`という名前が宣言されていないからだ。C++コンパイラーは、コンパイル時にコードを以下の形に変形することで最適化することはできるが、
 
 ~~~c++
 void do_true_thing() ;
@@ -87,7 +87,7 @@ void f( bool runtime_value )
 }
 ~~~
 
-最適化の結果失われたものも、依然としてコンパイル時にコードとして検証はされる。コードとして検証されるということは、コードとして誤りがあればエラーとなる。名前do_false_thingは宣言されていないのでエラーとなる。
+最適化の結果失われたものも、依然としてコンパイル時にコードとして検証はされる。コードとして検証されるということは、コードとして誤りがあればエラーとなる。名前`do_false_thing`は宣言されていないのでエラーとなる。
 
 
 ### プリプロセス時の条件分岐
@@ -124,7 +124,7 @@ void f( bool runtime_value )
 
 この結果、プリプロセス時の条件分岐では、選択されない分岐はコンパイルされないので、コンパイルエラーになるコードも書くことができる。
 
-プリプロセス時の条件分岐は、条件が整数とかbool型のリテラルか、リテラルに比較演算子を適用した結果ではうまくいく。しかし、プリプロセス時とはコンパイル時ではないので、コンパイル時計算はできない。
+プリプロセス時の条件分岐は、条件が整数とか`bool`型のリテラルか、リテラルに比較演算子を適用した結果ではうまくいく。しかし、プリプロセス時とはコンパイル時ではないので、コンパイル時計算はできない。
 
 ~~~c++
 constexpr int f()
@@ -151,7 +151,7 @@ int main()
 コンパイル時の条件分岐とは、分岐の条件にコンパイル時計算の結果を使い、かつ、選択されない分岐にコンパイルエラーが含まれていても、使われないのでコンパイルエラーにはならない条件分岐のことだ。
 
 
-たとえば、std::distanceという標準ライブラリを実装してみよう。std::distance(first, last)は、イテレーターfirstとlastの距離を返す。
+たとえば、`std::distance`という標準ライブラリを実装してみよう。`std::distance(first, last)`は、イテレーター`first`と`last`の距離を返す。
 
 ~~~cpp
 template < typename Iterator >
@@ -162,7 +162,7 @@ distance( Iterator first, Iterator last )
 }
 ~~~
 
-残念ながら、この実装はIteratorがランダムアクセスイテレーターの場合にしか動かない。入力イテレーターに対応させるには、イテレーターを一つづつインクリメントしてlastと等しいかどうか比較する実装が必要になる。
+残念ながら、この実装は`Iterator`がランダムアクセスイテレーターの場合にしか動かない。入力イテレーターに対応させるには、イテレーターを一つづつインクリメントして`last`と等しいかどうか比較する実装が必要になる。
 
 ~~~cpp
 template < typename Iterator >
@@ -181,9 +181,9 @@ distance( Iterator first, Iterator last )
 }
 ~~~
 
-残念ながら、この実装はIteratorにランダムアクセスイテレーターを渡した時に効率が悪い。
+残念ながら、この実装は`Iterator`にランダムアクセスイテレーターを渡した時に効率が悪い。
 
-ここで必要な実装は、Iteratorがランダムアクセスイテレーターならばlast - firstを使い、そうでなければ地道にインクリメントする遅い実装を使うことだ。Iteratorがランダムアクセスイテレーターかどうかは、以下のコードを使えば、is_random_access_iterator\<iterator\>で確認できる。
+ここで必要な実装は、`Iterator`がランダムアクセスイテレーターならば`last - first`を使い、そうでなければ地道にインクリメントする遅い実装を使うことだ。`Iterator`がランダムアクセスイテレーターかどうかは、以下のコードを使えば、`is_random_access_iterator<iterator>`で確認できる。
 
 ~~~c++
 template < typename Iterator >
@@ -195,7 +195,7 @@ constexpr bool is_random_access_iterator =
         std::random_access_iterator_tag > ;
 ~~~
 
-すると、distanceは以下のように書けるのではないか。
+すると、`distance`は以下のように書けるのではないか。
 
 ~~~cpp
 // ランダムアクセスイテレーターかどうかを判定するコード
@@ -232,15 +232,15 @@ distance( Iterator first, Iterator last )
 }
 ~~~
 
-残念ながら、このコードは動かない。ランダムアクセスイテレーターではないイテレーターを渡すと、last - firstというコードがコンパイルされるので、コンパイルエラーになる。コンパイラーは、
+残念ながら、このコードは動かない。ランダムアクセスイテレーターではないイテレーターを渡すと、`last - first`というコードがコンパイルされるので、コンパイルエラーになる。コンパイラーは、
 
 ~~~c++
 if ( is_random_access_iterator<Iterator> )
 ~~~
 
-という部分について、is_random_access_iterator\<Iterator\>の値はコンパイル時に計算できるので、最終的なコード生成の結果としては、if (true)かif (false)なると判断できる。したがってコンパイラーは選択されない分岐のコード生成を行わないことはできる。しかしコンパイルはするので、コンパイルエラーになる。
+という部分について、`is_random_access_iterator<Iterator>`の値はコンパイル時に計算できるので、最終的なコード生成の結果としては、`if (true)`か`if (false)`になると判断できる。したがってコンパイラーは選択されない分岐のコード生成を行わないことはできる。しかしコンパイルはするので、コンパイルエラーになる。
 
-constexpr ifを使うと、選択されない部分の分岐はコンパイルエラーであってもコンパイルエラーとはならなくなる。
+`constexpr if`を使うと、選択されない部分の分岐はコンパイルエラーであってもコンパイルエラーとはならなくなる。
 
 ~~~c++
 // distance
@@ -272,9 +272,9 @@ distance( Iterator first, Iterator last )
 
 ### 超上級者向け解説
 
-constexpr ifは、実はコンパイル時条件分岐ではない。テンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
+`constexpr if`は、実はコンパイル時条件分岐ではない。テンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
 
-constexpr ifによって選択されない文はdiscarded statementとなる。discarded statementはテンプレートの実体化の際に実体化されなくなる。
+`constexpr if`によって選択されない文は`discarded statement`となる。`discarded statement`はテンプレートの実体化の際に実体化されなくなる。
 
 ~~~cpp
 struct X
@@ -300,9 +300,9 @@ int main()
 }
 ~~~
 
-f(x)では、return xがdiscarded statementとなるため実体化されない。Xはint型に暗黙に変換できないが問題がなくなる。f(0)ではreturn x.get()がdiscarded statementとなるため実体化されない。int型にはメンバー関数getはないが問題はなくなる。
+`f(x)`では、`return x`が`discarded statement`となるため実体化されない。`X`は`int`型に暗黙に変換できないが問題がなくなる。`f(0)`では`return x.get()`が`discarded statement`となるため実体化されない。`int`型にはメンバー関数`get`はないが問題はなくなる。
 
-discarded statementは実体化されないだけで、もちろんテンプレートのエンティティの一部だ。discarded statementがテンプレートのコードとして文法的、意味的に正しくない場合は、もちろんコンパイルエラーとなる。
+`discarded statement`は実体化されないだけで、もちろんテンプレートのエンティティの一部だ。`discarded statement`がテンプレートのコードとして文法的、意味的に正しくない場合は、もちろんコンパイルエラーとなる。
 
 ~~~c++
 template < typename T >
@@ -318,7 +318,7 @@ void f( T x )
 }
 ~~~
 
-何度も説明しているように、constexpr ifはテンプレートの実体化を条件付きで抑制するだけだ。条件付きコンパイルではない。
+何度も説明しているように、`constexpr if`はテンプレートの実体化を条件付きで抑制するだけだ。条件付きコンパイルではない。
 
 ~~~cpp
 template < typename T >
@@ -332,9 +332,9 @@ void f()
 }
 ~~~
 
-このコードは常にコンパイルエラーになる。なぜならば、static_assert( false ) はテンプレートに依存しておらず、テンプレートの宣言を解釈するときに、依存名ではないから、そのまま解釈される。
+このコードは常にコンパイルエラーになる。なぜならば、`static_assert( false )`はテンプレートに依存しておらず、テンプレートの宣言を解釈するときに、依存名ではないから、そのまま解釈される。
 
-このようなことをしたければ、最初からstatic_assertのオペランドに式を書けばよい。
+このようなことをしたければ、最初から`static_assert`のオペランドに式を書けばよい。
 
 ~~~cpp
 template < typename T >
@@ -348,7 +348,7 @@ void f()
 }
 ~~~
 
-もし、どうしてもconstexpr文の条件に合うときにだけstatic_assertが使いたい場合もある。これは、constexpr ifをネストしたりしていて、その内容を全部static_assertに書くのが冗長な場合だ。
+もし、どうしても`constexpr`文の条件に合うときにだけ`static_assert`が使いたい場合もある。これは、`constexpr if`をネストしたりしていて、その内容を全部`static_assert`に書くのが冗長な場合だ。
 
 ~~~cpp
 template < typename T >
@@ -365,9 +365,9 @@ void f()
 }
 ~~~
 
-現実には、E1, E2, E3は複雑な式なので、static_assert( E1 && E2 && E3 )と書くのは冗長だ。同じ内容を二度書くのは間違いの元だ。
+現実には、`E1`, `E2`, `E3`は複雑な式なので、`static_assert( E1 && E2 && E3 )`と書くのは冗長だ。同じ内容を二度書くのは間違いの元だ。
 
-このような場合、static_assertのオペランドをテンプレート引数に依存するようにすると、constexpr ifの条件に合うときにだけ発動するstatic_assertが書ける。
+このような場合、`static_assert`のオペランドをテンプレート引数に依存するようにすると、`constexpr if`の条件に合うときにだけ発動する`static_assert`が書ける。
 
 ~~~cpp
 template  < typename ... >
@@ -385,13 +385,13 @@ void f()
 }
 ~~~
 
-このようにfalse_vを使うことで、static_assertをテンプレート引数Tに依存させる。その結果、static_assertの発動をテンプレートの実体化まで遅延させることができる。
+このように`false_v`を使うことで、`static_assert`をテンプレート引数Tに依存させる。その結果、`static_assert`の発動をテンプレートの実体化まで遅延させることができる。
 
-constexpr ifは非テンプレートコードでも書くことができるが、その場合は普通のif文と同じだ。
+`constexpr if`は非テンプレートコードでも書くことができるが、その場合は普通の`if`文と同じだ。
 
 ### constexpr ifでは解決できない問題
 
-constexpr ifは条件付きコンパイルではなく、条件付きテンプレート実体化の抑制なので、最初の問題の解決には使えない。例えば以下のコードはエラーになる。
+`constexpr if`は条件付きコンパイルではなく、条件付きテンプレート実体化の抑制なので、最初の問題の解決には使えない。例えば以下のコードはエラーになる。
 
 ~~~c++
 // do_true_thingの宣言
@@ -408,11 +408,11 @@ void f( bool runtime_value )
 }
 ~~~
 
-理由は、名前do_false_thingは非依存名なのでテンプレートの宣言時に解決されるからだ。
+理由は、名前`do_false_thing`は非依存名なのでテンプレートの宣言時に解決されるからだ。
 
 ### constexpr ifで解決できる問題
 
-constexpr ifは依存名が関わる場合で、テンプレートの実体化がエラーになる場合に、実体化を抑制させることができる。
+`constexpr if`は依存名が関わる場合で、テンプレートの実体化がエラーになる場合に、実体化を抑制させることができる。
 
 例えば、特定の型に対して特別な操作をしたい場合。
 
@@ -440,7 +440,7 @@ void f(T t)
 }
 ~~~
 
-もしconstexpr ifがなければ、Tの型がXではないときもt.get_value()という式が実体化され、エラーとなる。
+もし`constexpr if`がなければ、`T`の型が`X`ではないときも`t.get_value()`という式が実体化され、エラーとなる。
 
 再帰的なテンプレートの特殊化をやめさせたいとき
 
@@ -456,7 +456,7 @@ constexpr std::size_t factorial()
 }
 ~~~
 
-もしconstexpr ifがなければ、factorial\<N-1\>が永遠に実体化されコンパイル時ループが停止しない。
+もし`constexpr if`がなければ、`factorial<N-1>`が永遠に実体化されコンパイル時ループが停止しない。
 
 
-機能テストマクロは__cpp_if_constexpr, 値は201606。
+機能テストマクロは`__cpp_if_constexpr`, 値は201606。

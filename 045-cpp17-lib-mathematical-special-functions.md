@@ -1,10 +1,10 @@
 # 数学の特殊関数群
 
-C++17では数学の特殊関数群(mathematical special functions)がヘッダーファイル\<cmath\>に追加された。
+C++17では数学の特殊関数群（mathematical special functions）がヘッダーファイル`<cmath>`に追加された。
 
 数学の特殊関数は、いずれも実引数をとって、規定の計算をし、結果を浮動小数点数型の戻り値として返す。
 
-数学の特殊関数はdouble, float, long double型の3つのオーバーロードがある。それぞれ、関数名の最後に、何もなし、f, lというサフィックスで表現されている。
+数学の特殊関数は`double`, `float`, `long double`型の3つのオーバーロードがある。それぞれ、関数名の最後に、何もなし、`f`, `l`というサフィックスで表現されている。
 
 ~~~c++
 double      function_name() ;   // 何もなし
@@ -15,7 +15,7 @@ long double function_namel() ;  // l
 数学の特殊関数の説明は、関数の宣言、効果、戻り値、注意がある。
 
 
-もし、数学の特殊関数に渡した実引数がNaN(Not a Number)である場合、関数の戻り値もNaNになる。ただし定義域エラーは起こらない。
+もし、数学の特殊関数に渡した実引数がNaN（Not a Number）である場合、関数の戻り値もNaNになる。ただし定義域エラーは起こらない。
 
 それ以外の場合で、関数が定義域エラーを返すべきときは、
 
@@ -30,9 +30,9 @@ long double function_namel() ;  // l
 + 実引数の値の集合に対して明示的に定義されている
 + 計算方法に依存しない極限値が存在する
 
-ある関数の効果が実装定義(implementation-defined)である場合、その効果はC++標準規格で定義されず、C++実装はどのように実装してもよいという意味だ。
+ある関数の効果が実装定義（implementation-defined）である場合、その効果はC++標準規格で定義されず、C++実装はどのように実装してもよいという意味だ。
 
-## ラゲール多項式(Laguerre polynomials)
+## ラゲール多項式（Laguerre polynomials）
 
 ~~~c++
 double       laguerre(unsigned n, double x);
@@ -40,9 +40,9 @@ float        laguerref(unsigned n, float x);
 long double  laguerrel(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対するラゲール多項式(Laguerre polynomials)を計算する。
+__効果__：実引数`n`, `x`に対するラゲール多項式（Laguerre polynomials）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{L}_n(x) =
@@ -51,12 +51,12 @@ $$
 	   \quad \mbox{for $x \ge 0$}
 $$
 
-$n$をn、$x$をxとする。
+$n$を`n`, $x$を`x`とする。
 
-注意： n \>= 128のときの関数の呼び出しの効果は実装定義である。
+__注意__： `n` \>= 128のときの関数の呼び出しの効果は実装定義である。
 
 
-## ラゲール陪多項式(Associated Laguerre polynomials)
+## ラゲール陪多項式（Associated Laguerre polynomials）
 
 ~~~c++
 double      assoc_laguerre(unsigned n, unsigned m, double x);
@@ -64,9 +64,9 @@ float       assoc_laguerref(unsigned n, unsigned m, float x);
 long double assoc_laguerrel(unsigned n, unsigned m, long double x);
 ~~~
 
-効果：実引数n, m, xに対するラゲール陪多項式(Associated Laguerre polynomials)を計算する。
+__効果__：実引数`n`, `m`, `x`に対するラゲール陪多項式（Associated Laguerre polynomials）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{L}_n^m(x) =
@@ -75,12 +75,12 @@ $$
 	   \quad \mbox{for $x \ge 0$}
 $$
 
-$n$をn、$m$をm、$x$をxとする。
+$n$を`n`, $m$を`m`, $x$を`x`とする。
 
-注意：n \>= 128 もしくは m \>= 128 のときの関数呼び出しの効果は実装定義である。
+__注意__：`n` \>= 128 もしくは `m` \>= 128 のときの関数呼び出しの効果は実装定義である。
 
 
-## ルジャンドル多項式(Legendre polynomials)
+## ルジャンドル多項式（Legendre polynomials）
 
 ~~~c++
 double       legendre(unsigned l, double x);
@@ -88,9 +88,9 @@ float        legendref(unsigned l, float x);
 long double  legendrel(unsigned l, long double x);
 ~~~
 
-効果：実引数l, xに対するルジャンドル多項式(Legendre polynomials)を計算する。
+__効果__：実引数`l`, `x`に対するルジャンドル多項式（Legendre polynomials）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{P}_\ell(x) =
@@ -101,12 +101,12 @@ $$
 	   \quad \mbox{for $|x| \le 1$}
 $$
 
-$l$をl、$x$をxとする。
+$l$を`l`, $x$を`x`とする。
 
-注意：l \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`l` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 
-## ルジャンドル陪関数(Associated Legendre functions) {#sf.cmath.assoc_legendre}
+## ルジャンドル陪関数（Associated Legendre functions）{#sf.cmath.assoc_legendre}
 
 ~~~c++
 double      assoc_legendre(unsigned l, unsigned m, double x);
@@ -114,9 +114,9 @@ float       assoc_legendref(unsigned l, unsigned m, float x);
 long double assoc_legendrel(unsigned l, unsigned m, long double x);
 ~~~
 
-効果：実引数l, m, xに対するルジャンドル陪関数(Associated Legendre functions)を計算する。
+__効果__：実引数`l`, `m`, `x`に対するルジャンドル陪関数（Associated Legendre functions）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{P}_\ell^m(x) =
@@ -127,11 +127,11 @@ $$
 	   \quad \mbox{for $|x| \le 1$}
 $$
 
-$l$をl、$m$をm、$x$をxとする。
+$l$を`l`, $m$を`m`, $x$を`x`とする。
 
-注意：l \>= 128 のときの関数呼び出しの効果は実装定義である。
+__注意__：`l` \>= 128 のときの関数呼び出しの効果は実装定義である。
 
-## 球面ルジャンドル陪関数(Spherical associated Legendre functions)
+## 球面ルジャンドル陪関数（Spherical associated Legendre functions）
 
 ~~~c++
 double       sph_legendre(  unsigned l, unsigned m, double theta);
@@ -140,9 +140,9 @@ long double  sph_legendrel( unsigned l, unsigned m,
                             long double theta);
 ~~~
 
-効果：実引数l, m, theta(thetaの単位はラジアン)に対する球面ルジャンドル陪関数(Spherical associated Legendre functions)を計算する。
+__効果__：実引数`l`, `m`, `theta`（`theta`の単位はラジアン）に対する球面ルジャンドル陪関数（Spherical associated Legendre functions）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{Y}_\ell^m(\theta, 0)
@@ -162,11 +162,11 @@ $$
 	   \quad \mbox{for $|m| \le \ell$}
 $$
 
-$l$をl、$m$をm、$\theta$をthetaとする。
+$l$を`l`, $m$を`m`, $\theta$を`theta`とする。
 
-注意：l \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`l` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-球面調和関数(Spherical harmonics) $\mathsf{Y}_\ell^m(\theta, \phi)$ は、以下のような関数を定義することによって計算できる。
+球面調和関数（Spherical harmonics） $\mathsf{Y}_\ell^m(\theta, \phi)$ は、以下のような関数を定義することによって計算できる。
 
 ```c++
 #include <cmath>
@@ -182,7 +182,7 @@ spherical_harmonics(unsigned l, unsigned m, double theta, double phi)
 [ルジャンドル陪関数](#sf.cmath.assoc_legendre)も参照。
 
 
-## エルミート多項式(Hermite polynomials)
+## エルミート多項式（Hermite polynomials）
 
 ~~~c++
 double       hermite(unsigned n, double x);
@@ -190,9 +190,9 @@ float        hermitef(unsigned n, float x);
 long double  hermitel(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対するエルミート多項式(Hermite polynomials)を計算する。
+__効果__：実引数`n`, `x`に対するエルミート多項式（Hermite polynomials）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{H}_n(x) =
@@ -201,12 +201,12 @@ $$
 \;
 $$
 
-$n$をn、$x$をxとする。
+$n$を`n`, $x$を`x`とする。
 
-注意：n \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`n` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 
-## ベータ関数(Beta function)
+## ベータ関数（Beta function）
 
 ~~~c++
 double      beta(double x, double y);
@@ -214,9 +214,9 @@ float       betaf(float x, float y);
 long double betal(long double x, long double y);
 ~~~
 
-効果：実引数x, yに対するベータ関数(Beta function)を計算する。
+__効果__：実引数`x`, `y`に対するベータ関数（Beta function）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{B}(x, y) =
@@ -225,10 +225,10 @@ $$
        \quad \mbox{for $x > 0$,\, $y > 0$}
 $$
 
-$x$をx、$y$をyとする。
+$x$を`x`, $y$を`y`とする。
 
 
-## 第1種完全楕円積分(Complete elliptic integral of the first kind)
+## 第1種完全楕円積分（Complete elliptic integral of the first kind）
 
 ~~~c++
 double      comp_ellint_1(double k);
@@ -236,9 +236,9 @@ float       comp_ellint_1f(float k);
 long double comp_ellint_1l(long double k);
 ~~~
 
-効果：実引数kに対する第1種完全楕円積分(Complete elliptic integral of the first kind)を計算する。
+__効果__：実引数`k`に対する第1種完全楕円積分（Complete elliptic integral of the first kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{K}(k) =
@@ -246,11 +246,11 @@ $$
 		      \quad \mbox{for $|k| \le 1$}
 $$
 
-$k$をkとする。
+$k$を`k`とする。
 
 [第1種不完全楕円積分](#sf.cmath.ellint_1)も参照。
 
-## 第2種完全楕円積分(Complete elliptic integral of the second kind)
+## 第2種完全楕円積分（Complete elliptic integral of the second kind）
 
 ~~~c++
 double      comp_ellint_2(double k);
@@ -258,9 +258,9 @@ float       comp_ellint_2f(float k);
 long double comp_ellint_2l(long double k);
 ~~~
 
-効果：実引数kに対する第2種完全楕円積分(Complete elliptic integral of the second kind)を計算する。
+__効果__：実引数`k`に対する第2種完全楕円積分（Complete elliptic integral of the second kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{E}(k) =
@@ -268,11 +268,11 @@ $$
 \quad \mbox{for $|k| \le 1$}
 $$
 
-$k$をkとする。
+$k$を`k`とする。
 
 [第2種不完全楕円積分](#sf.cmath.ellint_2)も参照。
 
-## 第3種完全楕円積分(Complete elliptic integral of the third kind)
+## 第3種完全楕円積分（Complete elliptic integral of the third kind）
 
 ~~~c++
 double      comp_ellint_3(double k, double nu);
@@ -280,20 +280,20 @@ float       comp_ellint_3f(float k, float nu);
 long double comp_ellint_3l(long double k, long double nu);
 ~~~
 
-効果：実引数k, nuに対する第3種完全楕円積分(Complete elliptic integral of the third kind)を計算する。
+__効果__：実引数`k`, `nu`に対する第3種完全楕円積分（Complete elliptic integral of the third kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{\Pi}(\nu, k) = \mathsf{\Pi}(\nu, k, \pi / 2),
 		\quad \mbox{for $|k| \le 1$}
 $$
 
-$k$をk、$\nu$をnuとする。
+$k$を`k`, $\nu$を`nu`とする。
 
 [第3種不完全楕円積分](#sf.cmath.ellint_3)も参照。
 
-## 第1種不完全楕円積分(Incomplete elliptic integral of the first kind) {#sf.cmath.ellint_1}
+## 第1種不完全楕円積分（Incomplete elliptic integral of the first kind） {#sf.cmath.ellint_1}
 
 ~~~c++
 double       ellint_1(double k, double phi);
@@ -301,9 +301,9 @@ float        ellint_1f(float k, float phi);
 long double  ellint_1l(long double k, long double phi);
 ~~~
 
-効果：実引数k, phi(phiの単位はラジアン)に対する第1種不完全楕円積分(Incomplete elliptic integral of the first kind)を計算する。
+__効果__：実引数`k`, `phi`（`phi`の単位はラジアン）に対する第1種不完全楕円積分（Incomplete elliptic integral of the first kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{F}(k, \phi) =
@@ -312,10 +312,10 @@ $$
 	   \quad \mbox{for $|k| \le 1$}
 $$
 
-$k$をk、$\phi$をphiとする。
+$k$を`k`, $\phi$を`phi`とする。
 
 
-## 第2種不完全楕円積分(Incomplete elliptic integroal of the second kind) {#sf.cmath.ellint_2}
+## 第2種不完全楕円積分（Incomplete elliptic integroal of the second kind） {#sf.cmath.ellint_2}
 
 ~~~c++
 double       ellint_2(double k, double phi);
@@ -323,9 +323,9 @@ float        ellint_2f(float k, float phi);
 long double  ellint_2l(long double k, long double phi);
 ~~~
 
-効果：実引数k, phi(phiの単位はラジアン)に対する第2種不完全楕円積分(Incomplete elliptic integral of the second kind)を計算する。
+__効果__：実引数`k`, `phi`（`phi`の単位はラジアン）に対する第2種不完全楕円積分（Incomplete elliptic integral of the second kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{E}(k, \phi) =
@@ -334,10 +334,10 @@ $$
 $$
 
 
-$k$をk、$\phi$をphiとする。
+$k$を`k`, $\phi$を`phi`とする。
 
 
-## 第3種不完全楕円積分(Incomplete elliptic integral of the third kind) {#sf.cmath.ellint_3}
+## 第3種不完全楕円積分（Incomplete elliptic integral of the third kind） {#sf.cmath.ellint_3}
 
 ~~~c++
 double       ellint_3(  double k, double nu, double phi);
@@ -346,9 +346,9 @@ long double  ellint_3l( long double k, long double nu,
                         long double phi);
 ~~~
 
-効果：実引数k, nu, phi(phiの単位はラジアン)に対する第3種不完全楕円積分(Incomplete elliptic integral of the third kind)を計算する。
+__効果__：実引数`k`, `nu`, `phi`（`phi`の単位はラジアン）に対する第3種不完全楕円積分（Incomplete elliptic integral of the third kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{\Pi}(\nu, k, \phi) =
@@ -357,10 +357,10 @@ $$
 	   \quad \mbox{for $|k| \le 1$}
 $$
 
-$\nu$をnu、$k$をk、$\phi$をphiとする。
+$\nu$を`nu`, $k$を`k`, $\phi$を`phi`とする。
 
 
-## 第1種ベッセル関数(Cylindrical Bessel functions of the first kind) {#sf.cmath.cyl_bessel_j}
+## 第1種ベッセル関数（Cylindrical Bessel functions of the first kind） {#sf.cmath.cyl_bessel_j}
 
 ~~~c++
 double       cyl_bessel_j(double nu, double x);
@@ -368,9 +368,9 @@ float        cyl_bessel_jf(float nu, float x);
 long double  cyl_bessel_jl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, kに対する第1種ベッセル関数(Cylindrical Bessel functions of the first kind, Bessel functions of the first kind)を計算する。
+__効果__：実引数`nu`, `k`に対する第1種ベッセル関数（Cylindrical Bessel functions of the first kind, Bessel functions of the first kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{J}_\nu(x) =
@@ -379,11 +379,11 @@ $$
 	   \quad \mbox{for $x \ge 0$}
 $$
 
-$\nu$をnu、$x$をxとする。
+$\nu$を`nu`, $x$を`x`とする。
 
-注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`nu` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
-## ノイマン関数(Cylindrical Neumann functions) {#sf.cmath.cyl_neumann}
+## ノイマン関数（Cylindrical Neumann functions） {#sf.cmath.cyl_neumann}
 
 ~~~c++
 double       cyl_neumann(double nu, double x);
@@ -391,9 +391,9 @@ float        cyl_neumannf(float nu, float x);
 long double  cyl_neumannl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対するノイマン関数(Cylindrical Neumann functions, Neumann functions)、またの名を第2種ベッセル関数(Cylindrical Bessel functions of the second kind, Bessel functions of the second kind)を計算する。
+__効果__：実引数`nu`, `x`に対するノイマン関数（Cylindrical Neumann functions, Neumann functions）、またの名を第2種ベッセル関数（Cylindrical Bessel functions of the second kind, Bessel functions of the second kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{N}_\nu(x) =
@@ -413,14 +413,14 @@ $$
   \right.
 $$
 
-$\nu$をnu、$x$をxとする。
+$\nu$を`nu`, $x$を`x`とする。
 
-注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`nu` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 [第1種ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
 
-## 第1種変形ベッセル関数(Regular modified cylindrical Bessel functions) {#sf.cmath.cyl_bessel_i}
+## 第1種変形ベッセル関数（Regular modified cylindrical Bessel functions） {#sf.cmath.cyl_bessel_i}
 
 ~~~c++
 double       cyl_bessel_i(double nu, double x);
@@ -428,9 +428,9 @@ float        cyl_bessel_if(float nu, float x);
 long double  cyl_bessel_il(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対する第1種変形ベッセル関数(Regular modified cylindrical Bessel functions, Modified Bessel functions of the first kind)を計算する。
+__効果__：実引数`nu`, `x`に対する第1種変形ベッセル関数（Regular modified cylindrical Bessel functions, Modified Bessel functions of the first kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{I}_\nu(x) =
@@ -441,13 +441,13 @@ $$
 	   \quad \mbox{for $x \ge 0$}
 $$
 
-$\nu$をnu、$x$をxとする。
+$\nu$を`nu`, $x$を`x`とする。
 
-注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`nu` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 [第1種ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
-## 第2種変形ベッセル関数(Irregular modified cylindrical Bessel functions)
+## 第2種変形ベッセル関数（Irregular modified cylindrical Bessel functions）
 
 ~~~c++
 double       cyl_bessel_k(double nu, double x);
@@ -455,9 +455,9 @@ float        cyl_bessel_kf(float nu, float x);
 long double  cyl_bessel_kl(long double nu, long double x);
 ~~~
 
-効果：実引数nu, xに対する第2種変形ベッセル関数(Irregular modified cylindrical Bessel functions, Modified Bessel functions of the second kind)を計算する。
+__効果__：実引数`nu`, `x`に対する第2種変形ベッセル関数（Irregular modified cylindrical Bessel functions, Modified Bessel functions of the second kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{K}_\nu(x) =
@@ -483,14 +483,14 @@ $$
   \right.
 $$
 
-$\nu$をnu、$x$をxとする。
+$\nu$を`nu`, $x$を`x`とする。
 
-注意：nu \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`nu` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 [第1種変形ベッセル関数](#sf.cmath.cyl_bessel_i)、[第1種ベッセル関数](#sf.cmath.cyl_bessel_j)、[ノイマン関数](#sf.cmath.cyl_neumann)も参照。
 
 
-## 第1種球ベッセル関数(Spherical Bessel functions of the first kind)
+## 第1種球ベッセル関数（Spherical Bessel functions of the first kind）
 
 ~~~c++
 double       sph_bessel(unsigned n, double x);
@@ -498,9 +498,9 @@ float        sph_besself(unsigned n, float x);
 long double  sph_bessell(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対する第1種球ベッセル関数(Spherical Bessel functions of the first kind)を計算する。
+__効果__：実引数`n`, `x`に対する第1種球ベッセル関数（Spherical Bessel functions of the first kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{j}_n(x) =
@@ -508,11 +508,11 @@ $$
 	   \quad \mbox{for $x \ge 0$}
 $$
 
-注意： n \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__： `n` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 [第1種ベッセル関数](#sf.cmath.cyl_bessel_j)も参照。
 
-## 球ノイマン関数(Spherical Neumann functions)
+## 球ノイマン関数（Spherical Neumann functions）
 
 ~~~c++
 double       sph_neumann(unsigned n, double x);
@@ -520,9 +520,9 @@ float        sph_neumannf(unsigned n, float x);
 long double  sph_neumannl(unsigned n, long double x);
 ~~~
 
-効果：実引数n, xに対する球ノイマン関数(Spherical Neumann functions)、またの名を第2種球ベッセル関数(Spherical Bessel functions of the second kind)を計算する。
+__効果__：実引数`n`, `x`に対する球ノイマン関数（Spherical Neumann functions）、またの名を第2種球ベッセル関数（Spherical Bessel functions of the second kind）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{n}_n(x) =
@@ -530,14 +530,14 @@ $$
 	   \quad \mbox{for $x \ge 0$}
 $$
 
-$n$をn、$x$をxとする。
+$n$を`n`, $x$を`x`とする。
 
-注意：n \>= 128 のときの関数の呼び出しの効果は実装定義である。
+__注意__：`n` \>= 128 のときの関数の呼び出しの効果は実装定義である。
 
 [ノイマン関数](#sf.cmath.cyl_neumann)も参照。
 
 
-## 指数積分(Exponential integral)
+## 指数積分（Exponential integral）
 
 ~~~c++
 double       expint(double x);
@@ -545,9 +545,9 @@ float        expintf(float x);
 long double  expintl(long double x);
 ~~~
 
-効果：実引数xに対する指数積分(Exponential integral)を計算する。
+__効果__：実引数`x`に対する指数積分（Exponential integral）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{Ei}(x) =
@@ -556,10 +556,10 @@ $$
 \;
 $$
 
-$x$をxとする。
+$x$を`x`とする。
 
 
-## リーマンゼータ関数(Riemann zeta function)
+## リーマンゼータ関数（Riemann zeta function）
 
 ~~~c++
 double       riemann_zeta(double x);
@@ -567,9 +567,9 @@ float        riemann_zetaf(float x);
 long double  riemann_zetal(long double x);
 ~~~
 
-効果：実引数xに対するリーマンゼータ関数(Riemann zeta function)を計算する。
+__効果__：実引数`x`に対するリーマンゼータ関数（Riemann zeta function）を計算する。
 
-戻り値：
+__戻り値__：
 
 $$
   \mathsf{\zeta}(x) =
@@ -595,4 +595,4 @@ $$
 \;
 $$
 
-$x$をxとする。
+$x$を`x`とする。

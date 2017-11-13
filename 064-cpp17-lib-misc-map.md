@@ -1,6 +1,6 @@
 ## mapとunordered_mapの変更
 
-mapとunordered_mapに、try_emplaceとinsert_or_assignという2つのメンバー関数が入った。このメンバー関数はmulti_mapとunordered_multi_mapには追加されていない。
+`map`と`unordered_map`に、`try_emplace`と`insert_or_assign`という2つのメンバー関数が入った。このメンバー関数は`multi_map`と`unordered_multi_map`には追加されていない。
 
 ### try_emplace
 
@@ -16,7 +16,7 @@ try_emplace(
     const key_type& k, Args&&... args);
 ~~~
 
-従来のemplaceは、キーに対応する要素が存在しない場合、要素がargsからemplace構築されて追加される。もし、キーに対応する要素が存在する場合、要素は追加されない。要素が追加されない時、argsがムーブされるかどうかは実装定義である。
+従来の`emplace`は、キーに対応する要素が存在しない場合、要素が`args`から`emplace`構築されて追加される。もし、キーに対応する要素が存在する場合、要素は追加されない。要素が追加されない時、`args`がムーブされるかどうかは実装定義である。
 
 ~~~cpp
 int main()
@@ -36,9 +36,9 @@ int main()
 }
 ~~~
 
-この場合、実際にmapに要素は追加されていないのに、ptrはムーブされてしまうかもしれない。
+この場合、実際に`map`に要素は追加されていないのに、`ptr`はムーブされてしまうかもしれない。
 
-このため、C++17では、要素が追加されなかった場合argsはムーブされないことが保証されるtry_emplaceが追加された。
+このため、C++17では、要素が追加されなかった場合`args`はムーブされないことが保証される`try_emplace`が追加された。
 
 ~~~cpp
 int main()
@@ -72,7 +72,7 @@ insert_or_assign(
     const key_type& k, M&& obj);
 ~~~
 
-insert_or_assignはkeyに連想された要素が存在する場合は要素を代入し、存在しない場合は要素を追加する。operator []との違いは、要素が代入されたか追加されたかが、戻り値のpairのboolでわかるということだ。
+`insert_or_assign`は`key`に連想された要素が存在する場合は要素を代入し、存在しない場合は要素を追加する。`operator []`との違いは、要素が代入されたか追加されたかが、戻り値の`pair`の`bool`でわかるということだ。
 
 ~~~cpp
 int main()

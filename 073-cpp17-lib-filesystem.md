@@ -1,16 +1,16 @@
 # ファイルシステム
 
-ヘッダーファイル \<filesystem\> で定義されている標準ライブラリのファイルシステムは、ファイルやディレクトリーとその属性を扱うためのライブラリだ。
+ヘッダーファイル`<filesystem>`で定義されている標準ライブラリのファイルシステムは、ファイルやディレクトリーとその属性を扱うためのライブラリだ。
 
 一般に「ファイルシステム」といった場合、例えばLinuxのext4、Microsoft WindowsのFATやNTFS、Apple MacのHFS+やAPFSといったファイルとその属性を表現するためのストレージ上のデータ構造を意味する。C++の標準ライブラリのファイルシステムとは、そのようなファイルシステムを実現するデータ構造を操作するライブラリではない。ファイルシステムというデータ構造で抽象化された、ファイルやディレクトリーとその属性、それに付随する要素、例えばパスやファイルやディレクトリーを操作するためのライブラリのことだ。
 
-また、ファイルシステムライブラリでは、「ファイル」という用語は単に通常のファイルのみならず、ディレクトリー、シンボリックリンク、FIFO(名前付きパイプ)、ソケットなどの特殊なファイルも含む。
+また、ファイルシステムライブラリでは、「ファイル」という用語は単に通常のファイルのみならず、ディレクトリー、シンボリックリンク、FIFO（名前付きパイプ）、ソケットなどの特殊なファイルも含む。
 
 本書ではファイルシステムライブラリのすべてを詳細に解説していない。ファイルシステムライブラリは量が膨大なので、特定の関数の意味については、C++コンパイラーに付属のリファレンスマニュアルなどを参照するとよい。
 
 ## 名前空間
 
-ファイルシステムライブラリはstd::filesystem名前空間スコープの下に宣言されている。
+ファイルシステムライブラリは`std::filesystem`名前空間スコープの下に宣言されている。
 
 ~~~cpp
 int main()
@@ -19,7 +19,7 @@ int main()
 }
 ~~~
 
-この名前空間は長いので、ファイルシステムライブラリを使うときは、関数のブロックスコープ単位でusingディレクティブを使うか、名前空間エイリアスを使って短い別名をつけるとよい。
+この名前空間は長いので、ファイルシステムライブラリを使うときは、関数のブロックスコープ単位で`using`ディレクティブを使うか、名前空間エイリアスを使って短い別名をつけるとよい。
 
 ~~~cpp
 void using_directive()
@@ -47,24 +47,24 @@ C++のファイルシステムのファイル操作の挙動は、POSIX規格に
 
 ファイルシステムライブラリの全体像を簡単に箇条書きすると以下の通り。
 
-+ クラスpathでファイルパス文字列を扱う
-+ 例外クラスfilesystem_errorとクラスerror_codeでエラー通知
-+ クラスfile_statusでファイルの情報とパーミッションの取得、設定
-+ クラスdirectory_entryでディレクトリーの情報の取得、設定
-+ クラスdirectory_iteratorでディレクトリー構造をイテレーターとしてたどる
++ クラス`path`でファイルパス文字列を扱う
++ 例外クラス`filesystem_error`とクラス`error_code`でエラー通知
++ クラス`file_status`でファイルの情報とパーミッションの取得、設定
++ クラス`directory_entry`でディレクトリーの情報の取得、設定
++ クラス`directory_iterator`でディレクトリー構造をイテレーターとしてたどる
 + 多数のフリー関数でファイルとディレクトリーの操作
 
 ## エラー処理
 
-ファイルシステムライブラリでエラーが発生した場合、エラーの通知方法には2種類の方法がある。例外を使う方法と、ヘッダーファイル\<system_error\>で定義されているエラー通知用のクラスstd::error_codeへのリファレンスを実引数として渡してエラー内容を受け取る方法だ。
+ファイルシステムライブラリでエラーが発生した場合、エラーの通知方法には2種類の方法がある。例外を使う方法と、ヘッダーファイル`<system_error>`で定義されているエラー通知用のクラス`std::error_code`へのリファレンスを実引数として渡してエラー内容を受け取る方法だ。
 
 エラー処理の方法は、エラーの起こる期待度によって選択できる。一般に、エラーがめったに起こらない場合、エラーが起こるのは予期していない場合、エラー処理には例外を使ったほうがよい。エラーが頻繁に起こる場合、エラーが起こることが予期できる場合、エラー処理には例外を使わないほうがよい。
 
 ### 例外
 
-ファイルシステムライブラリの関数のうち、std::error_code &型を実引数に取らない関数は、以下のようにエラー通知を行う。
+ファイルシステムライブラリの関数のうち、`std::error_code &`型を実引数に取らない関数は、以下のようにエラー通知を行う。
 
-+ OSによるファイルシステム操作においてエラーが発生した場合、std::filesystem::filesystem_error型の例外がthrowされる。一つのpathを実引数に取る関数の場合、filesystem_errorのメンバー関数path1で実引数のpathが得られる。2つのpathを実引数に取る関数の場合、filesystem_errorのメンバー関数path1, path2で第一、第二引数がそれぞれ得られる。filesystem_errorはエラー内容に応じたerror_codeを持つ
++ OSによるファイルシステム操作においてエラーが発生した場合、`std::filesystem::filesystem_error`型の例外が`throw`される。一つの`path`を実引数に取る関数の場合、`filesystem_error`のメンバー関数`path1`で実引数の`path`が得られる。2つの`path`を実引数に取る関数の場合、`filesystem_error`のメンバー関数`path1`, `path2`で第一、第二引数がそれぞれ得られる。`filesystem_error`はエラー内容に応じた`error_code`を持つ
 
 + ストレージの確保に失敗した場合、既存の例外による通知が行われる
 
@@ -99,7 +99,7 @@ int main()
 ~~~
 
 
-filesystem_errorは以下のようなクラスになっている。
+`filesystem_error`は以下のようなクラスになっている。
 
 ~~~c++
 namespace std::filesystem {
@@ -117,9 +117,9 @@ namespace std::filesystem {
 
 ### 非例外
 
-ファイルシステムライブラリの関数のうち、std::error_code &型を実引数に取る関数は、以下のようにエラー通知を行う。
+ファイルシステムライブラリの関数のうち、`std::error_code &`型を実引数に取る関数は、以下のようにエラー通知を行う。
 
-+ OSによるファイルシステム操作においてエラーが発生した場合、error_code &型の実引数がエラー内容に応じて設定される。エラーがない場合、error_code &型の実引数に対してメンバー関数clear()が呼ばれる。
++ OSによるファイルシステム操作においてエラーが発生した場合、`error_code &`型の実引数がエラー内容に応じて設定される。エラーがない場合、`error_code &`型の実引数に対してメンバー関数`clear()`が呼ばれる。
 
 
 ~~~cpp
@@ -149,23 +149,23 @@ int main()
 
 ## path : ファイルパス文字列クラス
 
-std::filesystem::pathはファイルパスを文字列で表現するためのクラスだ。文字列を表現するクラスとしてC++にはすでにstd::stringがあるが、ファイルパスという文字列を表現するために、別の専用クラスが作られた。
+`std::filesystem::path`はファイルパスを文字列で表現するためのクラスだ。文字列を表現するクラスとしてC++にはすでに`std::string`があるが、ファイルパスという文字列を表現するために、別の専用クラスが作られた。
 
-クラスpathは以下の機能を提供する。
+クラス`path`は以下の機能を提供する。
 
 + ファイルパス文字列の表現
 + ファイルパス文字列の操作
 
-pathはファイルパス文字列の表現と操作だけを提供するクラスで、物理ファイルシステムへの変更のコミットはしない。
+`path`はファイルパス文字列の表現と操作だけを提供するクラスで、物理ファイルシステムへの変更のコミットはしない。
 
 
-ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型をchar型としてUTF-8エンコードで表現するOSが多いが、Microsoft Windowsで本書執筆現在、文字型をwchar_tとしてUTF-16エンコードで表現する慣習になっている。
+ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を`char`型としてUTF-8エンコードで表現するOSが多いが、Microsoft Windowsで本書執筆現在、文字型を`wchar_t`としてUTF-16エンコードで表現する慣習になっている。
 
 また、OSによってはラテンアルファベットの大文字小文字を区別しなかったり、区別はするが無視されたりする実装もある。
 
-クラスpathはそのようなファイルパス文字列の差異を吸収してくれる。
+クラス`path`はそのようなファイルパス文字列の差異を吸収してくれる。
 
-クラスpathには以下のようなネストされた型名がある。
+クラス`path`には以下のようなネストされた型名がある。
 
 ~~~c++
 namespace std::filesystem {
@@ -177,19 +177,19 @@ public:
 } ;
 ~~~
 
-value_typeとstring_typeはpathが内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。preferred_separatorは、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では`/`が用いられるが、Microsoft Windowsでは`\`が使われている。
+`value_type`と`string_type`は`path`が内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。`preferred_separator`は、推奨されるディレクトリー区切り文字だ。例えばPOSIX互換環境では`/`が用いられるが、Microsoft Windowsでは`\`が使われている。
 
 ### ファイルパスの文字列
 
 ファイルパスは文字列で表現する。C++の文字列のエンコードには以下のものがある。
 
-+ char:     ネイティブナローエンコード
-+ wchar_t:  ネイティブワイドエンコード
-+ char:     UTF-8エンコード
-+ char16_t: UTF-16エンコード
-+ char32_t: UTF-32エンコード
++ `char`:     ネイティブナローエンコード
++ `wchar_t`:  ネイティブワイドエンコード
++ `char`:     UTF-8エンコード
++ `char16_t`: UTF-16エンコード
++ `char32_t`: UTF-32エンコード
 
-path::value_typeがどの文字型を使い、どの文字列エンコードを使っているかは実装依存だ。pathはどの文字列エンコードが渡されても、path::value_typeの文字型と文字エンコードになるように自動的に変換が行われる。
+`path::value_type`がどの文字型を使い、どの文字列エンコードを使っているかは実装依存だ。`path`はどの文字列エンコードが渡されても、`path::value_type`の文字型と文字エンコードになるように自動的に変換が行われる。
 
 ~~~cpp
 int main()
@@ -209,7 +209,7 @@ int main()
 
 なので、どの文字列エンコードで渡しても動く。
 
-C++ではUTF-8エンコードの文字型はcharで、これはネイティブナローエンコードの文字型と同じなので、型システムによって区別できない。そのため、UTF-8文字列リテラルを渡すと、ネイティブナローエンコードとして認識される。
+C++ではUTF-8エンコードの文字型は`char`で、これはネイティブナローエンコードの文字型と同じなので、型システムによって区別できない。そのため、UTF-8文字列リテラルを渡すと、ネイティブナローエンコードとして認識される。
 
 ~~~cpp
 int main()
@@ -221,7 +221,7 @@ int main()
 }
 ~~~
 
-このコードは、ネイティブナローエンコードがUTF-8ではない場合、動く保証のない移植性の低いコードだ。UTF-8エンコードを移植性の高い方法でファイルパスとして使いたい場合、u8pathを使うとよい。
+このコードは、ネイティブナローエンコードがUTF-8ではない場合、動く保証のない移植性の低いコードだ。UTF-8エンコードを移植性の高い方法でファイルパスとして使いたい場合、`u8path`を使うとよい。
 
 ~~~cpp
 int main()
@@ -234,7 +234,7 @@ int main()
 }
 ~~~
 
-u8path(Source)はSourceをUTF-8エンコードされた文字列として扱うので、通常の文字列リテラルを渡すと、ネイティブナローエンコードがUTF-8ではない環境では問題になる。
+`u8path(Source)`は`Source`をUTF-8エンコードされた文字列として扱うので、通常の文字列リテラルを渡すと、ネイティブナローエンコードがUTF-8ではない環境では問題になる。
 
 ~~~cpp
 int main()
@@ -247,11 +247,11 @@ int main()
 }
 ~~~
 
-u8pathを使う場合は、文字列は必ずUTF-8エンコードしなければならない。
+`u8path`を使う場合は、文字列は必ずUTF-8エンコードしなければならない。
 
-環境によっては、ファイルパスに使える文字に制限があり、また特定の文字列は特別な意味を持つ予約語になっていることもあるので、移植性の高いプログラムの作成に当たってはこの点でも注意が必要だ。例えば、環境によっては大文字小文字の区別をしないかもしれない。また、CONやAUXのような文字列が特別な意味を持つかもしれない。
+環境によっては、ファイルパスに使える文字に制限があり、また特定の文字列は特別な意味を持つ予約語になっていることもあるので、移植性の高いプログラムの作成に当たってはこの点でも注意が必要だ。例えば、環境によっては大文字小文字の区別をしないかもしれない。また、`CON`や`AUX`のような文字列が特別な意味を持つかもしれない。
 
-pathに格納されているファイルパス文字列を取得する方法は、環境依存の文字列エンコードとファイルパスの表現方法の差異により、様々な方法が用意されている。
+`path`に格納されているファイルパス文字列を取得する方法は、環境依存の文字列エンコードとファイルパスの表現方法の差異により、様々な方法が用意されている。
 
 ファイルパス文字列のフォーマットには以下の2つがある。
 
@@ -262,7 +262,7 @@ POSIX準拠の環境においては、ネイティブとジェネリックは全
 
 例えば、Microsoft Windowsでは、ネイティブのファイルパス文字列はディレクトリーの区切り文字にPOSIX準拠の`/`ではなく`\`を使っている。
 
-まずメンバー関数nativeとc_strがある。
+まずメンバー関数`native`と`c_str`がある。
 
 ~~~c++
 class path {
@@ -274,7 +274,7 @@ public :
 ~~~
 
 
-これはクラスpathが内部で使っている実装依存のネイティブな文字列型をそのまま返すものだ。
+これはクラス`path`が内部で使っている実装依存のネイティブな文字列型をそのまま返すものだ。
 
 ~~~cpp
 int main()
@@ -294,9 +294,9 @@ int main()
 
 このメンバー関数を使うコードは移植性に注意が必要だ。
 
-strの型はpath::string_typeで、ptrの型は実装依存のpath::value_type const *だ。path::value_typeとpath::string_typeは、charやwchar_t、std::stringやstd::wstringのようなC++が標準で定義する型ではない可能性がある。
+`str`の型は`path::string_type`で、`ptr`の型は実装依存の`path::value_type const *`だ。`path::value_typeとpath::string_type`は、`char`や`wchar_t`、`std::stringやstd::wstring`のようなC++が標準で定義する型ではない可能性がある。
 
-そして、path::string_typeへの変換関数operator string_type()がある。
+そして、`path::string_type`への変換関数`operator string_type()`がある。
 
 ~~~cpp
 int main()
@@ -310,7 +310,7 @@ int main()
 }
 ~~~
 
-pathのoperator string_type()は、ネイティブの文字列型を既存のファイルストリームライブラリでオープンできる形式に変換して返す。例えば空白文字を含むファイルパスのために、二重引用符で囲まれている文字列に変換されるかもしれない。
+`path`の`operator string_type()`は、ネイティブの文字列型を既存のファイルストリームライブラリでオープンできる形式に変換して返す。例えば空白文字を含むファイルパスのために、二重引用符で囲まれている文字列に変換されるかもしれない。
 
 
 ~~~cpp
@@ -324,7 +324,7 @@ int main()
 }
 ~~~
 
-ネイティブのファイルパス文字列をstring, wstring, u16string, u32stringに変換して取得するメンバー関数に以下のものがある。
+ネイティブのファイルパス文字列を`string`, `wstring`, `u16string`, `u32string`に変換して取得するメンバー関数に以下のものがある。
 
 ~~~c++
 class path {
@@ -337,7 +337,7 @@ public :
 } ;
 ~~~
 
-このうち、メンバー関数stringはネイティブナローエンコードされたstd::string、メンバー関数u8stringはUTF-8エンコードされたstd::stringを返す。
+このうち、メンバー関数`string`はネイティブナローエンコードされた`std::string`、メンバー関数`u8string`はUTF-8エンコードされた`std::string`を返す。
 
 ~~~cpp
 int main()
@@ -350,7 +350,7 @@ int main()
 }
 ~~~
 
-ファイルパス文字列をジェネリックに変換して返すgeneric_string()系のメンバー関数がある。
+ファイルパス文字列をジェネリックに変換して返す`generic_string()`系のメンバー関数がある。
 
 ~~~c++
 class path {
@@ -363,20 +363,20 @@ public :
 } ;
 ~~~
 
-使い方はネイティブな文字列を返すstring()系のメンバー関数と同じだ。
+使い方はネイティブな文字列を返す`string()`系のメンバー関数と同じだ。
 
 ファイルパスの文字列の文字型と文字列エンコードは環境ごとに異なるので、移植性の高いコードを書くときには注意が必要だ。
 
-現実的には、モダンなPOSIX準拠の環境では、文字型はchar、文字列型はstd::string、エンコードはUTF-8になる。
+現実的には、モダンなPOSIX準拠の環境では、文字型は`char`、文字列型は`std::string`、エンコードはUTF-8になる。
 
-Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型はwchar_t、文字列型はstd::wstring、エンコードはUTF-16となっている。
+Microsoft WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型は`wchar_t`、文字列型は`std::wstring`、エンコードはUTF-16となっている。
 
 
 ### ファイルパスの操作
 
-クラスpathはファイルパス文字列の操作を提供している。std::stringとは違い、findやsubstrのような操作は提供していないが、ファイルパス文字列に特化した操作を提供している。
+クラス`path`はファイルパス文字列の操作を提供している。`std::string`とは違い、`find`や`substr`のような操作は提供していないが、ファイルパス文字列に特化した操作を提供している。
 
-operator /, operator /=はセパレーターで区切ったファイルパス文字列の追加を行う。
+`operator /`, `operator /=`はセパレーターで区切ったファイルパス文字列の追加を行う。
 
 ~~~cpp
 int main()
@@ -392,7 +392,7 @@ int main()
 }
 ~~~
 
-operator +=は単なる文字列の結合を行う。
+`operator +=`は単なる文字列の結合を行う。
 
 ~~~cpp
 int main()
@@ -410,9 +410,9 @@ int main()
 }
 ~~~
 
-operator /と違い、operator +は存在しない。
+`operator /`と違い、`operator +`は存在しない。
 
-その他にも、pathは様々なファイルパス文字列に対する操作を提供している。以下はその一例だ。
+その他にも、`path`は様々なファイルパス文字列に対する操作を提供している。以下はその一例だ。
 
 ~~~cpp
 int main()
@@ -434,21 +434,21 @@ int main()
 }
 ~~~
 
-pathはファイルパス文字列に対してよく行う文字列処理を提供している。例えばファイル名だけ抜き出す処理、拡張子だけ抜き出す処理、拡張子を変える処理などだ。
+`path`はファイルパス文字列に対してよく行う文字列処理を提供している。例えばファイル名だけ抜き出す処理、拡張子だけ抜き出す処理、拡張子を変える処理などだ。
 
 ## file_status
 
-クラスfile_statusはファイルのタイプとパーミッションを保持するクラスだ。
+クラス`file_status`はファイルのタイプとパーミッションを保持するクラスだ。
 
-ファイルのタイプとパーミッションはファイルパス文字列を指定して取得する方法が別途あるが、その方法では毎回物理ファイルシステムへのアクセスが発生する。file_statusはファイルのタイプとパーミッション情報を保持するクラスとして、いわばキャッシュの役割を果たす。
+ファイルのタイプとパーミッションはファイルパス文字列を指定して取得する方法が別途あるが、その方法では毎回物理ファイルシステムへのアクセスが発生する。`file_status`はファイルのタイプとパーミッション情報を保持するクラスとして、いわばキャッシュの役割を果たす。
 
-file_statusは物理ファイルシステムへの変更のコミットはしない。
+`file_status`は物理ファイルシステムへの変更のコミットはしない。
 
-file_statusクラスはstatus(path)もしくはstatus(path, error_code)で取得できる。あるいは、directory_entryのメンバー関数status()から取得できる。
+`file_status`クラスは`status(path)`もしくは`status(path, error_code)`で取得できる。あるいは、`directory_entry`のメンバー関数`status()`から取得できる。
 
-タイプというのは、ファイルが種類を表すenum型file_typeで、通常のファイルやディレクトリーやシンボリックリンクといったファイルの種類を表す。
+タイプというのは、ファイルが種類を表す`enum`型`file_type`で、通常のファイルやディレクトリーやシンボリックリンクといったファイルの種類を表す。
 
-パーミッションというのは、ファイルの権限を表すビットマスクのenum型permsで、ファイルの所有者とグループと他人に対す読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
+パーミッションというのは、ファイルの権限を表すビットマスクの`enum`型`perms`で、ファイルの所有者とグループと他人に対す読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
 
 ファイルのタイプとパーミッションを取得するメンバー関数は以下の通り。
 
@@ -499,9 +499,9 @@ int main()
 
 このプログラムは、カレントディレクトリーにある通常のファイルの数と、実行可能なファイルの数を表示する。
 
-ファイルパーミッションを表現するenum型permsは、パーミッションが不明な場合perms::unknownになる。この値は0xFFFFなのでビット演算をする場合には注意が必要だ。
+ファイルパーミッションを表現する`enum`型`perms`は、パーミッションが不明な場合`perms::unknown`になる。この値は`0xFFFF`なのでビット演算をする場合には注意が必要だ。
 
-それ以外のpermsの値はPOSIXに準拠しているが、permsはscoped enum型なので、明示的なキャストが必要だ。
+それ以外の`perms`の値はPOSIXに準拠しているが、`perms`は`scoped enum`型なので、明示的なキャストが必要だ。
 
 ~~~c++
 // エラー
@@ -518,18 +518,18 @@ void type(file_type ft) noexcept;
 void permissions(perms prms) noexcept;
 ~~~
 
-ただし、file_statusというのは単なるキャッシュ用のクラスなので、file_statusのタイプとパーミッションを「書き換える」というのは、単にfile_statusのオブジェクトに保持されている値を書き換えるだけで、物理ファイルシステムに反映されるものではない。物理ファイルシステムを書き換えるには、フリー関数のpermissionsを使う。
+ただし、`file_status`というのは単なるキャッシュ用のクラスなので、`file_status`のタイプとパーミッションを「書き換える」というのは、単に`file_status`のオブジェクトに保持されている値を書き換えるだけで、物理ファイルシステムに反映されるものではない。物理ファイルシステムを書き換えるには、フリー関数の`permissions`を使う。
 
 
 ## directory_entry
 
-クラスdirectory_entryはファイルパス文字列を保持し、ファイルパスの指し示すファイルの情報を取得できるクラスだ。
+クラス`directory_entry`はファイルパス文字列を保持し、ファイルパスの指し示すファイルの情報を取得できるクラスだ。
 
-物理ファイルシステムからファイルの情報を毎回読むのは非効率的だ。directory_entryはいわばファイル情報のキャッシュとしての用途を持つ。
+物理ファイルシステムからファイルの情報を毎回読むのは非効率的だ。`directory_entry`はいわばファイル情報のキャッシュとしての用途を持つ。
 
-directory_entryは物理ファイルシステムから情報を読み込むだけで、変更のコミットはしない。
+`directory_entry`は物理ファイルシステムから情報を読み込むだけで、変更のコミットはしない。
 
-directory_entryの構築は、コンストラクターに引数としてpathを与える他、directory_iteratorとrecursive_directory_iteratorからも得ることができる。
+`directory_entry`の構築は、コンストラクターに引数として`path`を与える他、`directory_iterator`と`recursive_directory_iterator`からも得ることができる。
 
 ~~~cpp
 int main()
@@ -550,7 +550,7 @@ int main()
 }
 ~~~
 
-directory_entryには様々なファイル情報を取得するメンバー関数があるが、これは同じ機能のものがフリー関数でも用意されている。directory_entryを使うと、ファイル情報をキャッシュできるため、同じファイルパスに対して、物理ファイルシステムの変更がないときに複数回のファイル情報取得を行うのが効率的になる。
+`directory_entry`には様々なファイル情報を取得するメンバー関数があるが、これは同じ機能のものがフリー関数でも用意されている。`directory_entry`を使うと、ファイル情報をキャッシュできるため、同じファイルパスに対して、物理ファイルシステムの変更がないときに複数回のファイル情報取得を行うのが効率的になる。
 
 ~~~cpp
 int main()
@@ -586,11 +586,11 @@ int main()
 }
 ~~~
 
-directory_entryはキャッシュ用のクラスで、自動的に物理ファイルシステムの変更に追随しないので、最新の情報を取得するには、明示的にメンバー関数refreshを呼び出す必要がある。
+`directory_entry`はキャッシュ用のクラスで、自動的に物理ファイルシステムの変更に追随しないので、最新の情報を取得するには、明示的にメンバー関数`refresh`を呼び出す必要がある。
 
 ## directory_iterator
 
-directory_iteratorは、あるディレクトリー下に存在するファイルパスをイテレーターの形式で列挙するためのクラスだ。
+`directory_iterator`は、あるディレクトリー下に存在するファイルパスをイテレーターの形式で列挙するためのクラスだ。
 
 例えば、カレントディレクトリー下のファイルパスをすべて列挙するコードは以下のようになる。
 
@@ -604,25 +604,25 @@ int main()
 }
 ~~~
 
-directory_iteratorはコンストラクターとしてpathを渡すと、そのディレクトリー下の最初のファイルに相当するdirectory_entryを返すイテレーターとなる。コンストラクターで指定されたディレクトリー下にファイルが存在しない場合、終端イテレーターになる。
+`directory_iterator`はコンストラクターとして`path`を渡すと、そのディレクトリー下の最初のファイルに相当する`directory_entry`を返すイテレーターとなる。コンストラクターで指定されたディレクトリー下にファイルが存在しない場合、終端イテレーターになる。
 
-directory_iteratorのデフォルトコンストラクターは終端イテレーターになる。終端イテレーターはデリファレンスできない。
+`directory_iterator`のデフォルトコンストラクターは終端イテレーターになる。終端イテレーターはデリファレンスできない。
 
-directory_iterator::value_typeはdirectory_entryで、イテレーターのカテゴリーは入力イテレーターとなる。
+`directory_iterator::value_type`は`directory_entry`で、イテレーターのカテゴリーは入力イテレーターとなる。
 
-directory_iteratorはカレントディレクトリー(.)と親ディレクトリー(..)は列挙しない。
+`directory_iterator`はカレントディレクトリー（`.`）と親ディレクトリー（`..`）は列挙しない。
 
-directory_iteratorがディレクトリー下のファイルをどのような順番で列挙するかは未規定だ。
+`directory_iterator`がディレクトリー下のファイルをどのような順番で列挙するかは未規定だ。
 
-directory_iteratorによって返されるファイルパスは存在しない可能性があるので、ファイルが存在することを当てにしてはいけない。例えば、存在しないファイルへのシンボリックリンクかもしれない。
+`directory_iterator`によって返されるファイルパスは存在しない可能性があるので、ファイルが存在することを当てにしてはいけない。例えば、存在しないファイルへのシンボリックリンクかもしれない。
 
-directory_iteratorのオブジェクトが作成されたあとに物理ファイルシステムになされた変更は、反映されるかどうか未規定である。
+`directory_iterator`のオブジェクトが作成されたあとに物理ファイルシステムになされた変更は、反映されるかどうか未規定である。
 
-directory_iteratorのコンストラクターは列挙時の動作を指定できるdirectory_optionsを実引数に受け取ることができる。しかし、C++17の標準規格の範囲ではdirectory_iteratorの挙動を変更するdirectory_optionsは規定されていない。
+`directory_iterator`のコンストラクターは列挙時の動作を指定できる`directory_options`を実引数に受け取ることができる。しかし、C++17の標準規格の範囲では`directory_iterator`の挙動を変更する`directory_options`は規定されていない。
 
 ### エラー処理
 
-directory_iteratorは構築時にエラーが発生することがある。このエラーを例外ではなくerror_codeで受け取りたい場合、コンストラクターの実引数でerror_codeへのリファレンスを渡す。
+`directory_iterator`は構築時にエラーが発生することがある。このエラーを例外ではなく`error_code`で受け取りたい場合、コンストラクターの実引数で`error_code`へのリファレンスを渡す。
 
 ~~~cpp
 int main()
@@ -640,7 +640,7 @@ int main()
 }
 ~~~
 
-directory_iteratorはインクリメント時にエラーが発生することがある。このエラーを例外ではなくerror_codeで受け取りたい場合、メンバー関数incrementを呼び出す。
+`directory_iterator`はインクリメント時にエラーが発生することがある。このエラーを例外ではなく`error_code`で受け取りたい場合、メンバー関数`increment`を呼び出す。
 
 ~~~cpp
 int main()
@@ -665,7 +665,7 @@ int main()
 
 ## recursive_directory_iterator
 
-recursive_directory_iteratorは指定されたディレクトリー下に存在するサブディレクトリーの下も含めて、すべてのファイルを列挙する。使い方はdirectory_iteratorとほぼ同じだ。
+`recursive_directory_iterator`は指定されたディレクトリー下に存在するサブディレクトリーの下も含めて、すべてのファイルを列挙する。使い方は`directory_iterator`とほぼ同じだ。
 
 ~~~cpp
 int main()
@@ -678,19 +678,19 @@ int main()
 }
 ~~~
 
-メンバー関数options, depth, recursion_pending, pop, disable_recursion_pendingをデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
+メンバー関数`options`, `depth`, `recursion_pending`, `pop`, `disable_recursion_pending`をデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
 
 ### オプション
 
-recursive_directory_iteratorはコンストラクターの実引数にdirectory_options型のscoped enum値を取ることによって、挙動を変更できる。directory_options型のenum値はビットマスクになっていて、以下の3つのビットマスク値が規定されている。
+`recursive_directory_iterator`はコンストラクターの実引数に`directory_options`型の`scoped enum`値を取ることによって、挙動を変更できる。`directory_options`型の`enum`値はビットマスクになっていて、以下の3つのビットマスク値が規定されている。
 
 名前                            意味
 ------                          ------
-none                            デフォルト。ディレクトリーシンボリックリンクをスキップ。パーミッション違反はエラー
-follow_directory_symlink        ディレクトリーシンボリックリンクの中も列挙
-skip_permission_denied          パーミッション違反のディレクトリーはスキップ
+`none`                          デフォルト。ディレクトリーシンボリックリンクをスキップ。パーミッション違反はエラー
+`follow_directory_symlink`      ディレクトリーシンボリックリンクの中も列挙
+`skip_permission_denied`        パーミッション違反のディレクトリーはスキップ
 
-このうち取りうる組み合わせは、none, follow_directory_symlink, skip_permission_denied, follow_directory_symlink | skip_permission_deniedの4種類になる。
+このうち取りうる組み合わせは、`none`, `follow_directory_symlink`, `skip_permission_denied`, `follow_directory_symlink | skip_permission_denied`の4種類になる。
 
 ~~~cpp
 int main()
@@ -704,7 +704,7 @@ int main()
 }
 ~~~
 
-follow_directory_symlinkは、親ディレクトリーへのシンボリックリンクが存在する場合、イテレーターが終端イテレーターに到達しない可能性があるので注意すること。
+`follow_directory_symlink`は、親ディレクトリーへのシンボリックリンクが存在する場合、イテレーターが終端イテレーターに到達しない可能性があるので注意すること。
 
 ~~~cpp
 int main()
@@ -722,7 +722,7 @@ int main()
 }
 ~~~
 
-recursive_directory_iteratorの現在のdirectory_optionsを得るには、メンバー関数optionsを呼ぶ。
+`recursive_directory_iterator`の現在の`directory_options`を得るには、メンバー関数`options`を呼ぶ。
 
 ~~~c++
 class recursive_directory_iterator {
@@ -732,7 +732,7 @@ public :
 ~~~
 
 ### depth : 深さ取得
-recursive_directory_iteratorが現在列挙しているディレクトリーの深さを知るには、メンバー関数depthを呼ぶ。
+`recursive_directory_iterator`が現在列挙しているディレクトリーの深さを知るには、メンバー関数`depth`を呼ぶ。
 
 ~~~c++
 class recursive_directory_iterator {
@@ -746,7 +746,7 @@ public :
 
 ### pop : 現在のディレクトリーの列挙中止
 
-メンバー関数popを呼ぶと、現在列挙中のディレクトリーの列挙を取りやめ、親ディレクトリーに戻る。現在のディレクトリーが初期ディレクトリーの場合、つまりdepth() == 0の場合は、終端イテレーターになる。
+メンバー関数`pop`を呼ぶと、現在列挙中のディレクトリーの列挙を取りやめ、親ディレクトリーに戻る。現在のディレクトリーが初期ディレクトリーの場合、つまり`depth() == 0`の場合は、終端イテレーターになる。
 
 ~~~c++
 class recursive_directory_iterator {
@@ -799,11 +799,11 @@ c
 d
 ~~~
 
-"b/a"に到達した時点でpop()が呼ばれるので、それ以上のディレクトリーb下の列挙が中止され、親ディレクトリーであるカレントディレクトリーに戻る。
+"`b/a`"に到達した時点で`pop()`が呼ばれるので、それ以上のディレクトリー`b`下の列挙が中止され、親ディレクトリーであるカレントディレクトリーに戻る。
 
 ### recursion_pending : 現在のディレクトリーの再帰をスキップ
 
-disable_recursion_pendingは現在のディレクトリーの下を再帰的に列挙することをスキップする機能だ。
+`disable_recursion_pending`は現在のディレクトリーの下を再帰的に列挙することをスキップする機能だ。
 
 ~~~c++
 class recursive_directory_iterator {
@@ -813,9 +813,9 @@ public :
 } ;
 ~~~
 
-recursion_pending()は、直前のイテレーターのインクリメント操作の後にdisable_recursion_pending()が呼ばれていない場合、trueを返す。そうでない場合はfalseを返す。
+`recursion_pending()`は、直前のイテレーターのインクリメント操作の後に`disable_recursion_pending()`が呼ばれていない場合、`true`を返す。そうでない場合は`false`を返す。
 
-言い換えれば、disable_recursion_pending()を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、recursion_pneding()はfalseを返す。
+言い換えれば、`disable_recursion_pending()`を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、`recursion_pneding()`は`false`を返す。
 
 ~~~cpp
 int main()
@@ -841,9 +841,9 @@ int main()
 }
 ~~~
 
-現在recursive_directory_iteratorが指しているファイルパスがディレクトリーである場合、そのイテレーターをインクリメントすると、そのディレクトリー下を再帰的に列挙することになる。しかし、recursion_pending()がfalseを返す場合、ディレクトリーの最適的な列挙はスキップされる。インクリメント操作が行われた後はrecursion_pending()の結果はtrueに戻る。
+現在`recursive_directory_iterator`が指しているファイルパスがディレクトリーである場合、そのイテレーターをインクリメントすると、そのディレクトリー下を再帰的に列挙することになる。しかし、`recursion_pending()`が`false`を返す場合、ディレクトリーの最適的な列挙はスキップされる。インクリメント操作が行われた後は`recursion_pending()`の結果は`true`に戻る。
 
-つまり、disable_recursion_pendingは、現在指しているディレクトリー下を再帰的に列挙することをスキップする機能を提供する。
+つまり、`disable_recursion_pending`は、現在指しているディレクトリー下を再帰的に列挙することをスキップする機能を提供する。
 
 例えば、カレントディレクトリーが以下のようなディレクトリーツリーで、イテレーターが以下に書かれた順番でファイルを列挙する環境の場合、
 
@@ -887,9 +887,9 @@ c
 d
 ~~~
 
-このプログラムはディレクトリーであれば必ずdisable_recursion_pending()が呼ばれるので、サブディレクトリーの再帰的な列挙は行われず、結果的に動作はdirectory_iteratorと同じになる。
+このプログラムはディレクトリーであれば必ず`disable_recursion_pending()`が呼ばれるので、サブディレクトリーの再帰的な列挙は行われず、結果的に動作は`directory_iterator`と同じになる。
 
-disable_recursion_pendingを呼び出すことによって、選択的にディレクトリーの再帰的な列挙をスキップさせることができる。
+`disable_recursion_pending`を呼び出すことによって、選択的にディレクトリーの再帰的な列挙をスキップさせることができる。
 
 ## ファイルシステム操作関数
 
@@ -902,7 +902,7 @@ path current_path();
 path current_path(error_code& ec);
 ~~~
 
-カレント・ワーキング・ディレクトリー(current working directory)への絶対パスを返す。
+カレント・ワーキング・ディレクトリー（current working directory）への絶対パスを返す。
 
 #### temp_directory_path
 
@@ -911,7 +911,7 @@ path temp_directory_path();
 path temp_directory_path(error_code& ec);
 ~~~
 
-一時ファイルを作成するのに最適な一時ディレクトリー(temporary directory)へのファイルパスを返す。
+一時ファイルを作成するのに最適な一時ディレクトリー（temporary directory）へのファイルパスを返す。
 
 ### ファイルパス操作
 
@@ -922,7 +922,7 @@ path absolute(const path& p);
 path absolute(const path& p, error_code& ec);
 ~~~
 
-pへの絶対パスを返す。pの指すファイルが存在しない場合の挙動は未規定。
+`p`への絶対パスを返す。`p`の指すファイルが存在しない場合の挙動は未規定。
 
 #### canonical
 
@@ -932,7 +932,7 @@ path canonical(const path& p, error_code& ec);
 path canonical(const path& p, const path& base, error_code& ec);
 ~~~
 
-存在するファイルへのファイルパスpへの、シンボリックリンク、カレントディレクトリー(.)、親ディレクトリー(..)の存在しない絶対パスを返す。
+存在するファイルへのファイルパス`p`への、シンボリックリンク、カレントディレクトリー（`.`）、親ディレクトリー（`..`）の存在しない絶対パスを返す。
 
 #### wealky_canonical
 
@@ -941,7 +941,7 @@ path weakly_canonical(const path& p);
 path weakly_canonical(const path& p, error_code& ec);
 ~~~
 
-ファイルパスpのシンボリックリンクが解決され、正規化されたパスを返す。ファイルパスの正規化についての定義は長くなるので省略。
+ファイルパス`p`のシンボリックリンクが解決され、正規化されたパスを返す。ファイルパスの正規化についての定義は長くなるので省略。
 
 #### relative
 
@@ -951,7 +951,7 @@ path relative(const path& p, const path& base = current_path());
 path relative(const path& p, const path& base, error_code& ec);
 ~~~
 
-ファイルパスbaseからファイルパスpに対する相対パスを返す。
+ファイルパス`base`からファイルパス`p`に対する相対パスを返す。
 
 #### proximate
 
@@ -961,7 +961,7 @@ path proximate(const path& p, const path& base = current_path());
 path proximate(const path& p, const path& base, error_code& ec);
 ~~~
 
-ファイルパスbaseからのファイルパスpに対する相対パスが空パスでなければ相対パスを返す。相対パスが空パスならばpが返る。
+ファイルパス`base`からのファイルパス`p`に対する相対パスが空パスでなければ相対パスを返す。相対パスが空パスならば`p`が返る。
 
 ### 作成
 
@@ -972,7 +972,7 @@ bool create_directory(const path& p);
 bool create_directory(const path& p, error_code& ec) noexcept;
 ~~~
 
-pの指すディレクトリーをひとつ作成する。新しいディレクトリーが作成できた場合はtrueを、作成できなかった場合はfalseを返す。pが既存のディレクトリーを指していて新しいディレクトリーが作成できなかった場合はエラーにはならない。単にfalseが返る。
+`p`の指すディレクトリーをひとつ作成する。新しいディレクトリーが作成できた場合は`true`を、作成できなかった場合は`false`を返す。`p`が既存のディレクトリーを指していて新しいディレクトリーが作成できなかった場合はエラーにはならない。単に`false`が返る。
 
 ~~~c++
 bool create_directory(
@@ -983,7 +983,7 @@ bool create_directory(
     error_code& ec) noexcept;
 ~~~
 
-新しく作成するディレクトリーpのアトリビュートを既存のディレクトリーexisting_pと同じものにする。
+新しく作成するディレクトリー`p`のアトリビュートを既存のディレクトリー`existing_p`と同じものにする。
 
 #### create_directories
 
@@ -992,9 +992,9 @@ bool create_directories(const path& p);
 bool create_directories(const path& p, error_code& ec) noexcept;
 ~~~
 
-ファイルパスpの中のディレクトリーで存在しないものをすべて作成する。
+ファイルパス`p`の中のディレクトリーで存在しないものをすべて作成する。
 
-以下のプログラムは、カレントディレクトリーの下のディレクトリーaの下のディレクトリーbの下にディレクトリーcを作成する。もし、途中のディレクトリーであるa, bが存在しない場合、それも作成する。
+以下のプログラムは、カレントディレクトリーの下のディレクトリー`a`の下のディレクトリー`b`の下にディレクトリー`c`を作成する。もし、途中のディレクトリーである`a`, `b`が存在しない場合、それも作成する。
 
 ~~~cpp
 int main()
@@ -1004,7 +1004,7 @@ int main()
 }
 ~~~
 
-戻り値は、ディレクトリーを作成した場合true、そうでない場合false。
+戻り値は、ディレクトリーを作成した場合`true`、そうでない場合`false`。
 
 #### create_directory_symlink
 
@@ -1016,9 +1016,9 @@ void create_directory_symlink(
     error_code& ec) noexcept;
 ~~~
 
-ディレクトリーtoに解決されるシンボリックリンクnew_symlinkを作成する。
+ディレクトリー`to`に解決されるシンボリックリンク`new_symlink`を作成する。
 
-一部のOSでは、ディレクトリーへのシンボリックリンクとファイルへのシンボリックリンクを作成時に明示的に区別する必要がある。ポータブルなコードはディレクトリーへのシンボリックリンクを作成するときにはcreate_symlinkではなくcreate_directory_symlinkを使うべきである。
+一部のOSでは、ディレクトリーへのシンボリックリンクとファイルへのシンボリックリンクを作成時に明示的に区別する必要がある。ポータブルなコードはディレクトリーへのシンボリックリンクを作成するときには`create_symlink`ではなく`create_directory_symlink`を使うべきである。
 
 一部のOSはシンボリックリンクをサポートしていない。ポータブルなコードでは注意すべきである。
 
@@ -1032,7 +1032,7 @@ void create_symlink(
     error_code& ec) noexcept;
 ~~~
 
-ファイルパスtoに解決されるシンボリックリンクnew_symlinkを作成する。
+ファイルパス`to`に解決されるシンボリックリンク`new_symlink`を作成する。
 
 #### create_hard_link
 
@@ -1044,7 +1044,7 @@ void create_hard_link(
     error_code& ec) noexcept;
 ~~~
 
-ファイルパスtoに解決されるハードリンクnew_hard_linkを作成する。
+ファイルパス`to`に解決されるハードリンク`new_hard_link`を作成する。
 
 ### コピー
 
@@ -1061,17 +1061,17 @@ bool copy_file( const path& from, const path& to,
                 error_code& ec) noexcept;
 ~~~
 
-ファイルパスfromのファイルをファイルパスtoにコピーする。
+ファイルパス`from`のファイルをファイルパス`to`にコピーする。
 
-copy_optionsはコピーの挙動を変えるビットマスクのenum型で、以下のenum値がサポートされている。
+`copy_options`はコピーの挙動を変えるビットマスクの`enum`型で、以下の`enum`値がサポートされている。
 
 
 名前                意味
 ------              ------
-none                デフォルト、ファイルがすでに存在する場合はエラー
-skip_existing       既存のファイルを上書きしない。スキップはエラーとして報告しない
-overwrite_existing  既存のファイルを上書きする
-update_existing     既存のファイルが上書きしようとするファイルより古ければ上書きする
+`none`                デフォルト、ファイルがすでに存在する場合はエラー
+`skip_existing`       既存のファイルを上書きしない。スキップはエラーとして報告しない
+`overwrite_existing`  既存のファイルを上書きする
+`update_existing`     既存のファイルが上書きしようとするファイルより古ければ上書きする
 
 #### copy
 
@@ -1086,34 +1086,34 @@ void copy(  const path& from, const path& to,
             error_code& ec) noexcept;
 ~~~
 
-ファイルパスfromのファイルをファイルパスtoにコピーする。
+ファイルパス`from`のファイルをファイルパス`to`にコピーする。
 
 
-copy_optionsはコピーの挙動を変えるビットマスク型のenum型で、以下のenum値がサポートされている。
+`copy_options`はコピーの挙動を変えるビットマスク型の`enum`型で、以下の`enum`値がサポートされている。
 
 + サブディレクトリーに関する指定
 
 名前                意味
 ------              ------
-none                デフォルト、サブディレクトリーはコピーしない
-recursive           サブディレクトリーとその中身もコピーする
+`none`                デフォルト、サブディレクトリーはコピーしない
+`recursive`           サブディレクトリーとその中身もコピーする
 
 + シンボリックリンクに関する指定
 
 名前                意味
 ------              ------
-none                デフォルト、シンボリックリンクをフォローする
-copy_symlinks       シンボリックリンクをシンボリックリンクとしてコピーする。シンボリックリンクが指すファイルを直接コピーしない
-skip_symlinks       シンボリックリンクを無視する
+`none`                デフォルト、シンボリックリンクをフォローする
+`copy_symlinks`       シンボリックリンクをシンボリックリンクとしてコピーする。シンボリックリンクが指すファイルを直接コピーしない
+`skip_symlinks`       シンボリックリンクを無視する
 
 + コピー方法に関する指定
 
 名前                意味
 ------              ------
-none                デフォルト、ディレクトリー下の中身をコピーする
-directories_only    ディレクトリー構造のみをコピーする。非ディレクトリーファイルはコピーしない
-create_symlinks     ファイルをコピーするのではなく、シンボリックリンクを作成する。コピー先がカレントディレクトリーではない場合、コピー元のファイルパスは絶対パスでなければならない
-create_hard_links   ファイルをコピーするのではなく、ハードリンクを作成する
+`none`                デフォルト、ディレクトリー下の中身をコピーする
+`directories_only`    ディレクトリー構造のみをコピーする。非ディレクトリーファイルはコピーしない
+`create_symlinks`     ファイルをコピーするのではなく、シンボリックリンクを作成する。コピー先がカレントディレクトリーではない場合、コピー元のファイルパスは絶対パスでなければならない
+`create_hard_links`   ファイルをコピーするのではなく、ハードリンクを作成する
 
 
 #### copy_symlink
@@ -1126,7 +1126,7 @@ void copy_symlink(  const path& existing_symlink,
                     error_code& ec) noexcept;
 ~~~
 
-existing_symlinkをnew_symlinkにコピーする。
+`existing_symlink`を`new_symlink`にコピーする。
 
 ### 削除
 
@@ -1137,9 +1137,9 @@ bool remove(const path& p);
 bool remove(const path& p, error_code& ec) noexcept;
 ~~~
 
-ファイルパスpの指すファイルが存在するのであれば削除する。ファイルがシンボリックリンクの場合、シンボリックリンクファイルが削除される。フォロー先は削除されない。
+ファイルパス`p`の指すファイルが存在するのであれば削除する。ファイルがシンボリックリンクの場合、シンボリックリンクファイルが削除される。フォロー先は削除されない。
 
-戻り値として、ファイルが存在しない場合falseを返す。それ以外の場合trueを返す。error_codeでエラー通知を受け取る関数オーバーロードでは、エラーならばfalseが返る。
+戻り値として、ファイルが存在しない場合`false`を返す。それ以外の場合`true`を返す。`error_code`でエラー通知を受け取る関数オーバーロードでは、エラーならば`false`が返る。
 
 
 #### remove_all
@@ -1149,13 +1149,13 @@ uintmax_t remove_all(const path& p);
 uintmax_t remove_all(const path& p, error_code& ec) noexcept;
 ~~~
 
-ファイルパスpの下の存在するファイルをすべて削除したあと、pの指すファイルも削除する。
+ファイルパス`p`の下の存在するファイルをすべて削除したあと、`p`の指すファイルも削除する。
 
-つまり、pがディレクトリーファイルを指していて、そのディレクトリー下にサブディレクトリーやファイルが存在する場合、それらがすべて削除され、ディレクトリーpも削除される。
+つまり、`p`がディレクトリーファイルを指していて、そのディレクトリー下にサブディレクトリーやファイルが存在する場合、それらがすべて削除され、ディレクトリー`p`も削除される。
 
-pがディレクトリーではないファイルを指す場合、pが削除される。
+`p`がディレクトリーではないファイルを指す場合、`p`が削除される。
 
-戻り値として、削除したファイルの個数が返る。error_codeでエラー通知を受け取る関数オーバーロードの場合、エラーならばstatic_cast\<uintmax_t\>(-1)が返る。
+戻り値として、削除したファイルの個数が返る。`error_code`でエラー通知を受け取る関数オーバーロードの場合、エラーならば`static_cast<uintmax_t>(-1)`が返る。
 
 
 
@@ -1173,11 +1173,11 @@ void permissions(   const path& p, perms prms,
                     error_code& ec);
 ~~~
 
-ファイルパスpのパーミッションを変更する。
+ファイルパス`p`のパーミッションを変更する。
 
-optsはperm_options型のenum値、replace, add, removeのうちいずれかひとつと、別途nofollowを指定することができる。省略した場合はreplaceになる。
+`opts`は`perm_options`型の`enum`値、`replace`, `add`, `remove`のうちいずれかひとつと、別途`nofollow`を指定することができる。省略した場合は`replace`になる。
 
-カレントディレクトリーに存在するファイルfooを、すべてのユーザーに対して実行権限を付加するには、以下のように書く。
+カレントディレクトリーに存在するファイル`foo`を、すべてのユーザーに対して実行権限を付加するには、以下のように書く。
 
 ~~~cpp
 int main()
@@ -1189,14 +1189,14 @@ int main()
 ~~~
 
 
-perm_optionsは以下のようなenum値を持つ。
+`perm_options`は以下のような`enum`値を持つ。
 
 名前            意味
 ------          ------
-replace         ファイルのパーミッションをprmsで置き換える
-add             ファイルのパーミッションにprmsで指定されたものを追加する
-remove          ファイルのパーミッションからprmsで指定されたものを取り除く
-nofollow        ファイルがシンボリックリンクの場合、シンボリックリンクのフォロー先のファイルではなく、シンボリックリンクそのもののパーミッションを変更する
+`replace`         ファイルのパーミッションを`prms`で置き換える
+`add`             ファイルのパーミッションに`prms`で指定されたものを追加する
+`remove`          ファイルのパーミッションから`prms`で指定されたものを取り除く
+`nofollow`        ファイルがシンボリックリンクの場合、シンボリックリンクのフォロー先のファイルではなく、シンボリックリンクそのもののパーミッションを変更する
 
 例えば、パーミッションを置き換えつつ、シンボリックリンクそのもののパーミッションを書き換えたい場合は、
 
@@ -1214,10 +1214,10 @@ void rename(const path& old_p, const path& new_p,
             error_code& ec) noexcept;
 ~~~
 
-ファイルold_pをファイルnew_pにリネームする。
+ファイル`old_p`をファイル`new_p`にリネームする。
 
 
-old_pとnew_pが同じ存在するファイルを指す場合、何もしない。
+`old_p`と`new_p`が同じ存在するファイルを指す場合、何もしない。
 
 ~~~cpp
 int main()
@@ -1231,7 +1231,7 @@ int main()
 
 それ以外の場合、リネームに伴って以下のような挙動も発生する。
 
-もし、リネーム前にnew_pが既存のファイルを指していた場合、リネームに伴ってnew_pは削除される。
+もし、リネーム前に`new_p`が既存のファイルを指していた場合、リネームに伴って`new_p`は削除される。
 
 ~~~cpp
 int main()
@@ -1263,7 +1263,7 @@ int main()
 ~~~
 
 
-もし、new_pが既存の空ディレクトリーを指していた場合、POSIX準拠OSであれば、リネームに伴ってnew_pは削除される。他のOSではエラーになるかもしれない。
+もし、`new_p`が既存の空ディレクトリーを指していた場合、POSIX準拠OSであれば、リネームに伴って`new_p`は削除される。他のOSではエラーになるかもしれない。
 
 ~~~cpp
 int main()
@@ -1278,7 +1278,7 @@ int main()
 }
 ~~~
 
-old_pがシンボリックリンクの場合、フォロー先ではなくシンボリックリンクファイルがリネームされる。
+`old_p`がシンボリックリンクの場合、フォロー先ではなくシンボリックリンクファイルがリネームされる。
 
 #### resize_file
 
@@ -1288,33 +1288,33 @@ void resize_file(   const path& p, uintmax_t new_size,
                     error_code& ec) noexcept;
 ~~~
 
-ファイルパスpathの指すファイルのファイルサイズをnew_sizeにする。
+ファイルパス`path`の指すファイルのファイルサイズを`new_size`にする。
 
-リサイズはPOSIXのtruncate()で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータはnullバイト(`\0`)でパディングされる。ファイルの最終アクセス日時も更新される。
+リサイズはPOSIXの`truncate()`で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータは`null`バイト（`\0`）でパディングされる。ファイルの最終アクセス日時も更新される。
 
 ### 情報取得
 
 #### ファイルタイプの判定
 
-ファイルタイプを表現するfile_type型のenumがあり、そのenum値は以下のようになっている。
+ファイルタイプを表現する`file_type`型の`enum`があり、その`enum`値は以下のようになっている。
 
 名前                意味
 ------              ------
-none                ファイルタイプが決定できないかエラー
-not_found           ファイルが発見できなかったことを示す疑似ファイルタイプ
-regular             通常のファイル
-directory           ディレクトリーファイル
-symlink             シンボリックリンクファイル
-block               ブロックスペシャルファイル
-fifo                FIFOもしくはパイプファイル
-socket              ソケットファイル
-unknown             ファイルは存在するがファイルタイプは決定できない
+`none`                ファイルタイプが決定できないかエラー
+`not_found`           ファイルが発見できなかったことを示す疑似ファイルタイプ
+`regular`             通常のファイル
+`directory`           ディレクトリーファイル
+`symlink`             シンボリックリンクファイル
+`block`               ブロックスペシャルファイル
+`fifo`                FIFOもしくはパイプファイル
+`socket`              ソケットファイル
+`unknown`             ファイルは存在するがファイルタイプは決定できない
 
 この他に、実装依存のファイルタイプが追加されている可能性がある。
 
-ファイルタイプを調べるには、file_statusのメンバー関数typeの戻り値を調べればよい。
+ファイルタイプを調べるには、`file_status`のメンバー関数`type`の戻り値を調べればよい。
 
-以下のプログラムは、カレントディレクトリーに存在するファイルfooがディレクトリーかどうかを調べるコードだ。
+以下のプログラムは、カレントディレクトリーに存在するファイル`foo`がディレクトリーかどうかを調べるコードだ。
 
 ~~~cpp
 int main()
@@ -1326,7 +1326,7 @@ int main()
 }
 ~~~
 
-また、statusもしくはpathからファイルタイプがディレクトリーであるかどうかを判定できるis_directoryも用意されている。
+また、`status`もしくは`path`からファイルタイプがディレクトリーであるかどうかを判定できる`is_directory`も用意されている。
 
 ~~~cpp
 int main()
@@ -1340,9 +1340,9 @@ int main()
 }
 ~~~
 
-file_statusはファイル情報をキャッシュするので、物理ファイルシステムに変更を加えない状態で、同じファイルに対して何度もファイル情報を取得する場合は、file_statusを使ったほうがよい。
+`file_status`はファイル情報をキャッシュするので、物理ファイルシステムに変更を加えない状態で、同じファイルに対して何度もファイル情報を取得する場合は、`file_status`を使ったほうがよい。
 
-このようなis_xという形式のフリー関数は、いずれも以下の形式を取る。
+このような`is_x`という形式のフリー関数は、いずれも以下の形式を取る。
 
 ~~~c++
 bool is_x(file_status s) noexcept;
@@ -1355,12 +1355,12 @@ bool is_x(const path& p, error_code& ec) noexcept;
 
 名前                意味
 ------              ------
-is_regular_file     通常のファイル
-is_directory        ディレクトリーファイル
-is_symlink          シンボリックリンクファイル
-is_block            ブロックスペシャルファイル
-is_fifo             FIFOもしくはパイプファイル
-is_socket           ソケットファイル
+`is_regular_file`     通常のファイル
+`is_directory`        ディレクトリーファイル
+`is_symlink`          シンボリックリンクファイル
+`is_block`            ブロックスペシャルファイル
+`is_fifo`             FIFOもしくはパイプファイル
+`is_socket`           ソケットファイル
 
 
 また、単一のファイルタイプを調べるのではない以下のような名前のフリー関数が存在する。
@@ -1368,8 +1368,8 @@ is_socket           ソケットファイル
 
 名前                意味
 ------              ------
-is_other            ファイルが存在し、通常のファイルでもディレクトリーでもシンボリックリンクでもないタイプ
-is_empty            ファイルがディレクトリーの場合、ディレクトリー下が空であればtrueを返す。<br>ファイルが非ディレクトリーの場合、ファイルサイズが0であればtrueを返す。
+`is_other`            ファイルが存在し、通常のファイルでもディレクトリーでもシンボリックリンクでもないタイプ
+`is_empty`            ファイルがディレクトリーの場合、ディレクトリー下が空であれば`true`を返す。<br>ファイルが非ディレクトリーの場合、ファイルサイズが0であれば`true`を返す。
 
 
 #### status
@@ -1379,9 +1379,9 @@ file_status status(const path& p);
 file_status status(const path& p, error_code& ec) noexcept;
 ~~~
 
-ファイルパスpのファイルの情報を格納するfile_statusを返す。
+ファイルパス`p`のファイルの情報を格納する`file_status`を返す。
 
-pがシンボリックリンクの場合、フォロー先のファイルのfile_statusを返す。
+`p`がシンボリックリンクの場合、フォロー先のファイルの`file_status`を返す。
 
 #### status_known
 
@@ -1389,7 +1389,7 @@ pがシンボリックリンクの場合、フォロー先のファイルのfile
 bool status_known(file_status s) noexcept;
 ~~~
 
-s.type() != file_type::noneを返す。
+`s.type() != file_type::none`を返す。
 
 #### symlink_status
 
@@ -1398,7 +1398,7 @@ file_status symlink_status(const path& p);
 file_status symlink_status(const path& p, error_code& ec) noexcept;
 ~~~
 
-statusと同じだが、pがシンボリックリンクの場合、そのシンボリックリンクファイルのstatusを返す。
+`status`と同じだが、`p`がシンボリックリンクの場合、そのシンボリックリンクファイルの`status`を返す。
 
 #### equivalent
 
@@ -1408,7 +1408,7 @@ bool equivalent(const path& p1, const path& p2,
                 error_code& ec) noexcept;
 ~~~
 
-p1とp2が物理ファイルシステム上、同一のファイルである場合、trueを返す。そうでない場合falseを返す。
+`p1`と`p2`が物理ファイルシステム上、同一のファイルである場合、`true`を返す。そうでない場合`false`を返す。
 
 #### exists
 
@@ -1418,7 +1418,7 @@ bool exists(const path& p);
 bool exists(const path& p, error_code& ec) noexcept;
 ~~~
 
-s, pが指すファイルが存在するのであればtrueを返す。そうでない場合falseを返す。
+`s`, `p`が指すファイルが存在するのであれば`true`を返す。そうでない場合`false`を返す。
 
 #### file_size
 
@@ -1427,11 +1427,11 @@ uintmax_t file_size(const path& p);
 uintmax_t file_size(const path& p, error_code& ec) noexcept;
 ~~~
 
-pの指すファイルのファイルサイズを返す。
+`p`の指すファイルのファイルサイズを返す。
 
 ファイルが存在しない場合エラーとなる。ファイルが通常のファイルの場合、ファイルサイズを返す。それ以外の場合、挙動は実装依存となる。
 
-エラー通知をerror_codeで受け取る関数オーバーロードでエラーの時、戻り値はstatic_cast\<uintmax_t\>(-1)となる。
+エラー通知を`error_code`で受け取る関数オーバーロードでエラーの時、戻り値は`static_cast<uintmax_t>(-1)`となる。
 
 #### hard_link_count
 
@@ -1440,10 +1440,10 @@ uintmax_t hard_link_count(const path& p);
 uintmax_t hard_link_count(const path& p, error_code& ec) noexcept;
 ~~~
 
-pの指すファイルのハードリンク数を返す。
+`p`の指すファイルのハードリンク数を返す。
 
 
-エラー通知をerror_codeで受け取る関数オーバーロードでエラーの時、戻り値はstatic_cast\<uintmax_t\>(-1)となる。
+エラー通知を`error_code`で受け取る関数オーバーロードでエラーの時、戻り値は`static_cast<uintmax_t>(-1)`となる。
 
 #### last_write_time
 
@@ -1453,7 +1453,7 @@ file_time_type last_write_time( const path& p,
                                 error_code& ec) noexcept;
 ~~~
 
-pの指すファイルの最終更新日時を返す。
+`p`の指すファイルの最終更新日時を返す。
 
 ~~~c++
 void last_write_time(   const path& p, file_time_type new_time);
@@ -1461,11 +1461,11 @@ void last_write_time(   const path& p, file_time_type new_time,
                         error_code& ec) noexcept;
 ~~~
 
-pの指すファイルの最終更新日時をnew_timeにする。
+`p`の指すファイルの最終更新日時を`new_time`にする。
 
-last_write_time(p, new_time)を呼び出した後に、last_write_time(p) == new_timeである保証はない。なぜならば、物理ファイルシステムの実装に起因する時刻の分解能や品質の問題があるからだ。
+`last_write_time(p, new_time)`を呼び出した後に、`last_write_time(p) == new_time`である保証はない。なぜならば、物理ファイルシステムの実装に起因する時刻の分解能や品質の問題があるからだ。
 
-file_time_typeは、std::chrono_time_pointの特殊化で以下のように定義されている。
+`file_time_type`は、`std::chrono_time_point`の特殊化で以下のように定義されている。
 
 ~~~c++
 namespace std::filesystem {
@@ -1473,7 +1473,7 @@ namespace std::filesystem {
 }
 ~~~
 
-trivial-clockとは、クロック(より正確にはTrivialClock)の要件を満たすクロックで、ファイルシステムのタイムスタンプの値を正確に表現できるものとされている。クロックの具体的な型は実装依存なので、完全にポータブルなコードではファイルシステムで時間を扱うのは極めて困難になる。せいぜい現在時刻を設定するとか、差分の時間を設定するぐらいしかできない。
+`trivial-clock`とは、クロック（より正確にはTrivialClock）の要件を満たすクロックで、ファイルシステムのタイムスタンプの値を正確に表現できるものとされている。クロックの具体的な型は実装依存なので、完全にポータブルなコードではファイルシステムで時間を扱うのは極めて困難になる。せいぜい現在時刻を設定するとか、差分の時間を設定するぐらいしかできない。
 
 ~~~cpp
 int main()
@@ -1498,7 +1498,7 @@ int main()
 }
 ~~~
 
-ただし、多くの実装ではfile_time_typeとして、time_point\<std::chrono::system_clock\>が使われている。file_time_type::clockがsystem_clockであれば、system_clock::to_time_tとsystem_clock::from_time_tによってtime_t型との相互変換ができるために、幾分マシになる。
+ただし、多くの実装では`file_time_type`として、`time_point<std::chrono::system_clock>`が使われている。`file_time_type::clock`が`system_clock`であれば、`system_clock::to_time_t`と`system_clock::from_time_t`によって`time_t`型との相互変換ができるために、幾分マシになる。
 
 ~~~cpp
 // file_time_type::clockがsystem_clockである場合
@@ -1531,7 +1531,7 @@ int main()
 }
 ~~~
 
-あまりマシになっていないように見えるのは、C++では現在\<chrono\>から利用できるC++風のモダンなカレンダーライブラリがないからだ。この問題は将来の規格改定で改善されるだろう。
+あまりマシになっていないように見えるのは、C++では現在`<chrono>`から利用できるC++風のモダンなカレンダーライブラリがないからだ。この問題は将来の規格改定で改善されるだろう。
 
 #### read_symlink
 
@@ -1540,9 +1540,9 @@ path read_symlink(const path& p);
 path read_symlink(const path& p, error_code& ec);
 ~~~
 
-シンボリックリンクpの解決される先のファイルパスを返す。
+シンボリックリンク`p`の解決される先のファイルパスを返す。
 
-pがシンボリックリンクではない場合はエラーになる。
+`p`がシンボリックリンクではない場合はエラーになる。
 
 #### space
 
@@ -1551,9 +1551,9 @@ space_info space(const path& p);
 space_info space(const path& p, error_code& ec) noexcept;
 ~~~ 
 
-ファイルパスpが指す先の容量を取得する。
+ファイルパス`p`が指す先の容量を取得する。
 
-クラスspace_infoは以下のように定義されている。
+クラス`space_info`は以下のように定義されている。
 
 ~~~c++
 struct space_info {
@@ -1563,17 +1563,17 @@ struct space_info {
 };
 ~~~
 
-この関数は、POSIXのstatvfs関数を呼び出した結果のstruct statvfsのf_blocks, f_bfree, f_bavailメンバーを、それぞれf_frsizeで乗じて、space_infoのメンバーcapacity, free, availableとして返す。値の決定できないメンバーにはstatic_cast\<uintmax_t\>(-1)が代入される。
+この関数は、POSIXの`statvfs`関数を呼び出した結果の`struct statvfs`の`f_blocks`, `f_bfree`, `f_bavail`メンバーを、それぞれ`f_frsize`で乗じて、`space_info`のメンバー`capacity`, `free`, `available`として返す。値の決定できないメンバーには`static_cast<uintmax_t>(-1)`が代入される。
 
-エラー通知をerror_codeで返す関数オーバーロードがエラーの場合、space_infoのメンバーにはすべてstatic_cast\<uintmax_t\>(-1)が代入される。
+エラー通知を`error_code`で返す関数オーバーロードがエラーの場合、`space_info`のメンバーにはすべて`static_cast<uintmax_t>(-1)`が代入される。
 
 
-space_infoのメンバーの意味をわかりやすく説明すると、以下の表のようになる。
+`space_info`のメンバーの意味をわかりやすく説明すると、以下の表のようになる。
 
 名前            意味
 ------          ------
-capacity        総容量
-free            空き容量
-available       権限のないユーザーが使える空き容量
+`capacity`        総容量
+`free`            空き容量
+`available`       権限のないユーザーが使える空き容量
 
 

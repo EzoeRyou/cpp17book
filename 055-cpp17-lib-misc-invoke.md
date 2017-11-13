@@ -1,6 +1,6 @@
 ## invoke : 指定した関数を指定した実引数で呼び出す
 
-invokeはヘッダーファイル\<functional\>で定義されている
+`invoke`はヘッダーファイル`<functional>`で定義されている
 
 ~~~c++
 template <class F, class... Args>
@@ -8,13 +8,13 @@ invoke_result_t<F, Args...> invoke(F&& f, Args&&... args)
 noexcept(is_nothrow_invocable_v<F, Args...>);
 ~~~
 
-invoke( f, t1, t2, ... , tN )は、関数fをf( a1, a2, ... , aN )のように呼び出す。
+`invoke( f, t1, t2, ... , tN )`は、関数`f`を`f( a1, a2, ... , aN )`のように呼び出す。
 
-より正確には、C++標準規格のINVOKE(f, t1, t2, ... , tN)と同じ規則で呼び出す。これには様々な規則があり、たとえばメンバー関数へのポインターやデータメンバーへのポインター、またその場合に与えるクラスへのオブジェクトがリファレンスかポインターかreference_wrapperかによっても異なる。その詳細はここでは解説しない。
+より正確には、C++標準規格の`INVOKE(f, t1, t2, ... , tN)`と同じ規則で呼び出す。これには様々な規則があり、たとえばメンバー関数へのポインターやデータメンバーへのポインター、またその場合に与えるクラスへのオブジェクトがリファレンスかポインターか`reference_wrapper`かによっても異なる。その詳細はここでは解説しない。
 
-INVOKEはstd::functionやstd::bindでも使われている規則なので、標準ライブラリと同じ挙動ができるようになると覚えておけばよい。
+`INVOKE`は`std::function`や`std::bind`でも使われている規則なので、標準ライブラリと同じ挙動ができるようになると覚えておけばよい。
 
-例
+__例__
 
 ~~~cpp
 void f( int ) { }

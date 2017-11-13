@@ -1,6 +1,6 @@
-## 最大公約数(gcd)と最小公倍数(lcm)
+## 最大公約数（gcd）と最小公倍数（lcm）
 
-C++17ではヘッダーファイル\<numeric\>に最大公約数(gcd)と最小公倍数(lcm)が追加された。
+C++17ではヘッダーファイル`<numeric>`に最大公約数（`gcd`）と最小公倍数（`lcm`）が追加された。
 
 ~~~cpp
 int main()
@@ -29,7 +29,7 @@ constexpr std::common_type_t<M,N> gcd(M m, N n)
 }
 ~~~
 
-gcd(m, n)はmとnがともにゼロの場合ゼロを返す。それ以外の場合、$|m|$と$|n|$の最大公約数(Greatest Common Divisor)を返す。
+`gcd(m, n)`は`m`と`n`がともにゼロの場合ゼロを返す。それ以外の場合、$|m|$と$|n|$の最大公約数（Greatest Common Divisor）を返す。
 
 ### lcm : 最小公倍数
 
@@ -44,4 +44,4 @@ constexpr std::common_type_t<M,N> lcm(M m, N n)
 }
 ~~~
 
-lcm(m,n)は、mとnのどちらかがゼロの場合ゼロを返す。それ以外の場合、$|m|$と$|n|$の最小公倍数(Least Common Multiple)を返す。
+`lcm(m,n)`は、`m`と`n`のどちらかがゼロの場合ゼロを返す。それ以外の場合、$|m|$と$|n|$の最小公倍数（Least Common Multiple）を返す。

@@ -5,11 +5,11 @@ template <class F, class Tuple>
 constexpr decltype(auto) apply(F&& f, Tuple&& t);
 ~~~
 
-std::applyはtupleのそれぞれの要素を順番に実引数に渡して関数を呼び出すヘルパー関数だ。
+`std::apply`は`tuple`のそれぞれの要素を順番に実引数に渡して関数を呼び出すヘルパー関数だ。
 
-ある要素数Nのtuple tと関数オブジェクトfに対して、apply( f, t )は、f( get\<0\>(t), get\<1\>(t), ... , get\<N-1\>(t) )のようにfを関数呼び出しする。
+ある要素数`N`の`tuple t`と関数オブジェクト`f`に対して、`apply( f, t )`は、`f( get<0>(t), get<1>(t), ... , get<N-1>(t) )`のように`f`を関数呼び出しする。
 
-例
+__例__
 
 ~~~cpp
 template < typename ... Types >

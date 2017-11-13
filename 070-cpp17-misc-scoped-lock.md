@@ -1,6 +1,6 @@
 ## scoped_lock : 可変長引数lock_guard
 
-std::scoped_lockクラス\<T ...\>は可変長引数版のlock_guardだ。
+`std::scoped_lock`クラス`<T ...>`は可変長引数版の`lock_guard`だ。
 
 ~~~cpp
 int main()
@@ -15,4 +15,4 @@ int main()
 }
 ~~~
 
-std::scoped_lockのコンストラクターは複数のロックのオブジェクトのリファレンスを取り、それぞれにデッドロックを起こさない方法でメンバー関数lockを呼び出す。デストラクターはメンバー関数unlockを呼び出す。
+`std::scoped_lock`のコンストラクターは複数のロックのオブジェクトのリファレンスを取り、それぞれにデッドロックを起こさない方法でメンバー関数`lock`を呼び出す。デストラクターはメンバー関数`unlock`を呼び出す。
