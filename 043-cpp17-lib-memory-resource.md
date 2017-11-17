@@ -106,7 +106,8 @@ private:
     virtual void* do_allocate(size_t bytes, size_t alignment) = 0;
     virtual void do_deallocate( void* p, size_t bytes,
                                 size_t alignment) = 0;
-    virtual bool do_is_equal(const memory_resource& other) const noexcept = 0;
+    virtual bool do_is_equal(const memory_resource& other)
+        const noexcept = 0;
 };
 ~~~
 
@@ -237,7 +238,8 @@ int main()
     // p1( std::pmr::get_default_resource () ) と同じ
     std::pmr::polymorphic_allocator<int> p1 ;
 
-    std::pmr::polymorphic_allocator<int> p2( std::pmr::get_default_resource() ) ;
+    std::pmr::polymorphic_allocator<int> p2(
+        std::pmr::get_default_resource() ) ;
 }
 ~~~
 
@@ -363,7 +365,8 @@ public :
     do_allocate( std::size_t bytes, std::size_t alignment ) override
     {
         std::scoped_lock lock( m ) ; 
-        // リンクリストをたどり、十分な大きさの未使用領域を探し、リンクリスト構造体を構築して返す
+        // リンクリストをたどり、十分な大きさの未使用領域を探し、リンクリスト構造体を
+        // 構築して返す
         // アライメント要求に注意
     }
 
@@ -392,7 +395,7 @@ public :
 プールリソースは以下のような特徴を持つ。
 
 
-+ プールリソースのオブジェクトが破棄されるとき、そのオブジェクトから`allocate`で確保したストレージは、明示的にdeallocateを呼ばずとも解放される。
++ プールリソースのオブジェクトが破棄されるとき、そのオブジェクトから`allocate`で確保したストレージは、明示的に`deallocate`を呼ばずとも解放される。
 
 
 ~~~c++
@@ -420,7 +423,7 @@ int main()
 }
 ~~~
 
-+   プールリソースはストレージを確保する上流メモリーリソースから、プールと呼ばれる複数のストレージを確保する。プールは複数のチャンクを保持している。チャンクは複数の同一サイズのブロックを保持している。プールリソースに対する`do_allocate(size, alignment)`は、少なくともsizeバイトのブロックサイズのプールのいずれかのチャンクのブロックが割り当てられる。
++   プールリソースはストレージを確保する上流メモリーリソースから、プールと呼ばれる複数のストレージを確保する。プールは複数のチャンクを保持している。チャンクは複数の同一サイズのブロックを保持している。プールリソースに対する`do_allocate(size, alignment)`は、少なくとも`size`バイトのブロックサイズのプールのいずれかのチャンクのブロックが割り当てられる。
 
     もし、最大のブロックサイズを超えるサイズのストレージを確保しようとした場合、上流メモリーリソースから確保される。
 
@@ -673,7 +676,7 @@ int main()
     // 上流メモリーリソースからストレージを確保して切り出して確保
     mem.allocate( 100 ) ;
     // 前回のストレージ確保で空きがあればそこから
-    // なければ新たに上流から確保して切り出す。
+    // なければ新たに上流から確保して切り出す
     mem.allocate( 100 ) ;
 }
 ~~~

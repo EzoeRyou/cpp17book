@@ -171,7 +171,7 @@ int main()
     }
 
     // OK
-    // ノードハンドルによって所有権が移動している。
+    // ノードハンドルによって所有権が移動している
     int x = n.value() ;
 
     // nが破棄される
@@ -373,7 +373,7 @@ int main()
 
     auto [position, inserted, node] = c.insert( std::move(n) ) ;
 
-    // nは未規定の値。
+    // nは未規定の値
     // inserted == false
     // nodeはinsert( std::move(n) )を呼び出す前のnの値
     // position == c.find(1)

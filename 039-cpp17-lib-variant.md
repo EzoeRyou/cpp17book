@@ -54,11 +54,11 @@ struct S
 
 この場合、`sizeof(U)`は
 
-$$\text{sizeof(U)} = \max \{ \text{sizeof(int)}, \text{sizeof(double)}, \text{sizeof(std::string)} \} + \text{パディングなど}$$
+$$\texttt{sizeof(U)} = \max \{ \texttt{sizeof(int)}, \texttt{sizeof(double)}, \texttt{sizeof(std::string)} \} + \texttt{パディングなど}$$
 
 になる。`sizeof(S)`は、
 
-$$\text{sizeof(S)} = \text{sizeof(int)} + \text{sizeof(double)} + \text{sizeof(std::string)} + \text{パディングなど}$$
+$$\texttt{sizeof(S)} = \texttt{sizeof(int)} + \texttt{sizeof(double)} + \texttt{sizeof(std::string)} + \texttt{パディングなど}$$
 
 になる。
 
@@ -217,7 +217,7 @@ int main()
     val b( 0.0 ) ; 
 
     // std::string
-    // char const *型はstd::string型に変換される。
+    // char const *型はstd::string型に変換される
     val c("hello") ;
 
     // int
@@ -718,7 +718,7 @@ int main()
     std::variant< int, double > a(0), b(0) ;
 
     // true
-    // 同じ型の同じ値を保持している。
+    // 同じ型の同じ値を保持している
     a == b ;
 
     a = 1.0 ;

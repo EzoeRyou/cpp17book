@@ -44,8 +44,8 @@ class Container
 {
     std::vector<T> c ;
 public :
-    // 初期化にイテレーターのペアを取る。
-    // IteratorはTではない。
+    // 初期化にイテレーターのペアを取る
+    // IteratorはTではない
     // Tは推定できない
     template < typename Iterator >
     Container( Iterator first, Iterator last )
