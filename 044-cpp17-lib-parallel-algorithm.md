@@ -23,7 +23,8 @@ bool is_all_of_less_than_100( Container const & input )
 int main()
 {
     std::vector<int> input ;
-    std::copy( std::istream_iterator<int>(std::cin), std::istream_iterator<int>(), std::back_inserter(input) ) ;
+    std::copy( std::istream_iterator<int>(std::cin),
+        std::istream_iterator<int>(), std::back_inserter(input) ) ;
 
     bool result = is_all_of_less_than_100( input ) ;
 

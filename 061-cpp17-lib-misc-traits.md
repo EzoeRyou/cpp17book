@@ -126,7 +126,7 @@ struct is_nothrow_invocable_r;
 
 `is_invocable_r`は呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型が`R`へ暗黙変換できることが確認される。
 
-`is_nothrow_invocable`と`is_nothrow_invocable_r`は、関数呼び出し（および戻り値型Rへの暗黙変換）が無例外保証されていることも確認する。
+`is_nothrow_invocable`と`is_nothrow_invocable_r`は、関数呼び出し（および戻り値型`R`への暗黙変換）が無例外保証されていることも確認する。
 
 ~~~cpp
 

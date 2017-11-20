@@ -74,7 +74,7 @@ int main()
     std::any a ;
     std::any b ;
 
-    // aはint型の値42を保持する。
+    // aはint型の値42を保持する
     a = 42 ;
     // bはint型の値42を保持する
     b = a ;
@@ -150,7 +150,7 @@ int main()
     a.swap(b) ;
 
     // aはdouble型の値を保持
-    // bはint型の値を保持。
+    // bはint型の値を保持
 }
 ~~~
 
@@ -268,7 +268,7 @@ int main()
         std::any_cast<int>(a) ;
     } catch( std::bad_any_cast e )
     {
-        // 型を保持していなかった。
+        // 型を保持していなかった
     }
 
 }

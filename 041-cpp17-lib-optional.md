@@ -157,13 +157,13 @@ int main()
     {
         // 値を保持する
         std::optional<X> o ( X{} ) ;
-        // Xのデストラクターが呼ばれる。
+        // Xのデストラクターが呼ばれる
     }
 
     {
         // 値を保持しない
         std::optional<X> o ;
-        // Xのデストラクターは呼ばれない。
+        // Xのデストラクターは呼ばれない
     }   
 }
 ~~~
@@ -403,7 +403,7 @@ int main()
 
 ### make_optional\<T, Args ... \> : optional\<T\>をin_place_type構築して返す
 
-`make_optional`の第一引数がT型ではない場合、`in_place_type`構築するオーバーロード関数が選ばれる。
+`make_optional`の第一引数が`T`型ではない場合、`in_place_type`構築するオーバーロード関数が選ばれる。
 
 ~~~cpp
 struct X

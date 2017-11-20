@@ -43,7 +43,7 @@ int main()
     std::seed_seq seed( std::begin(a), std::end(a) ) ;
     std::knuth_b g( seed ) ;
 
-    // 10個の標本を得る。
+    // 10個の標本を得る
     sample( std::begin(pop), std::end(pop), std::begin(out), 10, g ) ;
 
     // 標本を出力

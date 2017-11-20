@@ -496,7 +496,7 @@ struct B
 {
     int a ;
 } ;
-// クラスにも基本クラスにも非staticデータメンバーがある。
+// クラスにも基本クラスにも非staticデータメンバーがある
 struct C : B
 {
     int b ;
