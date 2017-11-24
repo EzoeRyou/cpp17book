@@ -18,7 +18,7 @@ auto c(T t){ return t ; }
 ~~~cpp
 auto f()
 {
-    return 0 ; // エラー、一致してない
+    return 0 ; // エラー、一致していない
     return 0.0 ; // エラー、一致していない
 }
 ~~~

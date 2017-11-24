@@ -9,7 +9,7 @@ constexpr decltype(auto) apply(F&& f, Tuple&& t);
 
 ある要素数`N`の`tuple t`と関数オブジェクト`f`に対して、`apply( f, t )`は、`f( get<0>(t), get<1>(t), ... , get<N-1>(t) )`のように`f`を関数呼び出しする。
 
-__例__
+__例__：
 
 ~~~cpp
 template < typename ... Types >

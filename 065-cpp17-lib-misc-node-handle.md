@@ -85,7 +85,7 @@ int main()
 
 ノードハンドルとは、コンテナーオブジェクトから要素を構築したストレージの所有権を切り離す機能だ。
 
-ノードハンドルの型は、各コンテナーのネストされた型名`node_type`となる。例えば`std::set<int>`のノードハンドル型は、`std::set<int>::node_type`となる。
+ノードハンドルの型は、各コンテナーのネストされた型名`node_type`となる。たとえば`std::set<int>`のノードハンドル型は、`std::set<int>::node_type`となる。
 
 
 ノードハンドルは以下のようなメンバーを持っている。
@@ -225,7 +225,7 @@ int main()
 }
 ~~~
 
-キーの重複を許すコンテナーの場合、複数あるうちのひとつの所有権が開放される。
+キーの重複を許すコンテナーの場合、複数あるうちの1つの所有権が開放される。
 
 ~~~cpp
 int main()
@@ -244,7 +244,7 @@ insert_return_type  insert(node_type&& nh);
 // キーの重複を許すmultiコンテナーの場合
 iterator  insert(node_type&& nh);
 
-// ヒントつきのinsert
+// ヒント付きのinsert
 iterator            insert(const_iterator hint, node_type&& nh);
 ~~~
 
@@ -314,7 +314,7 @@ int main()
 ~~~
 
 
-キーの重複を許さないコンテナーの場合、コンテナーにネストされた型名`insert_return_type`が戻り値の型となる。例えば`set<int>`の場合、`set<int>::insert_return_type`となる。
+キーの重複を許さないコンテナーの場合、コンテナーにネストされた型名`insert_return_type`が戻り値の型となる。たとえば`set<int>`の場合、`set<int>::insert_return_type`となる。
 
 `insert_return_type`の具体的な名前は規格上規定されていない。`insert_return_type`は以下のようなデータメンバーを持つ型となっている。
 
@@ -327,9 +327,9 @@ struct insert_return_type
 } ;
 ~~~
 
-`position`は`insert`によってコンテナーに所有権を移動して追加された要素を指すイテレーター、`inserted`は要素の追加が行われた場合に`true`となる`bool`、`node`は要素の追加が失敗したときにノードハンドルの所有権が移動されるノードハンドルとなる。
+`position`は`insert`によってコンテナーに所有権を移動して追加された要素を指すイテレーター、`inserted`は要素の追加が行われた場合に`true`となる`bool`, `node`は要素の追加が失敗したときにノードハンドルの所有権が移動されるノードハンドルとなる。
 
-`insert`に渡したノードハンドルが空のとき、`inserted`は`false`、`position`は`end()`、`node`は空になる。
+`insert`に渡したノードハンドルが空のとき、`inserted`は`false`, `position`は`end()`, `node`は空になる。
 
 ~~~cpp
 int main()
@@ -345,7 +345,7 @@ int main()
 }
 ~~~
 
-`insert`が成功したとき、`inserted`は`true`、`position`は追加された要素を指す、`node`は空になる。
+`insert`が成功したとき、`inserted`は`true`, `position`は追加された要素を指す、`node`は空になる。
 
 ~~~cpp
 int main()
@@ -362,7 +362,7 @@ int main()
 ~~~
 
 
-`insert`が失敗した時、つまりすでに同一のキーがコンテナーに存在した時、`inserted`は`false`、`node`は`insert`を呼び出す前のノードハンドルの値、`position`はコンテナーの中の追加しようとしたキーに等しい要素を指す。`insert`に渡したノードハンドルは未規定の値になる。
+`insert`が失敗したとき、つまりすでに同一のキーがコンテナーに存在したとき、`inserted`は`false`, `node`は`insert`を呼び出す前のノードハンドルの値、`position`はコンテナーの中の追加しようとしたキーに等しい要素を指す。`insert`に渡したノードハンドルは未規定の値になる。
 
 ~~~cpp
 int main()
@@ -380,11 +380,11 @@ int main()
 }
 ~~~
 
-規格はこの場合の`n`の値について規定していないが、最もあり得る実装としては、`n`は`node`にムーブされるので、`n`は空になり、ムーブ後の状態になる。
+規格はこの場合の`n`の値について規定していないが、最もありうる実装としては、`n`は`node`にムーブされるので、`n`は空になり、ムーブ後の状態になる。
 
 ### ノードハンドルの利用例
 
-ノードハンドルの典型的な使い方は以下の通り。
+ノードハンドルの典型的な使い方は以下のとおり。
 
 
 #### ストレージの再確保なしに、コンテナーの一部の要素だけ別のコンテナーに移す

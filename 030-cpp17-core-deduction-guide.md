@@ -80,7 +80,7 @@ Container( Iterator, Iterator )
 
 C++コンパイラーはこの推定ガイドを使って、`Container<T>::Container(Iterator, Iterator)`からは、`T`を`std::iterator_traits<Iterator>::value_type`として推定すればいいのだと判断できる。
 
-例えば、初期化リストに対応するには以下のように書く。
+たとえば、初期化リストに対応するには以下のように書く。
 
 ~~~cpp
 

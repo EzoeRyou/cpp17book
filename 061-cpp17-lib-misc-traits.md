@@ -6,7 +6,7 @@ C++17では`<type_traits>`に機能追加が行われた。
 
 C++17では、既存の`traits`に変数テンプレートを利用した`_v`版が追加された。
 
-例えば、`is_integral<T>::value`と書く代わりに`is_integral_v<T>`と書くことができる。
+たとえば、`is_integral<T>::value`と書く代わりに`is_integral_v<T>`と書くことができる。
 
 ~~~cpp
 template < typename T >
@@ -29,7 +29,7 @@ C++17ではクラステンプレート`conjunction`, `disjunction`, `negation`�
 template<class... B> struct conjunction;
 ~~~
 
-クラステンプレート`conjunction<B1, B2, ..., BN>`はテンプレート実引数`B1`, `B2`, ... `BN`に論理積を適用する。`conjunction`はそれぞれのテンプレート実引数`Bi`に対して、`bool(Bi::value)`が`false`となる最初の型を基本クラスに持つか、あるいは最後の`BN`を基本クラスに持つ。
+クラステンプレート`conjunction<B1, B2, ..., BN>`はテンプレート実引数`B1`, `B2`, ..., `BN`に論理積を適用する。`conjunction`はそれぞれのテンプレート実引数`Bi`に対して、`bool(Bi::value)`が`false`となる最初の型を基本クラスに持つか、あるいは最後の`BN`を基本クラスに持つ。
 
 ~~~cpp
 int main()
@@ -59,7 +59,7 @@ template<class... B> struct disjunction;
 ~~~
 
 
-クラステンプレート`disjunction<B1, B2, ..., BN>`はテンプレート実引数`B1`, `B2`, ... `BN`に論理和を適用する。`disjunction`はそれぞれのテンプレート実引数`Bi`に対して、`bool(Bi::value)`が`true`となる最初の型を基本クラスに持つか、あるいは最後の`BN`を基本クラスに持つ。
+クラステンプレート`disjunction<B1, B2, ..., BN>`はテンプレート実引数`B1`, `B2`, ..., `BN`に論理和を適用する。`disjunction`はそれぞれのテンプレート実引数`Bi`に対して、`bool(Bi::value)`が`true`となる最初の型を基本クラスに持つか、あるいは最後の`BN`を基本クラスに持つ。
 
 ~~~cpp
 int main()
@@ -119,7 +119,7 @@ struct is_nothrow_invocable_r;
 ~~~
 
 
-`is_invocable`はテンプレート実引数で与えられた型`Fn`がパラメーターパック`ArgTypes`をパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値は`R`へ暗黙変換できるかどうかを確認する`traits`だ。呼び出せるのであれば`true_type`、そうでなければ`false_type`を基本クラスに持つ。
+`is_invocable`はテンプレート実引数で与えられた型`Fn`がパラメーターパック`ArgTypes`をパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値は`R`へ暗黙変換できるかどうかを確認する`traits`だ。呼び出せるのであれば`true_type`, そうでなければ`false_type`を基本クラスに持つ。
 
 
 `is_invocable`は関数呼び出しした結果の戻り値の型については問わない。
@@ -169,7 +169,7 @@ struct has_unique_object_representations ;
 
 `false`を返す例としては、オブジェクトがパディング（padding）と呼ばれるアライメント調整などのための値の表現に影響しないストレージ領域を持つ場合だ。パディングビットの値は同値に影響しないので、`false`を返す。
 
-例えば以下のようなクラス`X`は、
+たとえば以下のようなクラス`X`は、
 
 ~~~cpp
 struct X

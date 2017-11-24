@@ -1,6 +1,6 @@
 ## 文字列なしstatic_assert
 
-C++17では`static_assert`に文字列リテラルをとらないものが追加された。
+C++17では`static_assert`に文字列リテラルを取らないものが追加された。
 
 
 ~~~cpp

@@ -41,7 +41,7 @@ ForwardIterator uninitialized_default_construct_n(
     ForwardIterator first, Size n);
 ~~~
 
-`[first, last)`の範囲、もしくは`first`から`n`個の範囲の未初期化のメモリーを`typename iterator_traits<ForwardIterator>::value_type`でデフォルト初期化する。2つめのアルゴリズムは`first`から`n`個をデフォルト初期化する。
+`[first, last)`の範囲、もしくは`first`から`n`個の範囲の未初期化のメモリーを`typename iterator_traits<ForwardIterator>::value_type`でデフォルト初期化する。2つ目のアルゴリズムは`first`から`n`個をデフォルト初期化する。
 
 ~~~cpp
 int main()
@@ -144,7 +144,7 @@ template <class T>
 void destroy_at(T* location);
 ~~~
 
-`location->~T()`を呼び出す
+`location->~T()`を呼び出す。
 
 ~~~c++
 template <class ForwardIterator>
