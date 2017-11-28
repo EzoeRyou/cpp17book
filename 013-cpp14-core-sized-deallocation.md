@@ -10,7 +10,7 @@ void operator delete[]  ( void *, std::size_t ) noexcept ;
 第二引数は`std::size_t`型で、第一引数で指定されたポインターが指す解放すべきストレージのサイズが与えられる。
 
 
-例えば以下のように使える。
+たとえば以下のように使える。
 
 ~~~cpp
 void * operator new ( std::size_t size )

@@ -14,7 +14,7 @@ class shared_ptr
 }
 ~~~
 
-使い方。
+__使い方__：
 
 ~~~cpp
 template < typename Shared_ptr >
