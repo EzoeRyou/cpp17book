@@ -379,7 +379,28 @@ int main()
 
 ### optional\<T\>とTの比較
 
-`optional<T>`と`T`型の比較をする場合、`T`側が値を保持している`optional`として扱われる。
+`optional<T>`と`T`型の比較をする場合、`optional<t>`が値を保持していない場合falseが変える。それ以外の場合、`optional`の保持している値と`T`が比較される。
+
+~~~cpp
+int main()
+{
+    std::optional<int> o(1) ;
+
+    // true
+    bool b1 = ( o == 1 ) ;
+    // false
+    bool b2 = ( o == 0 ) ;
+
+    // oは値を保持しない
+    o.reset() ;
+
+    // Tの値にかかわらずfalse
+    // false
+    bool b3 = ( o == 1 ) ;
+    // false
+    bool b4 = ( o == 0 ) ;
+}
+~~~
 
 ### make_optional\<T\> : optional\<T\>を返す
 
