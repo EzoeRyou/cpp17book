@@ -379,7 +379,7 @@ int main()
 
 ### optional\<T\>とTの比較
 
-`optional<T>`と`T`型の比較をする場合、`optional<t>`が値を保持していない場合`false`が返る。それ以外の場合、`optional`の保持している値と`T`が比較される。
+`optional<T>`と`T`型の比較では、`optional<t>`が値を保持していない場合`false`が返る。それ以外の場合、`optional`の保持している値と`T`が比較される。
 
 ~~~cpp
 int main()
