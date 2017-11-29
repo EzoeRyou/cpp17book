@@ -1,4 +1,4 @@
-## apply: tupleの要素を実引数に関数を呼び出す
+## apply : tupleの要素を実引数に関数を呼び出す
 
 ~~~c++
 template <class F, class Tuple>

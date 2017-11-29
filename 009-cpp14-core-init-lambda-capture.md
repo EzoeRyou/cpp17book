@@ -17,7 +17,6 @@ int main()
 
 
 ~~~cpp
-
 int main()
 {
     int x = 0 ;

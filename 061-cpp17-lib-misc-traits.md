@@ -101,7 +101,7 @@ int main()
 ~~~
 
 
-### is_invocable: 呼び出し可能か確認するtraits
+### is_invocable : 呼び出し可能か確認するtraits
 
 
 ~~~c++
@@ -194,7 +194,7 @@ struct X
 
 この場合、`unused_padding`の値には意味がなく、クラス`X`の同値比較には用いられない。この場合、`std::has_unique_representations_v<X>`は`false`になる。
 
-### is_nothrow_swappable: 無例外swap可能か確認するtraits
+### is_nothrow_swappable : 無例外swap可能か確認するtraits
 
 ~~~c++
 template <class T>

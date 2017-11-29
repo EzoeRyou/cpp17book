@@ -83,7 +83,6 @@ C++コンパイラーはこの推定ガイドを使って、`Container<T>::Conta
 たとえば、初期化リストに対応するには以下のように書く。
 
 ~~~cpp
-
 template < typename T >
 class Container
 {
