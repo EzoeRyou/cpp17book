@@ -345,7 +345,7 @@ int main()
 }
 ~~~
 
-`insert`が成功したとき、`inserted`は`true`, `position`は追加された要素を指す、`node`は空になる。
+`insert`が成功したとき、`inserted`は`true`, `position`は追加された要素を指し、`node`は空になる。
 
 ~~~cpp
 int main()
