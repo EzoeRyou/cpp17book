@@ -62,7 +62,7 @@ Boyer-Mooreアルゴリズムはパターンの末尾の文字から調べる。
 
 Boyer-Mooreアルゴリズムは事前にパターンのどの文字が不一致ならば何文字比較せずに読み飛ばせるかという情報を計算した2つのテーブルを生成する必要がある。このため、Boyer-Mooreアルゴリズムはメモリー使用量と検索前の準備時間というコストがかかる。そのコストは、より効率的な検索により相殺できる。特に、パターンが長い場合は効果的だ。
 
-C++17に入るBoyer_mooreアルゴリズムに基づく検索は、テンプレートを使った汎用的な`char`型のような状態数の少ない型に対しての実装だけではなく、ハッシュを使ったハッシュマップのようなデータ構造を使うことにより、任意の型に対応できる汎用的な設計になっている。
+C++17に入るBoyer-Mooreアルゴリズムに基づく検索は、テンプレートを使った汎用的な`char`型のような状態数の少ない型に対しての実装だけではなく、ハッシュを使ったハッシュマップのようなデータ構造を使うことにより、任意の型に対応できる汎用的な設計になっている。
 
 クラス`boyer_moore_searcher`は以下のように宣言されている。
 
@@ -112,7 +112,7 @@ int main()
 
 ### boyer_moore_horspool_searcher
 
-`std::boyer_moore_horspool_searcher`はBoyer-Moore-Horspool検索アルゴリズムを使って部分集合の検索を行う。Boyer_Moore-HorspoolアルゴリズムはNigel Horspoolによって1980年に発表された。
+`std::boyer_moore_horspool_searcher`はBoyer-Moore-Horspool検索アルゴリズムを使って部分集合の検索を行う。Boyer-Moore-HorspoolアルゴリズムはNigel Horspoolによって1980年に発表された。
 
 __参考__："Practical fast searching in strings" 1980
 

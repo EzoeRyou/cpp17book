@@ -142,7 +142,7 @@ int main()
 浮動小数点数のような交換法則を満たさない型に`fold`式を適用する際には注意が必要だ。
 
 
-二項fold式の文法は以下のいずれかになる。
+二項`fold`式の文法は以下のいずれかになる。
 
 ~~~c++
 ( cast-expression fold-operator ... fold-operator cast-expression )

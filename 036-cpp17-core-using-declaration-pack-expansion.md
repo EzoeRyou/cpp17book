@@ -22,7 +22,7 @@ using ::y ;
 
 と書くのと等しい。
 
-C++17では、`using`宣言でパック展開ができるようになった。この機能に正式な名前はついていないが、可変長`using`宣言（Variadic using declaration）と呼ぶのがわかりやすい。
+C++17では、`using`宣言でパック展開ができるようになった。この機能に正式な名前は付いていないが、可変長`using`宣言（Variadic using declaration）と呼ぶのがわかりやすい。
 
 
 ~~~cpp

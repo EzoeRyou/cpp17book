@@ -1,6 +1,6 @@
 ## [[deprecated]]属性
 
-`[[deprecated]]`属性は名前とエンティティが、まだ使えるものの利用は推奨されない状態であることを示すのに使える。`deprecated`属性が指定できる名前とエンティティは、クラス、`typedef`名、変数、非`static`データメンバー、関数、名前空間、`enum`, `enumerator`, テンプレートの特殊化だ。
+`[[deprecated]]`属性は名前とエンティティが、まだ使えるものの利用は推奨されない状態であることを示すのに使える。`[[deprecated]]`属性が指定できる名前とエンティティは、クラス、`typedef`名、変数、非`static`データメンバー、関数、名前空間、`enum`, `enumerator`, テンプレートの特殊化だ。
 
 それぞれ以下のように指定できる。
 
@@ -50,9 +50,9 @@ template < >
 class [[deprecated]] template_name<void> { } ;
 ~~~
 
-`deprecated`属性が指定された名前やエンティティを使うと、C++コンパイラーは警告メッセージを出す。
+`[[deprecated]]`属性が指定された名前やエンティティを使うと、C++コンパイラーは警告メッセージを出す。
 
-`deprecated`属性には、文字列を付け加えることができる。これはC++実装によっては警告メッセージに含まれるかもしれない。
+`[[deprecated]]`属性には、文字列を付け加えることができる。これはC++実装によっては警告メッセージに含まれるかもしれない。
 
 ~~~cpp
 [[deprecated("Use of f() is deprecated. Use f(int option) instead.")]]
