@@ -379,7 +379,7 @@ int main()
 
 ### optional\<T\>とTの比較
 
-`optional<T>`と`T`型の比較をする場合、`optional`は値を保持していなければならない。
+`optional<T>`と`T`型の比較をする場合、`T`側が値を保持している`optional`として扱われる。
 
 ### make_optional\<T\> : optional\<T\>を返す
 
