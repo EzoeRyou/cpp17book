@@ -934,7 +934,7 @@ path canonical(const path& p, const path& base, error_code& ec);
 
 存在するファイルへのファイルパス`p`への、シンボリックリンク、カレントディレクトリー（`.`）、親ディレクトリー（`..`）の存在しない絶対パスを返す。
 
-#### wealky_canonical
+#### weakly_canonical
 
 ~~~c++
 path weakly_canonical(const path& p);
