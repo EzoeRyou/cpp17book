@@ -143,7 +143,7 @@ public:
 } ;
 ~~~
 
-使い方は`boyer_moore_horspool_searcher`と変わらない。
+使い方は`boyer_moore__searcher`と変わらない。
 
 
 
