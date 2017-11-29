@@ -1518,7 +1518,7 @@ int main()
     // 最終更新日時を2017-10-12 19:02:58に設定
     tm struct_tm{} ;
     struct_tm.tm_year = 2017 - 1900 ;
-    struct_tm.tm_mon = 9 ;
+    struct_tm.tm_mon = 10 ;
     struct_tm.tm_mday = 12 ;
     struct_tm.tm_hour = 19 ;
     struct_tm.tm_min = 2 ;
