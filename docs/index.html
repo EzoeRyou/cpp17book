@@ -4006,7 +4006,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
 <h3 id="optionalとstdnulloptとの比較">optionalとstd::nulloptとの比較</h3>
 <p><code>optional</code>と<code>std::nullopt</code>との比較は、<code>std::nullopt</code>が値を持っていない<code>optional</code>として扱われる。</p>
 <h3 id="optionaltとtの比較">optional&lt;T&gt;とTの比較</h3>
-<p><code>optional&lt;T&gt;</code>と<code>T</code>型の比較をする場合、<code>optional&lt;t&gt;</code>が値を保持していない場合falseが変える。それ以外の場合、<code>optional</code>の保持している値と<code>T</code>が比較される。</p>
+<p><code>optional&lt;T&gt;</code>と<code>T</code>型の比較をする場合、<code>optional&lt;t&gt;</code>が値を保持していない場合<code>false</code>が返る。それ以外の場合、<code>optional</code>の保持している値と<code>T</code>が比較される。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>optional&lt;<span class="dt">int</span>&gt; o(<span class="dv">1</span>) ;
@@ -5889,7 +5889,7 @@ SampleIterator sample(
 <p>正しいアルゴリズムは、要素の集合のうちの<span class="math inline">\((t+1)\)</span>番目の要素は、すでに<span class="math inline">\(m\)</span>個の要素が標本として選ばれたとき、<span class="math inline">\((n-m)(N-t)\)</span>の確率で選ぶものだ。</p>
 <h3 id="アルゴリズムs選択標本要素数がわかっている集合からの標本の選択">アルゴリズムS：選択標本、要素数がわかっている集合からの標本の選択</h3>
 <p>KnuthのTAOCP Vol. 2では、アルゴリズムSと称して、要素数のわかっている集合から標本を選択する方法を解説している。</p>
-<p>アルゴリズムRは以下のとおり。</p>
+<p>アルゴリズムSは以下のとおり。</p>
 <p><span class="math inline">\(0 &lt; n \leq N\)</span> のとき、<span class="math inline">\(N\)</span>個の集合から<span class="math inline">\(n\)</span>個の標本をランダムに選択する。</p>
 <ol style="list-style-type: decimal">
 <li><span class="math inline">\(t\)</span>, <span class="math inline">\(m\)</span>を0とする。<span class="math inline">\(t\)</span>はこれまでに処理した要素数、<span class="math inline">\(m\)</span>は標本として選択した要素数とする。</li>
@@ -6851,7 +6851,7 @@ iterator            insert(const_iterator hint, <span class="dt">node_type</span
     <span class="co">// position == c.end()</span>
     <span class="co">// node.empty() == true</span>
 }</code></pre></div>
-<p><code>insert</code>が成功したとき、<code>inserted</code>は<code>true</code>, <code>position</code>は追加された要素を指す、<code>node</code>は空になる。</p>
+<p><code>insert</code>が成功したとき、<code>inserted</code>は<code>true</code>, <code>position</code>は追加された要素を指し、<code>node</code>は空になる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>set&lt;<span class="dt">int</span>&gt; c = {<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>} ;
@@ -8218,7 +8218,7 @@ file_status symlink_status(<span class="at">const</span> path&amp; p, error_code
     <span class="co">// 最終更新日時を2017-10-12 19:02:58に設定</span>
     tm struct_tm{} ;
     struct_tm.tm_year = <span class="dv">2017</span> - <span class="dv">1900</span> ;
-    struct_tm.tm_mon = <span class="dv">9</span> ;
+    struct_tm.tm_mon = <span class="dv">10</span> ;
     struct_tm.tm_mday = <span class="dv">12</span> ;
     struct_tm.tm_hour = <span class="dv">19</span> ;
     struct_tm.tm_min = <span class="dv">2</span> ;
