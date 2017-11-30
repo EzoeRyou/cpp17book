@@ -9,6 +9,7 @@ a.b
 a->b
 a->*b
 a(b1,b2,b3)
+b = a
 b @= a
 a[b]
 a << b
