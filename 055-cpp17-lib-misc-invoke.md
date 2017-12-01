@@ -1,6 +1,6 @@
 ## invoke : 指定した関数を指定した実引数で呼び出す
 
-`invoke`はヘッダーファイル`<functional>`で定義されている
+`invoke`はヘッダーファイル`<functional>`で定義されている。
 
 ~~~c++
 template <class F, class... Args>
