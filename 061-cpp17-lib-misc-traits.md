@@ -51,7 +51,7 @@ int main()
 }
 ~~~
 
-#### disjunction: 論理和
+#### disjunction : 論理和
 
 
 ~~~c++
@@ -80,7 +80,7 @@ int main()
 }
 ~~~
 
-### negation: 否定
+### negation : 否定
 
 ~~~c++
 template<class B> struct negation;
@@ -129,7 +129,6 @@ struct is_nothrow_invocable_r;
 `is_nothrow_invocable`と`is_nothrow_invocable_r`は、関数呼び出し（および戻り値型`R`への暗黙変換）が無例外保証されていることも確認する。
 
 ~~~cpp
-
 int f( int, double ) ;
 
 int main()
