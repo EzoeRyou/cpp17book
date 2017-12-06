@@ -45,8 +45,8 @@ void (*p2)() = &g ; // OK
 void (*p3)() noexcept = &f ;
 
 // OK
-// p4, &fは例外指定のある関数へのポインター型
-void (*p4)() noexcept = &f ;
+// p4, &gは例外指定のある関数へのポインター型
+void (*p4)() noexcept = &g ;
 ~~~
 
 機能テストマクロは`__cpp_noexcept_function_type`, 値は201510。
