@@ -2,7 +2,7 @@
 all : book
 
 clean :
-	rm -f index.html
+	rm -f docs/index.html
 	rm -f bin/sample-code-checker
 
 test : cpptest texttest

@@ -6,7 +6,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="author" content="江添 亮" />
   <meta name="date" content="2017-02-28" />
-  <title>エゾエによるC++17の新機能解説</title>
+  <title>江添亮の詳説C++17</title>
   <style type="text/css">code{white-space: pre;}</style>
   <style type="text/css">
 div.sourceCode { overflow-x: auto; }
@@ -76,12 +76,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </head>
 <body>
 <div id="header">
-<h1 class="title">エゾエによるC++17の新機能解説</h1>
+<h1 class="title">江添亮の詳説C++17</h1>
 <h2 class="author">江添 亮</h2>
 <h3 class="date">2017-02-28</h3>
 </div>
 <div id="TOC">
 <ul>
+<li><a href="#はじめに">はじめに</a></li>
 <li><a href="#序">序</a><ul>
 <li><a href="#cの規格">C++の規格</a><ul>
 <li><a href="#c98">C++98</a></li>
@@ -158,7 +159,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#inline変数の意味">inline変数の意味</a></li>
 </ul></li>
 <li><a href="#可変長using宣言">可変長using宣言</a></li>
-<li><a href="#std.byte">std::byte バイトを表現する型</a></li>
+<li><a href="#std.byte">std::byte : バイトを表現する型</a></li>
 </ul></li>
 <li><a href="#c17の型安全な値を格納するライブラリ">C++17の型安全な値を格納するライブラリ</a><ul>
 <li><a href="#variant-型安全なunion">variant : 型安全なunion</a><ul>
@@ -358,9 +359,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#変数テンプレート版traits">変数テンプレート版traits</a></li>
 <li><a href="#論理演算traits">論理演算traits</a><ul>
 <li><a href="#conjunction-論理積">conjunction : 論理積</a></li>
-<li><a href="#disjunction-論理和">disjunction: 論理和</a></li>
+<li><a href="#disjunction-論理和">disjunction : 論理和</a></li>
 </ul></li>
-<li><a href="#negation-否定">negation: 否定</a></li>
+<li><a href="#negation-否定">negation : 否定</a></li>
 <li><a href="#is_invocable-呼び出し可能か確認するtraits">is_invocable : 呼び出し可能か確認するtraits</a></li>
 <li><a href="#has_unique_object_representations-同値の内部表現が同一か確認するtraits">has_unique_object_representations : 同値の内部表現が同一か確認するtraits</a></li>
 <li><a href="#is_nothrow_swappable-無例外swap可能か確認するtraits">is_nothrow_swappable : 無例外swap可能か確認するtraits</a></li>
@@ -424,7 +425,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#ファイルパス操作">ファイルパス操作</a><ul>
 <li><a href="#absolute">absolute</a></li>
 <li><a href="#canonical">canonical</a></li>
-<li><a href="#wealky_canonical">wealky_canonical</a></li>
+<li><a href="#weakly_canonical">weakly_canonical</a></li>
 <li><a href="#relative">relative</a></li>
 <li><a href="#proximate">proximate</a></li>
 </ul></li>
@@ -466,14 +467,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul>
 </div>
-<h1 id="序">序</h1>
+<h1 id="はじめに">はじめに</h1>
 <p>本書は2017年に規格制定されたプログラミング言語C++の国際規格、ISO/IEC 14882:2017の新機能をほぼすべて解説している。</p>
 <p>新しいC++17は不具合を修正し、プログラマーの日々のコーディングを楽にする新機能がいくつも追加された。その結果、C++の特徴であるパフォーマンスや静的型付けは損なうことなく、近年の動的な型の弱い言語に匹敵するほどの柔軟な記述を可能にしている。</p>
-<p>人によっては、新機能を学ぶのは労多くして益少なしと考えるかもしれぬが、C++の新機能は現実の問題を解決するための便利な道具として追加されるもので、仮に機能を使わないとしても問題はなくならないため、便利な道具なく問題に対処しなければならぬ。また、C++の機能は一般的なプログラマーにとって自然だと感じるように設計されているため、利用は難しくない。もしC++が難しいと感じるのであれば、それはC++が解決すべき現実の問題が難しいのだ。なんとなれば、我々は理想とは程遠い歪なアーキテクチャのコンピューターを扱う時代に生きている。CPUの性能上昇は停滞し、メモリはCPUに比べて遥かに遅く、しかもそのアクセスは低数時間ではない。キャッシュに収まる局所性を持つデータへの操作は無料同然で、キャッシュサイズの単位はすでにMBで数えられている。手のひらに乗る超低電力CPUでさえマルチコアが一般的になり、並列処理、非同期処理は全プログラマーが考慮せねばならぬ問題になった。</p>
+<p>人によっては、新機能を学ぶのは労多くして益少なしと考えるかもしれぬが、C++の新機能は現実の問題を解決するための便利な道具として追加されるもので、仮に機能を使わないとしても問題はなくならないため、便利な道具なく問題に対処しなければならぬ。また、C++の機能は一般的なプログラマーにとって自然だと感じるように設計されているため、利用は難しくない。もしC++が難しいと感じるのであれば、それはC++が解決すべき現実の問題が難しいのだ。なんとなれば、我々は理想とは程遠い歪なアーキテクチャのコンピューターを扱う時代に生きている。CPUの性能上昇は停滞し、メモリはCPUに比べて遥かに遅く、しかもそのアクセスは定数時間ではない。キャッシュに収まる局所性を持つデータへの操作は無料同然で、キャッシュサイズの単位はすでにMBで数えられている。手のひらに乗る超低電力CPUでさえマルチコアが一般的になり、並列処理、非同期処理は全プログラマーが考慮せねばならぬ問題になった。</p>
 <p>そのような時代にあたっては、かつては最良であった手法はその価値を失い、あるいは逆に悪い手法と成り下がる。同時に昔は現実的ではなかった手法が今ではかえってまともな方法になることさえある。このため、現在活発に使われている生きている言語は、常に時代に合わない機能を廃止し、必要な機能を追加する必要がある。C++の発展はここで留まることなく、今後もC++が使われ続ける限り、修正と機能追加が行われていくだろう。</p>
+<p>本書の執筆はGithub上で公開して行われた。</p>
+<p><a href="https://github.com/EzoeRyou/cpp17book" class="uri">https://github.com/EzoeRyou/cpp17book</a></p>
+<p>本書のライセンスはGPLv3だ。</p>
 <p>本書の執筆では株式会社ドワンゴとGitHub上でPull Requestを送ってくれた多くの貢献者の協力によって、誤りを正し、より良い記述を実現できた。この場を借りて謝意を表したい。</p>
 <p>本書に誤りを見つけたならば、Pull Requestを送る先は<a href="https://github.com/EzoeRyou/cpp17book" class="uri">https://github.com/EzoeRyou/cpp17book</a>だ。</p>
 <p>江添亮</p>
+<h1 id="序">序</h1>
 <h2 id="cの規格">C++の規格</h2>
 <p>プログラミング言語C++はISOの傘下で国際規格ISO/IEC 14882として制定されている。この規格は数年おきに改定されている。一般にC++の規格を参照するときは、規格が制定した西暦の下二桁を取って、C++98（1998年発行）とかC++11（2011年発行）と呼ばれている。現在発行されているC++の規格は以下のとおり。</p>
 <h3 id="c98">C++98</h3>
@@ -1258,8 +1263,8 @@ u8<span class="st">&#39;あ&#39;</span> ;</code></pre></div>
 <span class="dt">void</span> (*p3)() <span class="kw">noexcept</span> = &amp;f ;
 
 <span class="co">// OK</span>
-<span class="co">// p4, &amp;fは例外指定のある関数へのポインター型</span>
-<span class="dt">void</span> (*p4)() <span class="kw">noexcept</span> = &amp;f ;</code></pre></div>
+<span class="co">// p4, &amp;gは例外指定のある関数へのポインター型</span>
+<span class="dt">void</span> (*p4)() <span class="kw">noexcept</span> = &amp;g ;</code></pre></div>
 <p>機能テストマクロは<code>__cpp_noexcept_function_type</code>, 値は201510。</p>
 <h2 id="fold式">fold式</h2>
 <p>C++17には<code>fold</code>式が入った。<code>fold</code>は元は数学の概念で畳み込みとも呼ばれている。</p>
@@ -1736,6 +1741,7 @@ X f() { <span class="cf">return</span> X{} ; }
 a-&gt;b
 a-&gt;*b
 a(b1,b2,b3)
+b = a
 b <span class="er">@</span>= a
 a[b]
 a &lt;&lt; b
@@ -2847,7 +2853,7 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     s(<span class="fl">0.0</span>) ; <span class="co">// B::operator()</span>
 }</code></pre></div>
 <p>機能テストマクロは<code>__cpp_variadic_using</code>, 値は201611。</p>
-<h2 id="std.byte">std::byte バイトを表現する型</h2>
+<h2 id="std.byte">std::byte : バイトを表現する型</h2>
 <p>C++17では、バイトを表現する型が入った。ライブラリでもあるのだがコア言語で特別な型として扱われている。</p>
 <p>バイトとはC++のメモリーモデルにおけるストレージの単位で、C++においてユニークなアドレスが付与される最小単位だ。C++の規格はいまだに1バイトが具体的に何ビットであるのかを規定していない。これは過去にバイトのサイズが8ビットではないアーキテクチャーが存在したためだ。</p>
 <p>バイトのビット数は<code>&lt;climits&gt;</code>で定義されているプリプロセッサーマクロ、<code>CHAR_BIT</code>で知ることができる。</p>
@@ -4006,7 +4012,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
 <h3 id="optionalとstdnulloptとの比較">optionalとstd::nulloptとの比較</h3>
 <p><code>optional</code>と<code>std::nullopt</code>との比較は、<code>std::nullopt</code>が値を持っていない<code>optional</code>として扱われる。</p>
 <h3 id="optionaltとtの比較">optional&lt;T&gt;とTの比較</h3>
-<p><code>optional&lt;T&gt;</code>と<code>T</code>型の比較をする場合、<code>optional&lt;t&gt;</code>が値を保持していない場合<code>false</code>が返る。それ以外の場合、<code>optional</code>の保持している値と<code>T</code>が比較される。</p>
+<p><code>optional&lt;T&gt;</code>と<code>T</code>型の比較では、<code>optional&lt;t&gt;</code>が値を保持していない場合<code>false</code>が返る。それ以外の場合、<code>optional</code>の保持している値と<code>T</code>が比較される。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>optional&lt;<span class="dt">int</span>&gt; o(<span class="dv">1</span>) ;
@@ -6065,7 +6071,7 @@ sample(
     <span class="cf">for</span> ( <span class="kw">auto</span> &amp;&amp; e : input )
     {<span class="co">/* 標本の選択 */</span>}
 }</code></pre></div>
-<p><code>std::list</code>のメンバー関数<code>size</code>は定数時間であることが保障されているため、このコードにおけるイテレーターを回すループは1回に抑えられる。しかし、<code>std::sample</code>は要素数を渡す実引数がないために要素数がイテレーターを全走査しなくてもわかっている場合でも、非効率的な処理を行わなければならない。</p>
+<p><code>std::list</code>のメンバー関数<code>size</code>は定数時間であることが保証されているため、このコードにおけるイテレーターを回すループは1回に抑えられる。しかし、<code>std::sample</code>は要素数を渡す実引数がないために要素数がイテレーターを全走査しなくてもわかっている場合でも、非効率的な処理を行わなければならない。</p>
 <p>もしランダムアクセスイテレーター未満、前方イテレーター以上のイテレーターカテゴリーのイテレーターの範囲から標本を選択したい場合で、イテレーターの範囲の指す要素数があらかじめわかっている場合は、自前でアルゴリズムSを実装したほうが効率がよい。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;  <span class="kw">class</span> PopulationIterator, <span class="kw">class</span> SampleIterator,
             <span class="kw">class</span> Distance, <span class="kw">class</span> UniformRandomBitGenerator &gt;
@@ -6169,7 +6175,7 @@ sample_s(
     X x2 = <span class="bu">std::</span>make_from_tuple&lt;X&gt;( t2 ) ;
 }</code></pre></div>
 <h2 id="invoke-指定した関数を指定した実引数で呼び出す">invoke : 指定した関数を指定した実引数で呼び出す</h2>
-<p><code>invoke</code>はヘッダーファイル<code>&lt;functional&gt;</code>で定義されている</p>
+<p><code>invoke</code>はヘッダーファイル<code>&lt;functional&gt;</code>で定義されている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> F, <span class="kw">class</span>... Args&gt;
 <span class="dt">invoke_result_t</span>&lt;F, Args...&gt; invoke(F&amp;&amp; f, Args&amp;&amp;... args)
 <span class="kw">noexcept</span>(is_nothrow_invocable_v&lt;F, Args...&gt;);</code></pre></div>
@@ -6396,7 +6402,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
             is_void&lt;<span class="dt">void</span>&gt; &gt; ;
 
 }</code></pre></div>
-<h4 id="disjunction-論理和">disjunction: 論理和</h4>
+<h4 id="disjunction-論理和">disjunction : 論理和</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span>... B&gt; <span class="kw">struct</span> disjunction;</code></pre></div>
 <p>クラステンプレート<code>disjunction&lt;B1, B2, ..., BN&gt;</code>はテンプレート実引数<code>B1</code>, <code>B2</code>, ..., <code>BN</code>に論理和を適用する。<code>disjunction</code>はそれぞれのテンプレート実引数<code>Bi</code>に対して、<code>bool(Bi::value)</code>が<code>true</code>となる最初の型を基本クラスに持つか、あるいは最後の<code>BN</code>を基本クラスに持つ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -6415,7 +6421,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
             is_same&lt;<span class="dt">int</span>, <span class="dt">double</span>&gt;, is_integral&lt;<span class="dt">double</span>&gt;,
             is_void&lt;<span class="dt">int</span>&gt; &gt; ;
 }</code></pre></div>
-<h3 id="negation-否定">negation: 否定</h3>
+<h3 id="negation-否定">negation : 否定</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">class</span> B&gt; <span class="kw">struct</span> negation;</code></pre></div>
 <p>クラステンプレート<code>negation&lt;B&gt;</code>は<code>B</code>に否定を適用する。<code>negation</code>は基本クラスとして<code>bool_constant&lt;!bool(B::value)&gt;</code>を持つ。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -6443,8 +6449,7 @@ ForwardIterator destroy_n(ForwardIterator first, Size n);</code></pre></div>
 <p><code>is_invocable</code>は関数呼び出しした結果の戻り値の型については問わない。</p>
 <p><code>is_invocable_r</code>は呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型が<code>R</code>へ暗黙変換できることが確認される。</p>
 <p><code>is_nothrow_invocable</code>と<code>is_nothrow_invocable_r</code>は、関数呼び出し（および戻り値型<code>R</code>への暗黙変換）が無例外保証されていることも確認する。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">
-<span class="dt">int</span> f( <span class="dt">int</span>, <span class="dt">double</span> ) ;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> f( <span class="dt">int</span>, <span class="dt">double</span> ) ;
 
 <span class="dt">int</span> main()
 {
@@ -7693,7 +7698,7 @@ path absolute(<span class="at">const</span> path&amp; p, error_code&amp; ec);</c
 path canonical(<span class="at">const</span> path&amp; p, error_code&amp; ec);
 path canonical(<span class="at">const</span> path&amp; p, <span class="at">const</span> path&amp; base, error_code&amp; ec);</code></pre></div>
 <p>存在するファイルへのファイルパス<code>p</code>への、シンボリックリンク、カレントディレクトリー（<code>.</code>）、親ディレクトリー（<code>..</code>）の存在しない絶対パスを返す。</p>
-<h4 id="wealky_canonical">wealky_canonical</h4>
+<h4 id="weakly_canonical">weakly_canonical</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">path weakly_canonical(<span class="at">const</span> path&amp; p);
 path weakly_canonical(<span class="at">const</span> path&amp; p, error_code&amp; ec);</code></pre></div>
 <p>ファイルパス<code>p</code>のシンボリックリンクが解決され、正規化されたパスを返す。ファイルパスの正規化についての定義は長くなるので省略。</p>
