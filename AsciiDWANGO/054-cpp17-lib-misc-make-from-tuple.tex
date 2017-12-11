@@ -1,0 +1,40 @@
+%
+% Section 9.8
+\hypersection{section9-8}{make\texttt{\_}from\texttt{\_}tuple : tupleの要素を実引数にコンストラクターを呼び出す}
+
+\lstinline!make_from_tuple!はヘッダーファイル~\lstinline!<tuple>!~で定義されている。
+\index{make\_from\_tuple@\texttt{make\_from\_tuple}}\index{<tuple>@\texttt{<tuple>}}
+
+\begin{lstlisting}[language=C++]
+template <class T, class Tuple>
+constexpr T make_from_tuple(Tuple&& t);
+\end{lstlisting}
+
+\lstinline!apply!は\lstinline!tuple!の要素を実引数に関数を呼び出すライブラリだが、\lstinline!make_from_tuple!は\lstinline!tuple!の要素を実引数にコンストラクターを呼び出すライブラリだ。
+\index{tuple@\texttt{tuple}}
+
+ある型\lstinline!T!と要素数\lstinline!N!の\lstinline!tuple t!に対して、\lstinline!make_from_tuple<T>(t)!は、\lstinline!T!型を\lstinline!T( get<0>(t), get<1>(t), ... , get<N-1>(t) )!のように構築して、構築した\lstinline!T!型のオブジェクトを返す。
+
+\begin{lstlisting}[language=C++]
+class X
+{
+    template < typename ... Types >
+    T( Types ... ) { }
+} ;
+
+int main()
+{
+    // int, int, int
+    std::tuple t1(1,2,3) ;
+
+    // X(1,2,3)
+    X x1 = std::make_from_tuple<X>( t1 ) 
+
+    // int, double, const char *
+    std::tuple t2( 123, 4.56, "hello" ) ;
+
+    // X(123, 4.56, "hello")
+    X x2 = std::make_from_tuple<X>( t2 ) ;
+}
+\end{lstlisting}
+

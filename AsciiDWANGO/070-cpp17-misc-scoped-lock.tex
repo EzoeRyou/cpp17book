@@ -1,0 +1,21 @@
+%
+% Section 9.24
+\hypersection{section9-24}{scoped\texttt{\_}lock : 可変長引数lock\texttt{\_}guard}
+
+\lstinline!std::scoped_lock!クラス~\lstinline!<T ...>!~は可変長引数版の\lstinline!lock_guard!だ。
+\index{std::scoped\_lock@\texttt{std::scoped\_lock}}\index{lock\_guard@\texttt{lock\_guard}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::mutex a, b, c, d ;
+
+    {
+        // a,b,c,dをlockする
+        std::scoped_lock l( a, b, c, d ) ;
+        // a,b,c,dをunlockする
+    }
+}
+\end{lstlisting}
+
+\lstinline!std::scoped_lock!のコンストラクターは複数のロックのオブジェクトのリファレンスを取り、それぞれにデッドロックを起こさない方法でメンバー関数\lstinline!lock!を呼び出す。デストラクターはメンバー関数\lstinline!unlock!を呼び出す。

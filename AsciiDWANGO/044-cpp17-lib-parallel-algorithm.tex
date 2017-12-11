@@ -1,0 +1,503 @@
+%
+% Chapter 7
+\hyperchapter{chapter7}{並列アルゴリズム}{並列アルゴリズム}
+
+並列アルゴリズムはC++17で追加された新しいライブラリだ。このライブラリは既存の~\lstinline!<algorithm>!~に、並列実行版を追加する。
+\index{へいれつあるごりずむ@並列アルゴリズム}\index{<algorithm>@\texttt{<algorithm>}}
+
+%
+% Section 7.1
+\hypersection{section7-1}{並列実行について}
+
+C++11では、スレッドと同期処理が追加され、複数の実行媒体が同時に実行されるという概念がC++標準規格に入った。
+
+C++17では、既存のアルゴリズムに、並列実行版が追加された。
+
+たとえば、\lstinline!all_of(first, last, pred)!というアルゴリズムは、\lstinline![first,last)!の区間が空であるか、すべてのイテレーター\lstinline!i!に対して\lstinline!pred(*i)!が\lstinline!true!を返すとき、\lstinline!true!を返す。それ以外の場合は\lstinline!false!を返す。
+\index{all\_of@\texttt{all\_of}}
+
+すべての値が100未満であるかどうかを調べるには、以下のように書く。
+
+\begin{lstlisting}[language=C++]
+template < typename Container >
+bool is_all_of_less_than_100( Container const & input )
+{
+    return std::all_of( std::begin(input), std::end(input),
+        []( auto x ) { return x < 100 ; } ) ;
+}
+
+int main()
+{
+    std::vector<int> input ;
+    std::copy( std::istream_iterator<int>(std::cin),
+        std::istream_iterator<int>(), std::back_inserter(input) ) ;
+
+    bool result = is_all_of_less_than_100( input ) ;
+
+    std::cout << "result : " << result << std::endl ;
+}
+\end{lstlisting}
+
+本書の執筆時点では、コンピューターはマルチコアが一般的になり、同時に複数のスレッドを実行できるようになった。さっそくこの処理を2つのスレッドで並列化してみよう。
+\index{すれつど@スレッド}
+
+\begin{lstlisting}[language=C++]
+template < typename Container >
+bool double_is_all_of_less_than_100( Container const & input )
+{
+    auto first = std::begin(input) ;
+    auto last = first + (input.size()/2) ;
+
+    auto r1 = std::async( [=]
+    {
+        return std::all_of( first, last,
+                            [](auto x) { return x < 100 ; } ) ; 
+    } ) ;
+
+    first = last ;
+    last = std::end(input) ;
+
+    auto r2 = std::async( [=]
+    {
+        return std::all_of( first, last,
+                            [](auto x) { return x < 100 ; } ) ;
+    } ) ;
+
+    return r1.get() && r2.get() ;
+}
+\end{lstlisting}
+
+なるほど、とてもわかりにくいコードだ。
+
+筆者のコンピューターのCPUは2つの物理コア、4つの論理コアを持っているので、4スレッドまで同時に並列実行できる。読者の使っているコンピューターは、より高性能でさらに多くのスレッドを同時に実行可能だろう。実行時に最大の効率を出すようにできるだけ頑張ってみよう。
+
+\begin{lstlisting}[language=C++]
+template < typename Container >
+bool parallel_is_all_of_less_than_100( Container const & input )
+{
+    std::size_t cores = std::thread::hardware_concurrency() ;
+    cores = std::min( input.size(), cores ) ;
+
+    std::vector< std::future<bool> > futures( cores ) ;
+
+    auto step = input.size() / cores ;
+    auto remainder = input.size() % cores ;
+
+    auto first = std::begin(input) ;
+    auto last = first + step + remainder ;
+
+    for ( auto & f : futures )
+    {
+        f = std::async( [=]
+        {
+            return std::all_of( first, last,
+                                [](auto x){ return x < 100 ; } ) ;
+        } ) ;
+
+        first = last ;
+        last = first + step ;
+    }
+
+    for ( auto & f : futures )
+    {
+        if ( f.get() == false )
+            return false ;
+    }
+    return true ;
+}
+\end{lstlisting}
+
+もうわけがわからない。
+
+このような並列化をそれぞれのアルゴリズムに対して自前で実装するのは面倒だ。そこで、C++17では標準で並列実行してくれる並列アルゴリズム（Parallelism）が追加された。
+\index{へいれつあるごりずむ@並列アルゴリズム}
+
+%
+% Section 7.2
+\hypersection{section7-2}{使い方}
+
+並列アルゴリズムは既存のアルゴリズムのオーバーロードとして追加されている。
+
+以下は既存のアルゴリズムである\lstinline!all_of!の宣言だ。
+\index{all\_of@\texttt{all\_of}}
+
+\begin{lstlisting}[language=C++]
+template <class InputIterator, class Predicate>
+bool all_of(InputIterator first, InputIterator last, Predicate pred);
+\end{lstlisting}
+
+並列アルゴリズム版の\lstinline!all_of!は以下のような宣言になる。
+
+\begin{lstlisting}[language=C++]
+template <  class ExecutionPolicy, class ForwardIterator,
+            class Predicate>
+bool all_of(ExecutionPolicy&& exec, ForwardIterator first,
+            ForwardIterator last, Predicate pred);
+\end{lstlisting}
+
+並列アルゴリズムには、テンプレート仮引数として\lstinline!ExecutionPolicy!が追加されていて第一引数に取る。これを実行時ポリシーと呼ぶ。
+\index{ExecutionPolicy@\texttt{ExecutionPolicy}}\index{へいれつあるごりずむ@並列アルゴリズム!ExecutionPolicy@\texttt{ExecutionPolicy}}\index{じつこじぽりし@実行時ポリシー}\index{へいれつあるごりずむ@並列アルゴリズム!じつこじぽりし@実行時ポリシー}
+
+実行時ポリシーは~\lstinline!<execution>!~で定義されている関数ディスパッチ用のタグ型で、\lstinline!std::execution::seq!,
+\lstinline!std::execution::par!,
+\lstinline!std::execution::par_unseq!がある。
+\index{<execution>@\texttt{<execution>}}\index{std::execution::seq@\texttt{std::execution::seq}}\index{じつこじぽりし@実行時ポリシー!std::execution::seq@\texttt{std::execution::seq}}\index{std::execution::par@\texttt{std::execution::par}}\index{じつこじぽりし@実行時ポリシー!std::execution::par@\texttt{std::execution::par}}\index{std::execution::par\_unseq@\texttt{std::execution::par\_unseq}}\index{じつこじぽりし@実行時ポリシー!std::execution::par\_unseq@\texttt{std::execution::par\_unseq}}
+
+複数のスレッドによる並列実行を行うには、\lstinline!std::execution::par!を使う。
+
+\begin{lstlisting}[language=C++]
+template < typename Container >
+bool is_all_of_less_than_100( Container const & input )
+{
+    return std::all_of( std::execution::par,
+        std::begin(input), std::end(input),
+        []( auto x ){ return x < 100 ; } ) ;
+}
+\end{lstlisting}
+
+\lstinline!std::execution::seq!を渡すと既存のアルゴリズムと同じシーケンシャル実行になる。\lstinline!std::execution::par!を渡すとパラレル実行になる。\lstinline!std::execution::par_unseq!は並列実行かつベクトル実行になる。
+
+C++17には実行ポリシーを受け取るアルゴリズムのオーバーロード関数が追加されている。
+
+%
+% Section 7.3
+\hypersection{section7-3}{並列アルゴリズム詳細}
+
+%
+% SubSection 7.3.1
+\hypersubsection{section7-3-1}{並列アルゴリズム}
+
+並列アルゴリズム（parallel
+algorithm）とは、\lstinline!ExecutionPolicy!（実行ポリシー）というテンプレートパラメーターのある関数テンプレートのことだ。既存の~\lstinline!<algorithm>!~とC++14で追加された一部の関数テンプレートが、並列アルゴリズムに対応している。
+\index{へいれつあるごりずむ@並列アルゴリズム}\index{ExecutionPolicy@\texttt{ExecutionPolicy}}\index{へいれつあるごりずむ@並列アルゴリズム!ExecutionPolicy@\texttt{ExecutionPolicy}}\index{<algorithm>@\texttt{<algorithm>}}
+
+並列アルゴリズムはイテレーター、仕様上定められた操作、ユーザーの提供する関数オブジェクトによる操作、仕様上定められた関数オブジェクトに対する操作によって、オブジェクトにアクセスする。そのような関数群を、要素アクセス関数（element
+access functions）と呼ぶ。
+\index{ようそあくせすかんすう@要素アクセス関数}\index{へいれつあるごりずむ@並列アルゴリズム!ようそあくせすかんすう@要素アクセス関数}
+
+たとえば、\lstinline!std::sort!は以下のような要素アクセス関数を持つ。
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  テンプレート実引数で与えられたランダムアクセスイテレーター
+\item
+  要素に対する\lstinline!swap!関数の適用
+\item
+  ユーザー提供された\lstinline!Compare!関数オブジェクト
+\end{itemize}
+
+並列アルゴリズムが使う要素アクセス関数は、並列実行に伴うさまざまな制約を満たさなければならない。
+
+%
+% SubSection 7.3.2
+\hypersubsection{section7-3-2}{ユーザー提供する関数オブジェクトの制約}
+
+並列アルゴリズムのうち、テンプレートパラメーター名が、\lstinline!Predicate!,
+\lstinline!BinaryPredicate!, \lstinline!Compare!,
+\lstinline!UnaryOperation!, \lstinline!BinaryOperation!,
+\lstinline!BinaryOperation1!,
+\lstinline!BinaryOperation2!となってるものは、関数オブジェクトとしてユーザーがアルゴリズムに提供するものである。このようなユーザー提供の関数オブジェクトには、並列アルゴリズムに渡す際の制約がある。
+\index{Predicate@\texttt{Predicate}}\index{へいれつあるごりずむ@並列アルゴリズム!Predicate@\texttt{Predicate}}\index{BinaryPredicate@\texttt{BinaryPredicate}}\index{へいれつあるごりずむ@並列アルゴリズム!BinaryPredicate@\texttt{BinaryPredicate}}\index{Compare@\texttt{Compare}}\index{へいれつあるごりずむ@並列アルゴリズム!Compare@\texttt{Compare}}\index{UnaryOperation@\texttt{UnaryOperation}}\index{へいれつあるごりずむ@並列アルゴリズム!UnaryOperation@\texttt{UnaryOperation}}\index{BinaryOperation@\texttt{BinaryOperation}}\index{へいれつあるごりずむ@並列アルゴリズム!BinaryOperation@\texttt{BinaryOperation}}\index{BinaryOperation1@\texttt{BinaryOperation1}}\index{へいれつあるごりずむ@並列アルゴリズム!BinaryOperation1@\texttt{BinaryOperation1}}\index{BinaryOperation2@\texttt{BinaryOperation2}}\index{へいれつあるごりずむ@並列アルゴリズム!BinaryOperation2@\texttt{BinaryOperation2}}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  実引数で与えられたオブジェクトを直接、間接に変更してはならない
+\item
+  実引数で与えられたオブジェクトの一意性に依存してはならない
+\item
+  データ競合と同期
+\end{itemize}
+
+一部の特殊なアルゴリズムには例外もあるが、ほとんどの並列アルゴリズムではこの制約を満たさなければならない。
+
+%
+% SubsubSection 7.3.2.1
+\vskip 1zw
+\hypersubsubsection{section7-3-2-1}{実引数で与えられたオブジェクトを直接、間接に変更してはならない}
+
+ユーザー提供の関数オブジェクトは実引数で与えられたオブジェクトを直接、間接に変更してはならない。
+
+つまり、以下のようなコードは違法だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> c = { 1,2,3,4,5 } ;
+    std::all_of( std::execution::par, std::begin(c), std::end(c),
+        [](auto & x){ ++x ; return true ; } ) ;
+    // エラー
+}
+\end{lstlisting}
+
+これは、ユーザー提供の関数オブジェクトが実引数を\lstinline!lvalue!リファレンスで受け取って変更しているので、並列アルゴリズムの制約を満たさない。
+
+\lstinline!std::for_each!はイテレーターが変更可能な要素を返す場合、ユーザー提供の関数オブジェクトが実引数を変更することが可能だ。
+\index{std::for\_each@\texttt{std::for\_each}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> c = { 1,2,3,4,5 } ;
+    std::for_each( std::execution::par, std::begin(c), std::end(c),
+        [](auto & x){ ++x ; } ) ;
+    // OK
+}
+\end{lstlisting}
+
+これは、\lstinline!for_each!は仕様上そのように定められているからだ。
+
+%
+% SubsubSection 7.3.2.2
+\vskip 1zw
+\hypersubsubsection{section7-3-2-2}{実引数で与えられたオブジェクトの一意性に依存してはならない}
+
+ユーザー提供の関数オブジェクトは実引数で与えられたオブジェクトの一意性に依存してはならない。
+
+これはどういうことかというと、たとえば実引数で渡されたオブジェクトのアドレスを取得して、そのアドレスがアルゴリズムに渡したオブジェクトのアドレスと同じであることを期待するようなコードを書くことができない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> c = { 1,2,3,4,5 } ;
+
+    // 最後の要素へのポインター
+    int * ptr = &c[4] ;
+
+    std::all_of( std::execution::par, std::begin(c), std::end(c),
+        [=]( auto & x ){
+            if ( ptr == &x )
+            {
+                // 最後の要素なので特別な処理
+                // エラー
+            }
+        } ) ;
+}
+\end{lstlisting}
+
+これはなぜかというと、並列アルゴリズムはその並列処理の一環として、要素のコピーを作成し、そのコピーをユーザー提供の関数オブジェクトに渡すかもしれないからだ。
+
+\begin{lstlisting}[language=C++]
+// 実装イメージ
+
+template <  typename ExecutionPolicy,
+            typename ForwardIterator,
+            typename Predicate >
+bool all_of(    ExecutionPolicy && exec,
+                ForwardIterator first, ForwardIterator last,
+                Predicate pred )
+{
+    if constexpr (
+        std::is_same_v< ExecutionPolicy,
+                        std::execution::parallel_policy >
+    )
+    {
+        std::vector c( first, last ) ;
+        do_all_of_par( std::begin(c), std::end(c), pred ) ;
+    }
+}
+\end{lstlisting}
+
+このため、オブジェクトの一意性に依存したコードを書くことはできない。
+
+%
+% SubsubSection 7.3.2.3
+\vskip 1zw
+\hypersubsubsection{section7-3-2-3}{データ競合と同期}
+
+\lstinline!std::execution::sequenced_policy!を渡した並列アルゴリズムによる要素アクセス関数の呼び出しは呼び出し側スレッドで実行される。パラレル実行ではない。
+\index{sequenced\_policy@\texttt{sequenced\_policy}}\index{へいれつあるごりずむ@並列アルゴリズム!sequenced\_policy@\texttt{sequenced\_policy}}
+
+\lstinline!std::execution::parallel_policy!を渡した並列アルゴリズムによる要素アクセス関数の呼び出しは、呼び出し側スレッドか、ライブラリ側で作られたスレッドのいずれかで実行される。それぞれの要素アクセス関数の呼び出しの同期は定められていない。そのため、要素アクセス関数はデータ競合やデッドロックを起こさないようにしなければならない。
+\index{parallel\_policy@\texttt{parallel\_policy}}\index{へいれつあるごりずむ@並列アルゴリズム!parallel\_policy@\texttt{parallel\_policy}}\index{でたきようごう@データ競合}\index{へいれつあるごりずむ@並列アルゴリズム!でたきようごう@データ競合}\index{でつどろつく@デッドロック}\index{へいれつあるごりずむ@並列アルゴリズム!でつどろつく@デッドロック}
+
+以下のコードはデータ競合が発生するのでエラーとなる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int sum = 0 ;
+
+    std::vector<int> c = { 1,2,3,4,5 } ;
+
+    std::for_each( std::execution::par, std::begin(c), std::end(c),
+        [&]( auto x ){ sum += x ; } ) ;
+    // エラー、データ競合
+}
+\end{lstlisting}
+
+なぜならば、ユーザー提供の関数オブジェクトは複数のスレッドから同時に呼び出されるかもしれないからだ。
+
+\lstinline!std::execution::parallel_unsequenced_policy!の実行は変わっている。未規定のスレッドから同期されない実行が許されている。これは、パラレルベクトル実行で想定している実行媒体がスレッドのような強い実行保証のある実行媒体ではなく、SIMDやGPGPUのような極めて軽い実行媒体であるからだ。
+\index{parallel\_unsequenced\_policy@\texttt{parallel\_unsequenced\_policy}}\index{へいれつあるごりずむ@並列アルゴリズム!parallel\_unsequenced\_policy@\texttt{parallel\_unsequenced\_policy}}
+
+その結果、要素アクセス関数は通常のデータ競合やデッドロックを防ぐための手段すら取れなくなる。なぜならば、スレッドは実行の途中に中断して別の処理をしたりするからだ。
+
+たとえば、以下のコードは動かない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int sum = 0 ;
+    std::mutex m ;
+
+    std::vector<int> c = { 1,2,3,4,5 } ;
+
+    std::for_each(
+        std::execution::par_unseq,
+        std::begin(c), std::end(c),
+        [&]( auto x ) {
+            std::scoped_lock l(m) ;
+            sum += x ; 
+        } ) ;
+    // エラー
+}
+\end{lstlisting}
+
+このコードは\lstinline!parallel_policy!ならば、非効率的ではあるが問題なく同期されてデータ競合なく動くコードだ。しかし、\lstinline!parallel_unsequenced_policy!では動かない。なぜならば、\lstinline!mutex!の\lstinline!lock!という同期をする関数を呼び出すからだ。
+\index{parallel\_policy@\texttt{parallel\_policy}}\index{へいれつあるごりずむ@並列アルゴリズム!parallel\_policy@\texttt{parallel\_policy}}\index{parallel\_unsequenced\_policy@\texttt{parallel\_unsequenced\_policy}}\index{へいれつあるごりずむ@並列アルゴリズム!parallel\_unsequenced\_policy@\texttt{parallel\_unsequenced\_policy}}\index{mutex@\texttt{mutex}}\index{へいれつあるごりずむ@並列アルゴリズム!mutex@\texttt{mutex}}\index{lock@\texttt{lock}}\index{へいれつあるごりずむ@並列アルゴリズム!lock@\texttt{lock}}
+
+C++では、ストレージの確保解放以外の同期する標準ライブラリの関数をすべて、ベクトル化非安全（vectorization-unsafe）に分類している。ベクトル化非安全な関数は\lstinline!std::execution::parallel_unsequenced_policy!の要素アクセス関数内で呼び出すことはできない。
+
+%
+% SubSection 7.3.3
+\hypersubsection{section7-3-3}{例外}
+
+並列アルゴリズムの実行中に、一時メモリーの確保が必要になったが確保できない場合、\lstinline!std::bad_allocがthrow!される。
+\index{へいれつあるごりずむ@並列アルゴリズム!れいがい@例外}\index{std::bad\_alloc@\texttt{std::bad\_alloc}}\index{へいれつあるごりずむ@並列アルゴリズム!std::bad\_alloc@\texttt{std::bad\_alloc}}
+
+並列アルゴリズムの実行中に、要素アクセス関数の外に例外が投げられた場合、\lstinline!std::terminate!が呼ばれる。
+\index{std::terminate@\texttt{std::terminate}}\index{へいれつあるごりずむ@並列アルゴリズム!std::terminate@\texttt{std::terminate}}
+
+%
+% SubSection 7.3.4
+\hypersubsection{section7-3-4}{実行ポリシー}
+
+実行ポリシーはヘッダーファイル~\lstinline!<execution>!~で定義されている。その定義は以下のようになっている。
+\index{<execution>@\texttt{<execution>}}
+
+\begin{lstlisting}[language=C++]
+namespace std {
+template<class T> struct is_execution_policy;
+template<class T> inline constexpr bool
+    is_execution_policy_v = is_execution_policy<T>::value;
+}
+
+namespace std::execution {
+
+class sequenced_policy;
+class parallel_policy;
+class parallel_unsequenced_policy;
+
+inline constexpr sequenced_policy seq{ };
+inline constexpr parallel_policy par{ };
+inline constexpr parallel_unsequenced_policy par_unseq{ };
+
+}
+\end{lstlisting}
+
+%
+% SubsubSection 7.3.4.1
+\vskip 1zw
+\hypersubsubsection{section7-3-4-1}{is\texttt{\_}execution\texttt{\_}policy traits}
+\index{std::is\_execution\_policy<T>@\texttt{std::is\_execution\_policy<T>}}\index{へいれつあるごりずむ@並列アルゴリズム!std::is\_execution\_policy<T>@\texttt{std::is\_execution\_policy<T>}}
+
+\lstinline!std::is_execution_policy<T>!~は\lstinline!T!が実行ポリシー型であるかどうかを返す\lstinline!traits!だ。
+
+\begin{lstlisting}[language=C++]
+// false
+constexpr bool b1 = std::is_execution_policy_v<int> ;
+// true
+constexpr bool b2 = 
+    std::is_execution_policy_v<std::execution::sequenced_policy> ;
+\end{lstlisting}
+
+%
+% SubsubSection 7.3.4.2
+\vskip 1zw
+\hypersubsubsection{section7-3-4-2}{シーケンス実行ポリシー}
+\index{しけんすじつこうぽりし@シーケンス実行ポリシー}\index{へいれつあるごりずむ@並列アルゴリズム!しけんすじつこうぽりし@シーケンス実行ポリシー}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+namespace std::execution {
+
+class sequenced_policy ;
+inline constexpr sequenced_policy seq { } ;
+
+}
+\end{lstlisting}
+\egroup
+
+シーケンス実行ポリシーは、並列アルゴリズムにパラレル実行を行わせないためのポリシーだ。この実行ポリシーが渡された場合、処理は呼び出し元のスレッドだけで行われる。
+
+%
+% SubsubSection 7.3.4.3
+\vskip 1zw
+\hypersubsubsection{section7-3-4-3}{パラレル実行ポリシー}
+\index{ぱられるじつこうぽりし@パラレル実行ポリシー}\index{へいれつあるごりずむ@並列アルゴリズム!ぱられるじつこうぽりし@パラレル実行ポリシー}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+namespace std::execution {
+
+class parallel_policy ;
+inline constexpr parallel_policy par { } ;
+
+}
+\end{lstlisting}
+\egroup
+
+パラレル実行ポリシーは、並列アルゴリズムにパラレル実行を行わせるためのポリシーだ。この実行ポリシーが渡された場合、処理は呼び出し元のスレッドと、ライブラリが作成したスレッドを用いる。
+
+%
+% SubsubSection 7.3.4.4
+\vskip 2zw
+\hypersubsubsection{section7-3-4-4}{パラレル非シーケンス実行ポリシー}
+\index{ぱられるひしけんすじつこうぽりし@パラレル非シーケンス実行ポリシー}\index{へいれつあるごりずむ@並列アルゴリズム!ぱられるひしけんすじつこうぽりし@パラレル非シーケンス実行ポリシー}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+namespace std::execution {
+
+class parallel_unsequenced_policy ;
+inline constexpr parallel_unsequenced_policy par_unseq { } ;
+
+}
+\end{lstlisting}
+\egroup
+
+パラレル非シーケンス実行ポリシーは、並列アルゴリズムにパラレル実行かつベクトル実行を行わせるためのポリシーだ。この実行ポリシーが渡された場合、処理は複数のスレッドと、SIMDやGPGPUのようなベクトル実行による並列化を行う。
+
+%
+% SubsubSection 7.3.4.5
+\vskip 1zw
+\hypersubsubsection{section7-3-4-5}{実行ポリシーオブジェクト}
+\index{じつこうぽりしおぶじえくと@実行ポリシーオブジェクト}\index{へいれつあるごりずむ@並列アルゴリズム!じつこうぽりしおぶじえくと@実行ポリシーオブジェクト}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+namespace std::execution {
+
+inline constexpr sequenced_policy seq{ };
+inline constexpr parallel_policy par{ };
+inline constexpr parallel_unsequenced_policy par_unseq{ };
+
+}
+\end{lstlisting}
+\egroup
+
+実行ポリシーの型を直接書くのは面倒だ。
+
+\begin{lstlisting}[language=C++]
+std::for_each( std::execution::parallel_policy{}, ... ) ;
+\end{lstlisting}
+
+そのため、標準ライブラリは実行ポリシーのオブジェクトを用意している。\lstinline!seq!と\lstinline!par!と\lstinline!par_unseq!がある。
+
+\begin{lstlisting}[language=C++]
+std::for_each( std::execution::par, ... ) ;
+\end{lstlisting}
+
+並列アルゴリズムを使うには、このオブジェクトを並列アルゴリズムの第一引数に渡すことになる。

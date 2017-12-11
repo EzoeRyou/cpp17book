@@ -1,0 +1,503 @@
+%
+% Section 4.3
+\hypersection{section4-3}{optional : 値を保有しているか、していないクラス}
+\index{optional@\texttt{optional}}
+
+%
+% SubSection 4.3.1
+\hypersubsection{section4-3-1}{使い方}
+
+ヘッダーファイル~\lstinline!<optional>!~で定義されている~\lstinline!optional<T>!~は、\lstinline!T!型の値を保有しているか、保有していないライブラリだ。
+\index{<optional>@\texttt{<optional>}}
+
+条件次第で値が用意できない場合が存在する。たとえば割り算の結果の値を返す関数を考える。
+
+\begin{lstlisting}[language=C++]
+int divide( int a, int b )
+{
+    if ( b == 0 )
+    {
+        // エラー処理
+    }
+    else
+        return a / b ;
+}
+\end{lstlisting}
+
+ゼロで除算はできないので、\lstinline!b!の値が0の場合、この関数は値を用意することができない。問題は、\lstinline!int!型のすべての値は通常の除算結果として使われるので、エラーであることを示す特別な値を返すこともできない。
+
+このような場合にエラーや値を通知する方法として、過去にさまざまな方法が考案された。たとえば、ポインターやリファレンスを実引数として受け取る方法、グローバル変数を使う方法、例外だ。
+
+\lstinline!optional!はこのような値が用意できない場合に使える共通の方法を提供する。
+
+\begin{lstlisting}[language=C++]
+std::optional<int> divide( int a, int b )
+{
+    if ( b == 0 )
+        return {} ;
+    else
+        return { a / b } ;
+}
+
+int main()
+{
+    auto result = divide( 10, 2 ) ;
+    // 値の取得
+    auto value = result.value() ;
+
+    // ゼロ除算
+    auto fail = divide( 10, 0 ) ;
+
+    // false、値を保持していない
+    bool has_value = fail.has_value() ;
+
+    // throw bad_optional_access
+    auto get_value_anyway = fail.value() ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.2
+\hypersubsection{section4-3-2}{optionalのテンプレート実引数}
+\index{optional@\texttt{optional}!てんぷれとじつひきすう@テンプレート実引数}
+
+\lstinline!optional<T>!~は\lstinline!T!型の値を保持するか、もしくは保持しない状態を取る。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // int型の値を保持するかしないoptional
+    using a = std::optional<int> ;
+    // double型の値を保持するかしないoptional
+    using b = std::optional<double> ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.3
+\hypersubsection{section4-3-3}{optionalの構築}
+\index{optional@\texttt{optional}!こうちく@構築}
+
+\lstinline!optional!をデフォルト構築すると、値を保持しない\lstinline!optional!になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 値を保持しない
+    std::optional<int> a ;
+}
+\end{lstlisting}
+
+コンストラクターの実引数に\lstinline!std::nullopt!を渡すと、値を保持しない\lstinline!optional!になる。
+\index{std::nullopt@\texttt{std::nullopt}}\index{optional@\texttt{optional}!std::nullopt@\texttt{std::nullopt}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 値を保持しない
+    std::optional<int> a( std::nullopt ) ;
+}
+\end{lstlisting}
+
+\lstinline!optional<T>!~のコンストラクターの実引数に\lstinline!T!型に変換できる型を渡すと、\lstinline!T!型の値に型変換して保持する。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // int型の値42を保持する
+    std::optional<int> a(42) ;
+
+    // double型の値1.0を保持する
+    std::optional<double> b( 1.0 ) ;
+
+    // intからdoubleへの型変換が行われる
+    // int型の値1を保持する
+    std::optional<int> c ( 1.0 ) ;
+}
+\end{lstlisting}
+
+\lstinline!T!型から\lstinline!U!型に型変換できるとき、\lstinline!optional<T>!~のコンストラクターに~\lstinline!optional<U>!~を渡すと\lstinline!U!から\lstinline!T!に型変換されて\lstinline!T!型の値を保持する\lstinline!optional!になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // int型の値42を保持する
+    std::optional<int> a( 42 ) ;
+
+    // long型の値42を保持する
+    std::optional<long> b ( a ) ;
+}
+\end{lstlisting}
+
+\lstinline!optional!のコンストラクターの第一引数に~\lstinline!std::in_place_type<T>!~を渡すと、後続の引数を使って\lstinline!T!型のオブジェクトが\lstinline!emplace!構築される。
+\index{std::in\_place\_type<T>@\texttt{std::in\_place\_type<T>}}\index{optional@\texttt{optional}!std::in\_place\_type<T>@\texttt{std::in\_place\_type<T>}}
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int ) { }
+} ;
+
+int main()
+{
+    // X(1, 2)
+    std::optional<X> o( std::in_place_type<X>, 1, 2 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.4
+\hypersubsection{section4-3-4}{optionalの代入}
+\index{optional@\texttt{optional}!だいにゆう@代入}
+
+通常のプログラマーの期待どおりの挙動をする。\lstinline!std::nullopt!を代入すると値を保持しない\lstinline!optional!になる。
+
+%
+% SubSection 4.3.5
+\hypersubsection{section4-3-5}{optionalの破棄}
+\index{optional@\texttt{optional}!はき@破棄}
+
+\lstinline!optional!が破棄されるとき、保持している値があれば、適切に破棄される。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    ~X() { }
+} ;
+
+int main()
+{
+    {
+        // 値を保持する
+        std::optional<X> o ( X{} ) ;
+        // Xのデストラクターが呼ばれる
+    }
+
+    {
+        // 値を保持しない
+        std::optional<X> o ;
+        // Xのデストラクターは呼ばれない
+    }   
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.6
+\hypersubsection{section4-3-6}{swap}
+\index{swap@\texttt{swap}}\index{optional@\texttt{optional}!swap@\texttt{swap}}
+
+\lstinline!optional!は\lstinline!swap!に対応している。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a(1), b(2) ;
+
+    a.swap(b) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.7
+\hypersubsection{section4-3-7}{has\texttt{\_}value : 値を保持しているかどうか確認する}
+\index{has\_value@\texttt{has\_value}}\index{optional@\texttt{optional}!has\_value@\texttt{has\_value}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr bool has_value() const noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!has_value!メンバー関数は\lstinline!optional!が値を保持している場合、\lstinline!true!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a ;
+    // false
+    bool b1 = a.has_value() ;
+
+    std::optional<int> b(42) ;
+    // true
+    bool b2 = b.has_value() ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.8
+\hypersubsection{section4-3-8}{operator bool : 値を保持しているかどうか確認する}
+\index{bool@\texttt{bool}}\index{optional@\texttt{optional}!bool@\texttt{bool}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr explicit operator bool() const noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!optional!を文脈上\lstinline!bool!に変換すると、値を保持している場合にのみ\lstinline!true!として評価される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<bool> a = some_function();
+    // OK、文脈上boolに変換
+    if ( a )
+    {
+        // 値を保持
+    }
+    else
+    {
+        // 値を不保持
+    }
+
+    // エラー、暗黙の型変換は行われない
+    bool b1 = a ;
+    // OK、明示的な型変換
+    bool b2 = static_cast<bool>(a) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.9
+\hypersubsection{section4-3-9}{value : 保持している値を取得}
+\index{value@\texttt{value}}\index{optional@\texttt{optional}!value@\texttt{value}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr const T& value() const&;
+constexpr T& value() &;
+constexpr T&& value() &&;
+constexpr const T&& value() const&&;
+\end{lstlisting}
+\egroup
+
+\lstinline!value!メンバー関数は\lstinline!optional!が値を保持している場合、値へのリファレンスを返す。値を保持していない場合、\lstinline!std::bad_optional_access!が\lstinline!throw!される。
+\index{std::bad\_optional\_access@\texttt{std::bad\_optional\_access}}\index{optional@\texttt{optional}!std::bad\_optional\_access@\texttt{std::bad\_optional\_access}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a(42) ;
+
+    // OK
+    int x = a.value () ;
+
+    try {
+        std::optional<int> b ;
+        int y = b.value() ;
+    } catch( std::bad_optional_access e )
+    {
+        // 値を保持していなかった
+    }
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.10
+\hypersubsection{section4-3-10}{value\texttt{\_}or : 値もしくはデフォルト値を返す}
+\index{value\_or@\texttt{value\_or}}\index{optional@\texttt{optional}!value\_or@\texttt{value\_or}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class U> constexpr T value_or(U&& v) const&;
+template <class U> constexpr T value_or(U&& v) &&;
+\end{lstlisting}
+\egroup
+
+\lstinline!value_or(v)!メンバー関数は、\lstinline!optional!が値を保持している場合はその値を、保持していない場合は\lstinline!v!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a( 42 ) ;
+
+    // 42
+    int x = a.value_or(0) ;
+
+    std::optional<int> b ;
+
+    // 0
+    int x = b.value_or(0) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.11
+\hypersubsection{section4-3-11}{reset : 保持している値を破棄する}
+\index{reset@\texttt{reset}}\index{optional@\texttt{optional}!reset@\texttt{reset}}
+
+\lstinline!reset!メンバー関数を呼び出すと、保持している値がある場合破棄する。\lstinline!reset!メンバー関数を呼び出した後の\lstinline!optional!は値を保持しない状態になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a( 42 ) ;
+
+    // true
+    bool b1 = a.has_value() ;
+
+    a.reset() ;
+
+    // false
+    bool b2 = a.has_value() ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.12
+\hypersubsection{section4-3-12}{optional同士の比較}
+\index{optional@\texttt{optional}!ひかく@比較}
+
+\lstinline!optional<T>!~を比較するためには、\lstinline!T!型のオブジェクト同士が比較できる必要がある。
+
+%
+% SubsubSection 4.3.12.1
+\vskip 1zw
+\hypersubsubsection{section4-3-12-1}{同一性の比較}
+
+値を保持しない2つの\lstinline!optional!は等しい。片方のみが値を保持している\lstinline!optional!は等しくない。両方とも値を保持している\lstinline!optional!は値による比較になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a, b ;
+
+    // true
+    // どちらも値を保持しないoptional
+    bool b1 = a == b ;
+
+    a = 0 ;
+
+    // false
+    // aのみ値を保持
+    bool b2 = a == b ;
+
+    b = 1 ;
+
+    // false
+    // どちらも値を保持。値による比較
+    bool b3 = a == b ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.3.12.2
+\vskip 1zw
+\hypersubsubsection{section4-3-12-2}{大小比較}
+
+\lstinline!optional!同士の大小比較は、\lstinline!a < b!の場合
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \lstinline!b!が値を保持していなければ\lstinline!false!
+\item
+  それ以外の場合で、\lstinline!a!が値を保持していなければ\lstinline!true!
+\item
+  それ以外の場合、\lstinline!a!と\lstinline!b!の保持している値同士の比較
+\end{enumerate}
+となる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> a, b ;
+
+    // false
+    // bが値なし
+    bool b1 = a < b ;
+
+    b = 0 ;
+
+    // true
+    // bは値ありでaが値なし
+    bool b2 = a < b ;
+
+    a = 1 ;
+
+    // false
+    // どちらとも値があるので値同士の比較
+    // 1 < 0はfalse
+    bool b3 = a < b ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.13
+\hypersubsection{section4-3-13}{optionalとstd::nulloptとの比較}
+\index{std::nullopt@\texttt{std::nullopt}}\index{optional@\texttt{optional}!std::nullopt@\texttt{std::nullopt}}
+
+\lstinline!optional!と\lstinline!std::nullopt!との比較は、\lstinline!std::nullopt!が値を持っていない\lstinline!optional!として扱われる。
+
+%
+% SubSection 4.3.14
+\hypersubsection{section4-3-14}{optional\texttt{<}T\texttt{>}\,とTの比較}
+
+\lstinline!optional<T>!~と\lstinline!T!型の比較では、\lstinline!optional<t>!~が値を保持していない場合\lstinline!false!が返る。それ以外の場合、\lstinline!optional!の保持している値と\lstinline!T!が比較される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::optional<int> o(1) ;
+
+    // true
+    bool b1 = ( o == 1 ) ;
+    // false
+    bool b2 = ( o == 0 ) ;
+
+    // oは値を保持しない
+    o.reset() ;
+
+    // Tの値にかかわらずfalse
+    // false
+    bool b3 = ( o == 1 ) ;
+    // false
+    bool b4 = ( o == 0 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.15
+\hypersubsection{section4-3-15}{make\texttt{\_}optional\texttt{<}T\texttt{>} : optional\texttt{<}T\texttt{>}\,を返す}
+\index{make\_optional<T>@\texttt{make\_optional<T>}}\index{optional@\texttt{optional}!make\_optional<T>@\texttt{make\_optional<T>}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T>
+constexpr optional<decay_t<T>> make_optional(T&& v);
+\end{lstlisting}
+\egroup
+
+\lstinline!make_optional<T>(T t)!は\lstinline!optional<T>(t)!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // std::optional<int>、値は0
+    auto o1 = std::make_optional( 0 ) ;
+
+    // std::optional<double>、値は0.0
+    auto o2 = std::make_optional( 0.0 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.3.16
+\hypersubsection{section4-3-16}{make\texttt{\_}optional\texttt{<}T, Args \ldots{} \texttt{>} : optional\texttt{<}T\texttt{>}\,をin\texttt{\_}place\texttt{\_}type構築して返す}
+\index{make\_optional<T, Args \ldots >@\texttt{make\_optional<T, Args \ldots >}}\index{optional@\texttt{optional}!make\_optional<T, Args \ldots >@\texttt{make\_optional<T, Args \ldots >}}\index{in\_place\_type@\texttt{in\_place\_type}}\index{optional@\texttt{optional}!in\_place\_type@\texttt{in\_place\_type}}
+
+\lstinline!make_optional!の第一引数が\lstinline!T!型ではない場合、\lstinline!in_place_type!構築するオーバーロード関数が選ばれる。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int ) { }
+} ;
+
+int main()
+{
+    // std::optional<X>( std::in_place_type<X>, 1, 2 )
+    auto o = std::make_optional<X>( 1, 2 ) ;
+}
+\end{lstlisting}
+

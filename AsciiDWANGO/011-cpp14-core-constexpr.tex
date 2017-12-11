@@ -1,0 +1,30 @@
+%
+% Section 2.9
+\hypersection{section2-9}{constexpr関数の制限緩和}
+
+C++11で追加された\lstinline!constexpr!関数はとても制限が強い。\lstinline!constexpr!関数の本体には実質\lstinline!return!文1つしか書けない。
+\index{constexpr@\texttt{constexpr}}
+
+C++14では、ほとんど何でも書けるようになった。
+
+\begin{lstlisting}[language=C++]
+constexpr int f( int x )
+{
+    // 変数を宣言できる
+    int sum = 0 ;
+
+    // 繰り返し文を書ける
+    for ( int i = 1 ; i < x ; ++i )
+    {
+        // 変数を変更できる
+        sum += i ;
+    }
+
+    return sum ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_constexpr!, 値は201304。
+\index{\_\_cpp\_constexpr@\texttt{\_\_cpp\_constexpr}}
+
+C++11の\lstinline!constexpr!関数に対応しているがC++14の\lstinline!constexpr!関数に対応していないC++実装では、\lstinline!__cpp_constexpr!マクロの値は200704になる。

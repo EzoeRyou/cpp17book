@@ -1,0 +1,569 @@
+%
+% Section 3.20
+\hypersection{section3-20}{構造化束縛}
+
+C++17で追加された構造化束縛は多値を分解して受け取るための変数宣言の文法だ。
+\index{こうぞうかそくばく@構造化束縛}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int a[] = { 1,2,3 } ;
+    auto [b,c,d] = a ;
+
+    // b == 1
+    // c == 2
+    // d == 3
+}
+\end{lstlisting}
+
+C++では、さまざまな方法で多値を扱うことができる。たとえば配列、クラス、\lstinline!tuple!,
+\lstinline!pair!だ。
+\index{たち@多値}
+
+\begin{lstlisting}[language=C++]
+int a[] = { 1,2,3 } ;
+struct B
+{
+    int a ;
+    double b ;
+    std::string c ;
+} ;
+
+B b{ 1, 2.0, "hello" } ;
+
+std::tuple< int, double, std::string > c { 1, 2.0, "hello" } ;
+
+std::pair< int, int > d{ 1, 2 } ;
+\end{lstlisting}
+
+C++の関数は配列以外の多値を返すことができる。
+
+\begin{lstlisting}[language=C++]
+std::tuple< int, double, std::string > f()
+{
+    return { 1, 2.0, "hello" } ;
+}
+\end{lstlisting}
+
+多値を受け取るには、これまでは多値を固まりとして受け取るか、ライブラリで分解して受け取るしかなかった。
+
+多値を固まりで受け取るには以下のように書く。
+
+\begin{lstlisting}[language=C++]
+std::tuple< int, double, std::string > f()
+{
+    return { 1, 2.0, "hello" } ;
+}
+
+int main()
+{
+    auto result = f() ;
+    
+    std::cout << std::get<0>(result) << '\n' 
+        << std::get<1>(result) << '\n'
+        << std::get<2>(result) << std::endl ;
+}
+\end{lstlisting}
+
+多値をライブラリで受け取るには以下のように書く。
+
+\begin{lstlisting}[language=C++]
+std::tuple< int, double, std::string > f()
+{
+    return { 1, 2.0, "hello" } ;
+}
+
+int main()
+{
+    int a ;
+    double b ;
+    std::string c ;
+
+    std::tie( a, b, c ) = f() ;
+    
+    std::cout << a << '\n' 
+        << b << '\n'
+        << c << std::endl ;
+}
+\end{lstlisting}
+
+構造化束縛を使うと、以下のように書ける。
+
+\begin{lstlisting}[language=C++]
+std::tuple< int, double, std::string > f()
+{
+    return { 1, 2.0, "hello" } ;
+}
+
+int main()
+{
+    auto [a, b, c] = f() ;
+    
+    std::cout << a << '\n' 
+        << b << '\n'
+        << c << std::endl ;
+}
+\end{lstlisting}
+
+変数の型はそれぞれ対応する多値の型になる。この場合、\lstinline!a!,
+\lstinline!b!, \lstinline!c!はそれぞれ\lstinline!int!,
+\lstinline!double!, \lstinline!std::string!型になる。
+
+\lstinline!tuple!だけではなく、\lstinline!pair!も使える。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::pair<int, int> p( 1, 2 ) ;
+
+    auto [a,b] = p ;
+
+    // aはint型、値は1
+    // bはint型、値は2
+}
+\end{lstlisting}
+
+構造化束縛は\lstinline!if!文と\lstinline!switch!文、\lstinline!for!文でも使える。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int expr[] = {1,2,3} ;
+
+    if ( auto[a,b,c] = expr ; a )
+    { }
+    switch( auto[a,b,c] = expr ; a )
+    { }
+    for ( auto[a,b,c] = expr ; false ; ) 
+    { }
+}
+\end{lstlisting}
+
+構造化束縛は\lstinline!range-based for!文にも使える。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::map< std::string, std::string > translation_table
+    {
+        {"dog", "犬"},
+        {"cat", "猫"},
+        {"answer", "42"} 
+    } ;
+    
+    for ( auto [key, value] : translation_table )
+    {
+        std::cout<<
+            "key="<< key <<
+            ", value=" << value << '\n' ;
+    }
+}
+\end{lstlisting}
+
+これは、\lstinline!map!の要素型\lstinline!std::pair<const std::string, std::string>!~を構造化束縛\lstinline![key, value]!で受けている。
+
+構造化束縛は配列にも使える。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int values[] = {1,2,3} ;
+    auto [a,b,c] = values ;
+}
+\end{lstlisting}
+
+構造化束縛はクラスにも使える。
+
+\begin{lstlisting}[language=C++]
+struct Values
+{
+    int a ;
+    double d ;
+    std::string c ;
+} ;
+
+int main()
+{
+    Values values{ 1, 2.0, "hello" } ;
+
+    auto [a,b,c] = values ;
+}
+\end{lstlisting}
+
+構造化束縛でクラスを使う場合は、非\lstinline!static!データメンバーはすべて1つのクラスの\lstinline!public!なメンバーでなければならない。
+
+構造化束縛は\lstinline!constexpr!にはできない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    constexpr int expr[] = { 1,2 } ;
+
+    // エラー
+    constexpr auto [a,b] = expr ;
+}
+\end{lstlisting}
+
+%
+% SubSection 3.20.1
+\hypersubsection{section3-20-1}{超上級者向け解説}
+
+構造化束縛は、変数の宣言のうち、\textsf{構造化束縛宣言（structured binding declaration）}に分類される文法で記述する。構造化束縛宣言となる宣言は、単純宣言（simple-declaration）と\lstinline!for-range!宣言（for-range-declaration）のうち、\lstinline![!識別子リスト\lstinline!]!があるものだ。
+\index{こうぞうかそくばくせんげん@構造化束縛宣言}\index{たんじゆんせんげん@単純宣言}\index{for-rangeせんげん@\texttt{for-range}宣言}
+
+\begin{lstlisting}[language=C++]
+単純宣言:
+    属性 auto CV修飾子(省略可) リファレンス修飾子(省略可)
+    [ 識別子リスト ] 初期化子 ;
+
+for-range宣言:
+    属性 auto CV修飾子(省略可) リファレンス修飾子(省略可)
+    [ 識別子リスト ] ;
+
+識別子リスト:
+    コンマで区切られた識別子
+
+初期化子:
+    = 式
+    { 式 }
+    ( 式 )
+\end{lstlisting}
+
+以下は単純宣言のコード例だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int e1[] = {1,2,3} ;
+    struct { int a,b,c ; } e2{1,2,3} ;
+    auto e3 = std::make_tuple(1,2,3) ;
+    
+    // "= 式"の例
+    auto [a,b,c] = e1 ;
+    auto [d,e,f] = e2 ;
+    auto [g,h,i] = e3 ;
+    
+    // "{式}", "(式)"の例
+    auto [j,k,l]{e1} ;
+    auto [m,n,o](e1) ;
+
+    // CV修飾子とリファレンス修飾子を使う例
+    auto const & [p,q,r] = e1 ;
+}
+\end{lstlisting}
+
+以下は\lstinline!for-range!宣言の例だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::pair<int, int> pairs[] = { {1,2}, {3,4}, {5,6} } ;
+    
+    for ( auto [a, b] : pairs )
+    {
+        std::cout << a << ", " << b << '\n' ;
+    }
+}
+\end{lstlisting}
+
+%
+% SubSection 3.20.2
+\hypersubsection{section3-20-2}{構造化束縛宣言の仕様}
+
+構造化束縛の構造化束縛宣言は以下のように解釈される。
+\index{こうぞうかそくばく@構造化束縛!しよう@仕様}
+
+構造化束縛宣言によって宣言される変数の数は、初期化子の多値の数と一致していなければならない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 2個の値を持つ
+    int expr[] = {1,2} ;
+
+    // エラー、変数が少なすぎる
+    auto[a] = expr ; 
+    // エラー、変数が多すぎる
+    auto[b,c,d] = expr ;
+}
+\end{lstlisting}
+
+構造化束縛宣言で宣言されるそれぞれの変数名について、記述されたとおりの属性、CV修飾子、リファレンス修飾子の変数が宣言される。
+
+%
+% SubSection 3.20.3
+\hypersubsection{section3-20-3}{初期化子の型が配列の場合}
+
+初期化子が配列の場合、それぞれの変数はそれぞれの配列の要素で初期化される。
+\index{こうぞうかそくばく@構造化束縛!はいれつ@配列}
+
+リファレンス修飾子がない場合、それぞれの変数はコピー初期化される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int expr[3] = {1,2,3} ;
+    auto [a,b,c] = expr ;
+}
+\end{lstlisting}
+
+これは、以下と同じ意味になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+
+    int expr[3] = {1,2,3} ;
+
+    int a = expr[0] ;
+    int b = expr[1] ;
+    int c = expr[2] ;
+}
+\end{lstlisting}
+
+リファレンス修飾子がある場合、変数はリファレンスとなる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int expr[3] = {1,2,3} ;
+    auto & [a,b,c] = expr ;
+    auto && [d,e,f] = expr ;
+}
+\end{lstlisting}
+
+これは、以下と同じ意味になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int expr[3] = {1,2,3} ;
+
+    int & a = expr[0] ;
+    int & b = expr[1] ;
+    int & c = expr[2] ;
+
+    int && d = expr[0] ;
+    int && e = expr[1] ;
+    int && f = expr[2] ;
+}
+\end{lstlisting}
+
+もし、変数の型が配列の場合、配列の要素はそれぞれ対応する配列の要素で初期化される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int expr[][2] = {{1,2},{1,2}} ;
+    auto [a,b] = expr ;
+}
+\end{lstlisting}
+
+これは、以下と同じ意味になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int expr[][2] = {{1,2},{1,2}} ;
+
+    int a[2] = { expr[0][0], expr[0][1] } ;
+    int b[2] = { expr[1][0], expr[1][1] } ;    
+}
+\end{lstlisting}
+
+%
+% SubSection 3.20.4
+\hypersubsection{section3-20-4}{初期化子の型が配列ではなく、std::tuple\texttt{\_}size\texttt{<}E\texttt{>}\,が完全形の名前である場合}
+
+構造化束縛宣言の初期化子の型\lstinline!E!が配列ではない場合で、\lstinline!std::tuple_size<E>!~が完全形の名前である場合、
+構造化束縛宣言の初期化子の型を\lstinline!E!,
+その値を\lstinline!e!とする。構造化束縛宣言で宣言される1つ目の変数を0,
+2つ目の変数を1, \ldots{},
+とインクリメントされていくインデックスを\lstinline!i!とする。
+\index{こうぞうかそくばく@構造化束縛!かんぜんけいのなまえ@完全形の名前}\index{std::tuple\_size<E>@\texttt{std::tuple\_size<E>}}
+
+\lstinline!std::tuple_size<E>::value!は整数のコンパイル時定数式で、その値は初期化子の値の数でなければならない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // std::tuple< int, int, int >
+    auto e = std::make_tuple( 1, 2, 3 ) ;
+    auto [a,b,c] = e ;
+
+    // std::tuple_size<decltype(e)>::sizeは3
+}
+\end{lstlisting}
+
+それぞれの値を取得するために、非修飾名\lstinline!get!が型\lstinline!E!のクラススコープから探される。\lstinline!get!が見つかった場合、それぞれの変数の初期化子は\lstinline!e.get<i>()!となる。
+
+\begin{lstlisting}[language=C++]
+auto [a,b,c] = e ;
+\end{lstlisting}
+という構造化束縛宣言は、以下の意味になる。
+
+\begin{lstlisting}[language=C++]
+type a = e.get<0>() ;
+type b = e.get<1>() ;
+type c = e.get<2>() ;
+\end{lstlisting}
+
+そのような\lstinline!get!の宣言が見つからない場合、初期化子は\lstinline!get<i>(e)!となる。この場合、\lstinline!get!は連想名前空間から探される。通常の非修飾名前検索は行われない。
+
+\begin{lstlisting}[language=C++]
+// ただし通常の非修飾名前検索は行われない
+type a = get<0>(e) ;
+type b = get<1>(e) ;
+type c = get<2>(e) ;
+\end{lstlisting}
+
+構造化束縛宣言で宣言される変数の型は以下のように決定される。
+
+変数の型\lstinline!type!は``\lstinline!std::tuple_element<i, E>::type!''となる。
+
+\begin{lstlisting}[language=C++]
+std::tuple_element<0, E>::type a = get<0>(e) ;
+std::tuple_element<1, E>::type b = get<1>(e) ;
+std::tuple_element<2, E>::type c = get<2>(e) ;
+\end{lstlisting}
+
+以下のコードは、
+\begin{lstlisting}[language=C++]
+int main()
+{
+    auto e = std::make_tuple( 1, 2, 3 ) ;
+    auto [a,b,c] = e ;
+}
+\end{lstlisting}
+以下とほぼ同等の意味になる。
+\begin{lstlisting}[language=C++]
+int main()
+{
+    auto e = std::make_tuple( 1, 2, 3 ) ;
+    
+    using E = decltype(e) ;
+
+    std::tuple_element<0, E>::type & a = std::get<0>(e) ;
+    std::tuple_element<1, E>::type & b = std::get<1>(e) ;
+    std::tuple_element<2, E>::type & c = std::get<2>(e) ;
+}
+\end{lstlisting}
+
+以下のコードは、
+\begin{lstlisting}[language=C++]
+int main()
+{
+    auto e = std::make_tuple( 1, 2, 3 ) ;
+    auto && [a,b,c] = std::move(e) ;
+}
+\end{lstlisting}
+以下のような意味になる。
+\begin{lstlisting}[language=C++]
+int main()
+{
+    auto e = std::make_tuple( 1, 2, 3 ) ;
+    
+    using E = decltype(e) ;
+
+    std::tuple_element<0, E>::type && a = std::get<0>(std::move(e)) ;
+    std::tuple_element<1, E>::type && b = std::get<1>(std::move(e)) ;
+    std::tuple_element<2, E>::type && c = std::get<2>(std::move(e)) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 3.20.5
+\hypersubsection{section3-20-5}{上記以外の場合}
+
+上記以外の場合、構造化束縛宣言の初期化子の型\lstinline!E!はクラス型で、すべての非\lstinline!static!データメンバーは\lstinline!public!の直接のメンバーであるか、あるいは単一の曖昧ではない\lstinline!public!基本クラスのメンバーである必要がある。\lstinline!E!に匿名\lstinline!union!メンバーがあってはならない。
+
+以下は型\lstinline!E!として適切なクラスの例である。
+\index{こうぞうかそくばく@構造化束縛!くらす@クラス}
+
+\begin{lstlisting}[language=C++]
+struct A
+{
+    int a, b, c ;
+} ;
+
+struct B : A { } ;
+\end{lstlisting}
+
+以下は型\lstinline!E!として不適切なクラスの例である。
+
+\begin{lstlisting}[language=C++]
+// public以外の非staticデータメンバーがある
+struct A
+{
+public :
+    int a ;
+private :
+    int b ;
+} ;
+
+
+struct B
+{
+    int a ;
+} ;
+// クラスにも基本クラスにも非staticデータメンバーがある
+struct C : B
+{
+    int b ;
+} ;
+
+// 匿名unionメンバーがある
+struct D
+{
+    union
+    {
+        int i ;
+        double d ;
+    }
+} ;
+\end{lstlisting}
+
+型\lstinline!E!の非\lstinline!static!データメンバーは宣言された順番で多値として認識される。
+\index{こうぞうかそくばく@構造化束縛!ひstaticでためんば@非\texttt{static}データメンバー}
+
+以下のコードは、
+\begin{lstlisting}[language=C++]
+int main()
+{
+    struct { int x, y, z ; } e{1,2,3} ;
+
+    auto [a,b,c] = e ;
+}
+\end{lstlisting}
+以下のコードと意味的に等しい。
+\begin{lstlisting}[language=C++]
+int main()
+{
+    struct { int x, y, z ; } e{1,2,3} ;
+
+    int a = e.x ;
+    int b = e.y ;
+    int c = e.z ;
+}
+\end{lstlisting}
+
+構造化束縛はビットフィールドに対応している。
+\index{こうぞうかそくばく@構造化束縛!びつとふいるど@ビットフィールド}
+
+\begin{lstlisting}[language=C++]
+struct S
+{
+    int x : 2 ;
+    int y : 4 ;
+} ;
+
+int main()
+{
+    S e{1,3} ;
+    auto [a,b] = e ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_structured_bindings!, 値は201606。
+\index{\_\_cpp\_structured\_bindings@\texttt{\_\_cpp\_structured\_bindings}}

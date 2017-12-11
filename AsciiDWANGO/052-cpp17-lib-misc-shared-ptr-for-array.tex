@@ -1,0 +1,20 @@
+%
+% Section 9.6
+\hypersection{section9-6}{shared\texttt{\_}ptr\texttt{<}T{[}{]}\texttt{>} : 配列に対するshared\texttt{\_}ptr}
+
+C++17では、\lstinline!shared_ptr!が配列に対応した。
+\index{shared\_ptr<T[]>@\texttt{shared\_ptr<T[]>}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 配列対応のshared_ptr
+    std::shared_ptr< int [] > ptr( new int[5] ) ;
+
+    // operator []で配列に添字アクセスできる
+    ptr[0] = 42 ;
+
+    // shared_ptrのデストラクターがdelete[]を呼び出す
+}
+\end{lstlisting}
+

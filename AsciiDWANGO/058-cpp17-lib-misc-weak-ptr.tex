@@ -1,0 +1,37 @@
+%
+% Section 9.12
+\hypersection{section9-12}{shared\texttt{\_}ptr::weak\texttt{\_}type}
+
+C++17では\lstinline!shared_ptr!に\lstinline!weak_type!というネストされた型名が追加された。これは\lstinline!shared_ptr!に対する\lstinline!weak_ptr!の\lstinline!typedef!名となっている。
+\index{shared\_ptr::weak\_type@\texttt{shared\_ptr::weak\_type}}\index{weak\_type@\texttt{weak\_type}}
+
+\begin{lstlisting}[language=C++]
+namespace std {
+
+template < typename T >
+class shared_ptr
+{
+    using weak_type = weak_ptr<T> ;
+} ;
+
+}
+\end{lstlisting}
+
+\vskip 1zw
+\noindent
+\textsf{使い方}：
+
+\begin{lstlisting}[language=C++]
+template < typename Shared_ptr >
+void f( Shared_ptr sptr )
+{
+    // C++14
+    auto wptr1 = std::weak_ptr<
+                    typename Shared_ptr::element_type
+                >( sptr ) ;
+
+    // C++17
+    auto wptr2 = typename Shared_ptr::weak_type( sptr ) ;
+}
+\end{lstlisting}
+

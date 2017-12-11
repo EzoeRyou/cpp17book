@@ -1,0 +1,32 @@
+%
+% Section 3.18
+\hypersection{section3-18}{using属性名前空間}
+
+C++17では、属性名前空間に\lstinline!using!ディレクティブのような記述ができるようになった。
+\index{usingぞくせいなまえくうかん@\texttt{using}属性名前空間}
+
+\begin{lstlisting}[language=C++]
+// [[extention::foo, extention::bar]]と同じ
+[[ using extention : foo, bar ]] int x ;
+\end{lstlisting}
+
+属性トークンには、属性名前空間を付けることができる。これにより、独自拡張の属性トークンの名前の衝突を避けることができる。
+\index{ぞくせいとくん@属性トークン}\index{ぞくせいなまえくうかん@属性名前空間}
+
+たとえば、あるC++コンパイラーには独自拡張として\lstinline!foo!,
+\lstinline!bar!という属性トークンがあり、別のC++コンパイラーも同じく独自拡張として\lstinline!foo!,
+\lstinline!bar!という属性トークンを持っているが、それぞれ意味が違っている場合、コードの意味も違ってしまう。
+
+\begin{lstlisting}[language=C++]
+[[ foo, bar ]] int x ;
+\end{lstlisting}
+
+このため、C++には属性名前空間という文法が用意されている。注意深いC++コンパイラーは独自拡張の属性トークンには属性名前空間を設定していることだろう。
+
+\begin{lstlisting}[language=C++]
+[[ extention::foo, extention::bar ]] int x ;
+\end{lstlisting}
+
+問題は、これをいちいち記述するのは面倒だということだ。
+
+C++17では、\lstinline!using!属性名前空間という機能により、\lstinline!using!ディレクティブのような名前空間の省略が可能になった。文法は\lstinline!using!ディレクティブと似ていて、属性の中で\lstinline!using name : ...!と書くことで、コロンに続く属性トークンに、属性名前空間\lstinline!name!を付けたものと同じ効果が得られる。

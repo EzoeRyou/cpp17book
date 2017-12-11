@@ -1,0 +1,94 @@
+%
+% Section 3.11
+\hypersection{section3-11}{{[}{[}nodiscard{]}{]}属性}
+
+\lstinline![[nodiscard]]!属性は関数の戻り値が無視されてほしくないときに使うことができる。\lstinline![[nodiscard]]!属性が付与された関数の戻り値を無視すると警告メッセージが表示される。
+\index{[[nodiscard]]ぞくせい@\texttt{[[nodiscard]]}属性}
+
+\begin{lstlisting}[language=C++]
+[[nodiscard]] int f()
+{
+    return 0 ;
+}
+
+void g( int ) { }
+
+int main()
+{
+    // エラー、戻り値が無視されている
+    f() ;
+
+    // OK、戻り値は無視されていない
+    int result = f() ;
+    g( f ) ;
+    f() + 1 ;
+    (void) f() ;
+}
+\end{lstlisting}
+
+戻り値を無視する、というのは万能ではない。上の例でも、意味的には戻り値は無視されていると言えるが、コンパイラーはこの場合に戻り値が無視されているとは考えない。
+
+\lstinline![[nodiscard]]!の目的は、戻り値を無視してほしくない関数をユーザーが利用したときの初歩的な間違いを防ぐためにある。\lstinline!void!型にキャストするような意図的な戻り値の無視まで防ぐようには作られていない。
+
+\lstinline![[nodiscard]]!属性を使うべき関数は、戻り値を無視してほしくない関数だ。どのような関数が戻り値を無視してほしくないかというと大きく2つある。
+
+戻り値をエラーなどのユーザーが確認しなければならない情報の通知に使う関数。
+
+\begin{lstlisting}[language=C++]
+enum struct error_code
+{
+    no_error, some_operations_failed,  serious_error
+} ;
+
+// 失敗するかもしれない処理
+error_code do_something_that_may_fail()
+{
+    // 処理
+
+    if ( is_error_condition() )
+        return error_code::serious_error ;
+
+    // 処理
+
+    return error_code::no_error ;
+}
+
+// エラーがいっさい発生しなかったときの処理
+int do_something_on_no_error() ;
+
+int main()
+{
+    // エラーを確認していない
+    do_something_that_may_fail() ;
+
+    // エラーがない前提で次の処理をしようとする
+    do_something_on_no_error() ;
+}
+\end{lstlisting}
+
+関数に\lstinline![[nodiscard]]!属性を付与しておけば、このようなユーザー側の初歩的なエラー確認の欠如に警告メッセージを出せる。
+
+\lstinline![[nodiscard]]!属性は、クラスと\lstinline!enum!にも付与することができる。
+
+\begin{lstlisting}[language=C++]
+class [[nodiscard]] X { } ;
+enum class [[nodiscard]] Y { } ;
+\end{lstlisting}
+
+\lstinline![[nodiscard]]!が付与されたクラスか\lstinline!enum!が戻り値の型である関数は\lstinline![[nodiscard]]!が付与された扱いとなる。
+
+\begin{lstlisting}[language=C++]
+class [[nodiscard]] X { } ;
+
+X f() { return X{} ; } 
+
+int main()
+{
+    // 警告、戻り値が無視されている
+    f() ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__has_cpp_attribute(nodiscard)!,
+値は201603。
+\index{\_\_has\_cpp\_attribute(nodiscard)@\texttt{\_\_has\_cpp\_attribute(nodiscard)}}

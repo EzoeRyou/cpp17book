@@ -1,0 +1,779 @@
+%
+% Chapter 8
+\hyperchapter{chapter8}{数学の特殊関数群}{数学の特殊関数群}
+
+C++17では数学の特殊関数群（mathematical special
+functions）がヘッダーファイル~\lstinline!<cmath>!~に追加された。
+\index{すうがくのとくしゆかんすう@数学の特殊関数}\index{<cmath>@\texttt{<cmath>}}
+
+数学の特殊関数は、いずれも実引数を取って、規定の計算をし、結果を浮動小数点数型の戻り値として返す。
+
+数学の特殊関数は\lstinline!double!, \lstinline!float!,
+\lstinline!long double!型の3つのオーバーロードがある。それぞれ、関数名の最後に、何もなし、\lstinline!f!,
+\lstinline!l!というサフィックスで表現されている。
+
+\begin{lstlisting}[language=C++]
+double      function_name() ;   // 何もなし
+float       function_namef() ;  // f
+long double function_namel() ;  // l
+\end{lstlisting}
+
+数学の特殊関数の説明は、関数の宣言、効果、戻り値、注意がある。
+
+もし、数学の特殊関数に渡した実引数がNaN（Not a
+Number）である場合、関数の戻り値もNaNになる。ただし定義域エラーは起こらない。
+
+それ以外の場合で、関数が定義域エラーを返すべきときは、
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  関数の戻り値の記述で、定義域が示されていて実引数が示された定義域を超えるとき
+\item
+  実引数に対応する数学関数の結果の値が非ゼロの虚数部を含むとき
+\item
+  実引数に対応する数学関数の結果の値が数学的に定義されていないとき
+\end{itemize}
+別途示されていない場合、関数はすべての有限の値、負の無限大、正の無限大に対しても定義されている。
+
+数学関数が与えられた実引数の値に対して定義されているというとき、それは以下のいずれかである。
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  実引数の値の集合に対して明示的に定義されている
+\item
+  計算方法に依存しない極限値が存在する
+\end{itemize}
+
+ある関数の効果が実装定義（implementation-defined）である場合、その効果はC++標準規格で定義されず、C++実装はどのように実装してもよいという意味だ。
+
+%
+% Section 8.1
+\hypersection{section8-1}{ラゲール多項式（Laguerre polynomials）}
+\index{らげるたこうしき@ラゲール多項式}\index{すうがくのとくしゆかんすう@数学の特殊関数!らげるたこうしき@ラゲール多項式}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       laguerre(unsigned n, double x);
+float        laguerref(unsigned n, float x);
+long double  laguerrel(unsigned n, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!n!,
+\lstinline!x!に対するラゲール多項式（Laguerre polynomials）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{L}_n(x) =
+  \frac{e^x}{n!} \frac{ \mathsf{d} ^ n}
+            { \mathsf{d}x ^ n} \, (x^n e^{-x}),
+       \quad \mbox{for $x \ge 0$}
+\]
+\hspace*{3em}\(n\)を\lstinline!n!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!n! \textgreater{}=
+128のときの関数の呼び出しの効果は実装定義である。
+
+%
+% Section 8.2
+\hypersection{section8-2}{ラゲール陪多項式（Associated Laguerre polynomials）}
+\index{らげるばいたこうしき@ラゲール陪多項式}\index{すうがくのとくしゆかんすう@数学の特殊関数!らげるばいたこうしき@ラゲール陪多項式}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double      assoc_laguerre(unsigned n, unsigned m, double x);
+float       assoc_laguerref(unsigned n, unsigned m, float x);
+long double assoc_laguerrel(unsigned n, unsigned m, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!n!, \lstinline!m!,
+\lstinline!x!に対するラゲール陪多項式（Associated Laguerre
+polynomials）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{L}_n^m(x) =
+  (-1)^m \frac{\mathsf{d} ^ m}
+       {\mathsf{d}x ^ m} \, \mathsf{L}_{n+m}(x),
+       \quad \mbox{for $x \ge 0$}
+\]
+\hspace*{3em}\(n\)を\lstinline!n!, \(m\)を\lstinline!m!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!n! \textgreater{}= 128 もしくは \lstinline!m!
+\textgreater{}= 128 のときの関数呼び出しの効果は実装定義である。
+
+%
+% Section 8.3
+\hypersection{section8-3}{ルジャンドル多項式（Legendre polynomials）}
+\index{るじやんどるたこうしき@ルジャンドル多項式}\index{すうがくのとくしゆかんすう@数学の特殊関数!るじやんどるたこうしき@ルジャンドル多項式}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       legendre(unsigned l, double x);
+float        legendref(unsigned l, float x);
+long double  legendrel(unsigned l, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!l!,
+\lstinline!x!に対するルジャンドル多項式（Legendre
+polynomials）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{P}_\ell(x) =
+  \frac{1}
+       {2^\ell \, \ell!}
+  \frac{ \mathsf{d} ^ \ell}
+       { \mathsf{d}x ^ \ell} \, (x^2 - 1) ^ \ell,
+       \quad \mbox{for $|x| \le 1$}
+\]
+\hspace*{3em}\(l\)を\lstinline!l!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!l! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+%
+% Section 8.4
+\hypersection{section8-4}{ルジャンドル陪関数（Associated Legendre functions）}
+\index{るじやんどるばいかんすう@ルジャンドル陪関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!るじやんどるばいかんすう@ルジャンドル陪関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double      assoc_legendre(unsigned l, unsigned m, double x);
+float       assoc_legendref(unsigned l, unsigned m, float x);
+long double assoc_legendrel(unsigned l, unsigned m, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!l!, \lstinline!m!,
+\lstinline!x!に対するルジャンドル陪関数（Associated Legendre
+functions）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{P}_\ell^m(x) =
+  (1 - x^2) ^ {m/2}
+  \:
+  \frac{ \mathsf{d} ^ m}
+       { \mathsf{d}x ^ m} \, \mathsf{P}_\ell(x),
+       \quad \mbox{for $|x| \le 1$}
+\]
+\hspace*{3em}\(l\)を\lstinline!l!, \(m\)を\lstinline!m!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!l! \textgreater{}= 128
+のときの関数呼び出しの効果は実装定義である。
+
+%
+% Section 8.5
+\hypersection{section8-5}{球面ルジャンドル陪関数（Spherical associated Legendre functions）}
+\index{きゆうめんるじやんどるばいかんすう@球面ルジャンドル陪関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!きゆうめんるじやんどるばいかんすう@球面ルジャンドル陪関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       sph_legendre(  unsigned l, unsigned m, double theta);
+float        sph_legendref( unsigned l, unsigned m, float theta);
+long double  sph_legendrel( unsigned l, unsigned m,
+                            long double theta);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!l!, \lstinline!m!,
+\lstinline!theta!（\lstinline!theta!の単位はラジアン）に対する球面ルジャンドル陪関数（Spherical
+associated Legendre functions）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{Y}_\ell^m(\theta, 0)
+\]
+\hspace*{3em}このとき、
+\[
+  \mathsf{Y}_\ell^m(\theta, \phi) =
+  (-1)^m \left[ \frac{(2 \ell + 1)}
+                     {4 \pi}
+            \frac{(\ell - m)!}
+                 {(\ell + m)!}
+         \right]^{1/2}
+     \mathsf{P}_\ell^m
+     ( \cos\theta ) e ^ {i m \phi},
+       \quad \mbox{for $|m| \le \ell$}
+\]
+\hspace*{3em}\(l\)を\lstinline!l!, \(m\)を\lstinline!m!,
+\(\theta\)を\lstinline!theta!とする。
+
+\noindent
+\textsf{注意}： \lstinline!l! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+球面調和関数（Spherical harmonics） \(\mathsf{Y}_\ell^m(\theta, \phi)\)
+は、以下のような関数を定義することによって計算できる。
+
+\begin{lstlisting}[language=C++]
+#include <cmath>
+#include <complex>
+
+std::complex<double>
+spherical_harmonics(unsigned l, unsigned m, double theta, double phi)
+{
+    return std::sph_legendre(l, m, theta) * std::polar(1.0, m * phi) ;
+}
+\end{lstlisting}
+
+\noindent
+\hyperref[section8-4]{ルジャンドル陪関数}も参照。
+
+%
+% Section 8.6
+\hypersection{section8-6}{エルミート多項式（Hermite polynomials）}
+\index{えるみとたこうしき@エルミート多項式}\index{すうがくのとくしゆかんすう@数学の特殊関数!えるみとたこうしき@エルミート多項式}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       hermite(unsigned n, double x);
+float        hermitef(unsigned n, float x);
+long double  hermitel(unsigned n, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!n!,
+\lstinline!x!に対するエルミート多項式（Hermite polynomials）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{H}_n(x) =
+  (-1)^n e^{x^2} \frac{ \mathsf{d} ^n}
+              { \mathsf{d}x^n} \, e^{-x^2}
+\;
+\]
+\hspace*{3em}\(n\)を\lstinline!n!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!n! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+%
+% Section 8.7
+\hypersection{section8-7}{ベータ関数（Beta function）}
+\index{べたかんすう@ベータ関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!べたかんすう@ベータ関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double      beta(double x, double y);
+float       betaf(float x, float y);
+long double betal(long double x, long double y);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!x!,
+\lstinline!y!に対するベータ関数（Beta function）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{B}(x, y) =
+  \frac{ \Gamma(x) \, \Gamma(y) }
+       { \Gamma(x+y) },
+       \quad \mbox{for $x > 0$,\, $y > 0$}
+\]
+\hspace*{3em}\(x\)を\lstinline!x!, \(y\)を\lstinline!y!とする。
+
+%
+% Section 8.8
+\hypersection{section8-8}{第1種完全楕円積分（Complete elliptic integral of the first kind）}
+\index{だい1しゆかんぜんだえんびぶん@第1種完全楕円積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい1しゆかんぜんだえんびぶん@第1種完全楕円積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double      comp_ellint_1(double k);
+float       comp_ellint_1f(float k);
+long double comp_ellint_1l(long double k);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!k!に対する第1種完全楕円積分（Complete
+elliptic integral of the first kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{K}(k) =
+  \mathsf{F}(k, \pi / 2),
+              \quad \mbox{for $|k| \le 1$}
+\]
+\hspace*{3em}\(k\)を\lstinline!k!とする。
+
+\noindent
+\hyperref[section8-11]{第1種不完全楕円積分}も参照。
+
+%
+% Section 8.9
+\hypersection{section8-9}{第2種完全楕円積分（Complete elliptic integral of the second kind）}
+\index{だい2しゆかんぜんだえんびぶん@第2種完全楕円積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい2しゆかんぜんだえんびぶん@第2種完全楕円積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double      comp_ellint_2(double k);
+float       comp_ellint_2f(float k);
+long double comp_ellint_2l(long double k);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!k!に対する第2種完全楕円積分（Complete
+elliptic integral of the second kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{E}(k) =
+  \mathsf{E}(k, \pi / 2),
+\quad \mbox{for $|k| \le 1$}
+\]
+\hspace*{3em}\(k\)を\lstinline!k!とする。
+
+\noindent
+\hyperref[section8-12]{第2種不完全楕円積分}も参照。
+
+%
+% Section 8.10
+\hypersection{section8-10}{第3種完全楕円積分（Complete elliptic integral of the third kind）}
+\index{だい3しゆかんぜんだえんびぶん@第3種完全楕円積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい3しゆかんぜんだえんびぶん@第3種完全楕円積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double      comp_ellint_3(double k, double nu);
+float       comp_ellint_3f(float k, float nu);
+long double comp_ellint_3l(long double k, long double nu);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!k!,
+\lstinline!nu!に対する第3種完全楕円積分（Complete elliptic integral of
+the third kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{\Pi}(\nu, k) = \mathsf{\Pi}(\nu, k, \pi / 2),
+        \quad \mbox{for $|k| \le 1$}
+\]
+\hspace*{3em}\(k\)を\lstinline!k!, \(\nu\)を\lstinline!nu!とする。
+
+\noindent
+\hyperref[section8-13]{第3種不完全楕円積分}も参照。
+
+%
+% Section 8.11
+\hypersection{section8-11}{第1種不完全楕円積分（Incomplete elliptic integral of the first kind）}
+\index{だい1しゆふかんぜんだえんびぶん@第1種不完全楕円積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい1しゆふかんぜんだえんびぶん@第1種不完全楕円積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       ellint_1(double k, double phi);
+float        ellint_1f(float k, float phi);
+long double  ellint_1l(long double k, long double phi);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!k!,
+\lstinline!phi!（\lstinline!phi!の単位はラジアン）に対する第1種不完全楕円積分（Incomplete
+elliptic integral of the first kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{F}(k, \phi) =
+  \int_0^\phi \! \frac{\mathsf{d}\theta}
+                      {\sqrt{1 - k^2 \sin^2 \theta}},
+       \quad \mbox{for $|k| \le 1$}
+\]
+\hspace*{3em}\(k\)を\lstinline!k!, \(\phi\)を\lstinline!phi!とする。
+
+%
+% Section 8.12
+\hypersection{section8-12}{第2種不完全楕円積分（Incomplete elliptic integroal of the second kind）}
+\index{だい2しゆふかんぜんだえんびぶん@第2種不完全楕円積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい2しゆふかんぜんだえんびぶん@第2種不完全楕円積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       ellint_2(double k, double phi);
+float        ellint_2f(float k, float phi);
+long double  ellint_2l(long double k, long double phi);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!k!,
+\lstinline!phi!（\lstinline!phi!の単位はラジアン）に対する第2種不完全楕円積分（Incomplete
+elliptic integral of the second kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{E}(k, \phi) =
+  \int_0^\phi \! \sqrt{1 - k^2 \sin^2 \theta} \, \mathsf{d}\theta,
+       \quad \mbox{for $|k| \le 1$}
+\]
+\hspace*{3em}\(k\)を\lstinline!k!, \(\phi\)を\lstinline!phi!とする。
+
+%
+% Section 8.13
+\hypersection{section8-13}{第3種不完全楕円積分（Incomplete elliptic integral of the third kind）}
+\index{だい3しゆふかんぜんだえんびぶん@第3種不完全楕円積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい3しゆふかんぜんだえんびぶん@第3種不完全楕円積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       ellint_3(  double k, double nu, double phi);
+float        ellint_3f( float k, float nu, float phi);
+long double  ellint_3l( long double k, long double nu,
+                        long double phi);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!k!, \lstinline!nu!,
+\lstinline!phi!（\lstinline!phi!の単位はラジアン）に対する第3種不完全楕円積分（Incomplete
+elliptic integral of the third kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{\Pi}(\nu, k, \phi) =
+  \int_0^\phi \! \frac{ \mathsf{d}\theta }
+                      { (1 - \nu \, \sin^2 \theta) \sqrt{1 - k^2 \sin^2 \theta} },
+       \quad \mbox{for $|k| \le 1$}
+\]
+\hspace*{3em}\(\nu\)を\lstinline!nu!, \(k\)を\lstinline!k!,
+\(\phi\)を\lstinline!phi!とする。
+
+%
+% Section 8.14
+\hypersection{section8-14}{第1種ベッセル関数（Cylindrical Bessel functions of the first kind）}
+\index{だい1しゆべつせるかんすう@第1種ベッセル関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい1しゆべつせるかんすう@第1種ベッセル関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       cyl_bessel_j(double nu, double x);
+float        cyl_bessel_jf(float nu, float x);
+long double  cyl_bessel_jl(long double nu, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!nu!,
+\lstinline!k!に対する第1種ベッセル関数（Cylindrical Bessel functions of
+the first kind, Bessel functions of the first kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{J}_\nu(x) =
+  \sum_{k=0}^\infty \frac{(-1)^k (x/2)^{\nu+2k}}
+             {k! \: \Gamma(\nu+k+1)},
+       \quad \mbox{for $x \ge 0$}
+\]
+\hspace*{3em}\(\nu\)を\lstinline!nu!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!nu! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+%
+% Section 8.15
+\hypersection{section8-15}{ノイマン関数（Cylindrical Neumann functions）}
+\index{のいまんかんすう@ノイマン関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!のいまんかんすう@ノイマン関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       cyl_neumann(double nu, double x);
+float        cyl_neumannf(float nu, float x);
+long double  cyl_neumannl(long double nu, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!nu!,
+\lstinline!x!に対するノイマン関数（Cylindrical Neumann functions,
+Neumann functions）、またの名を第2種ベッセル関数（Cylindrical Bessel
+functions of the second kind, Bessel functions of the second
+kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{N}_\nu(x) =
+  \left\{
+  \begin{array}{cl}
+  \displaystyle
+  \frac{\mathsf{J}_\nu(x) \cos \nu\pi - \mathsf{J}_{-\nu}(x)}
+       {\sin \nu\pi },
+  & \mbox{for $x \ge 0$ and non-integral $\nu$}
+  \\
+  \\
+  \displaystyle
+  \lim_{\mu \rightarrow \nu} \frac{\mathsf{J}_\mu(x) \cos \mu\pi - \mathsf{J}_{-\mu}(x)}
+                                {\sin \mu\pi },
+  & \mbox{for $x \ge 0$ and integral $\nu$}
+  \end{array}
+  \right.
+\]
+\hspace*{3em}\(\nu\)を\lstinline!nu!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!nu! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+\noindent
+\hyperref[section8-14]{第1種ベッセル関数}も参照。
+
+%
+% Section 8.16
+\hypersection{section8-16}{第1種変形ベッセル関数（Regular modified cylindrical Bessel functions）}
+\index{だい1しゆへんけいべつせるかんすう@第1種変形ベッセル関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい1しゆへんけいべつせるかんすう@第1種変形ベッセル関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       cyl_bessel_i(double nu, double x);
+float        cyl_bessel_if(float nu, float x);
+long double  cyl_bessel_il(long double nu, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!nu!,
+\lstinline!x!に対する第1種変形ベッセル関数（Regular modified cylindrical
+Bessel functions, Modified Bessel functions of the first
+kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{I}_\nu(x) =
+  \mathrm{i}^{-\nu} \mathsf{J}_\nu(\mathrm{i}x)
+  =
+  \sum_{k=0}^\infty \frac{(x/2)^{\nu+2k}}
+             {k! \: \Gamma(\nu+k+1)},
+       \quad \mbox{for $x \ge 0$}
+\]
+\hspace*{3em}\(\nu\)を\lstinline!nu!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!nu! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+\noindent
+\hyperref[section8-16]{第1種ベッセル関数}も参照。
+
+%
+% Section 8.17
+\hypersection{section8-17}{第2種変形ベッセル関数（Irregular modified cylindrical Bessel functions）}
+\index{だい2しゆへんけいべつせるかんすう@第2種変形ベッセル関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい2しゆへんけいべつせるかんすう@第2種変形ベッセル関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       cyl_bessel_k(double nu, double x);
+float        cyl_bessel_kf(float nu, float x);
+long double  cyl_bessel_kl(long double nu, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!nu!,
+\lstinline!x!に対する第2種変形ベッセル関数（Irregular modified
+cylindrical Bessel functions, Modified Bessel functions of the second
+kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\begin{align*}
+  \mathsf{K}_\nu(x) &=
+  (\pi/2)\mathrm{i}^{\nu+1} (            \mathsf{J}_\nu(\mathrm{i}x)
+                + \mathrm{i} \mathsf{N}_\nu(\mathrm{i}x)
+                ) \\
+  &=
+  \left\{
+  \begin{array}{cl}
+  \displaystyle
+  \frac{\pi}{2}
+  \frac{\mathsf{I}_{-\nu}(x) - \mathsf{I}_{\nu}(x)}
+       {\sin \nu\pi },
+  & \mbox{for $x \ge 0$ and non-integral $\nu$}
+  \\
+  \\
+  \displaystyle
+  \frac{\pi}{2}
+  \lim_{\mu \rightarrow \nu} \frac{\mathsf{I}_{-\mu}(x) - \mathsf{I}_{\mu}(x)}
+                                  {\sin \mu\pi },
+  & \mbox{for $x \ge 0$ and integral $\nu$}
+  \end{array}
+  \right.
+\end{align*}
+\hspace*{3em}\(\nu\)を\lstinline!nu!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!nu! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+\noindent
+\hyperref[section8-16]{第1種変形ベッセル関数}、\hyperref[section8-14]{第1種ベッセル関数}、\hyperref[section8-15]{ノイマン関数}も参照。
+
+%
+% Section 8.18
+\hypersection{section8-18}{第1種球ベッセル関数（Spherical Bessel functions of the first kind）}
+\index{だい1しゆきゆうべつせるかんすう@第1種球ベッセル関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!だい1しゆきゆうべつせるかんすう@第1種球ベッセル関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       sph_bessel(unsigned n, double x);
+float        sph_besself(unsigned n, float x);
+long double  sph_bessell(unsigned n, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!n!,
+\lstinline!x!に対する第1種球ベッセル関数（Spherical Bessel functions of
+the first kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{j}_n(x) =
+  (\pi/2x)^{1\!/\!2} \mathsf{J}_{n + 1\!/\!2}(x),
+       \quad \mbox{for $x \ge 0$}
+\]
+
+\noindent
+\textsf{注意}： \lstinline!n! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+\noindent
+\hyperref[section8-14]{第1種ベッセル関数}も参照。
+
+%
+% Section 8.19
+\hypersection{section8-19}{球ノイマン関数（Spherical Neumann functions）}
+\index{きゆうのいまんかんすう@球ノイマン関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!きゆうのいまんかんすう@球ノイマン関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       sph_neumann(unsigned n, double x);
+float        sph_neumannf(unsigned n, float x);
+long double  sph_neumannl(unsigned n, long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!n!,
+\lstinline!x!に対する球ノイマン関数（Spherical Neumann
+functions）、またの名を第2種球ベッセル関数（Spherical Bessel functions
+of the second kind）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{n}_n(x) =
+  (\pi/2x)^{1\!/\!2} \mathsf{N}_{n + 1\!/\!2}(x),
+       \quad \mbox{for $x \ge 0$}
+\]
+\hspace*{3em}\(n\)を\lstinline!n!, \(x\)を\lstinline!x!とする。
+
+\noindent
+\textsf{注意}： \lstinline!n! \textgreater{}= 128
+のときの関数の呼び出しの効果は実装定義である。
+
+\noindent
+\hyperref[section8-19]{ノイマン関数}も参照。
+
+%
+% Section 8.20
+\hypersection{section8-20}{指数積分（Exponential integral）}
+\index{しすうせきぶん@指数積分}\index{すうがくのとくしゆかんすう@数学の特殊関数!しすうせきぶん@指数積分}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       expint(double x);
+float        expintf(float x);
+long double  expintl(long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!x!に対する指数積分（Exponential
+integral）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{Ei}(x) =
+  - \int_{-x}^\infty \frac{e^{-t}}
+                          {t     } \, \mathsf{d}t
+\;
+\]
+\hspace*{3em}\(x\)を\lstinline!x!とする。
+
+%
+% Section 8.21
+\hypersection{section8-21}{リーマンゼータ関数（Riemann zeta function）}
+\index{りまんぜたかんすう@リーマンゼータ関数}\index{すうがくのとくしゆかんすう@数学の特殊関数!りまんぜたかんすう@リーマンゼータ関数}
+
+\bgroup
+\begin{lstlisting}[language=C++, aboveskip=0.0zw]
+double       riemann_zeta(double x);
+float        riemann_zetaf(float x);
+long double  riemann_zetal(long double x);
+\end{lstlisting}
+\egroup
+
+\noindent
+\textsf{効果}：実引数\lstinline!x!に対するリーマンゼータ関数（Riemann
+zeta function）を計算する。
+
+\noindent
+\textsf{戻り値}：
+\[
+  \mathsf{\zeta}(x) =
+  \left\{
+  \begin{array}{cl}
+  \displaystyle
+  \sum_{k=1}^\infty k^{-x},
+  & \mbox{for $x > 1$}
+  \\
+  \\
+  \displaystyle
+  \frac{1}
+    {1 - 2^{1-x}}
+  \sum_{k=1}^\infty (-1)^{k-1} k^{-x},
+  & \mbox{for $0 \le x \le 1$}
+  \\
+  \\
+  \displaystyle
+  2^x \pi^{x-1} \sin(\frac{\pi x}{2}) \, \Gamma(1-x) \, \zeta(1-x),
+  & \mbox{for $x < 0$}
+  \end{array}
+  \right.
+\;
+\]
+\hspace*{3em}\(x\)を\lstinline!x!とする。

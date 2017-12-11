@@ -1,0 +1,40 @@
+%
+% Section 9.3
+\hypersection{section9-3}{apply : tupleの要素を実引数に関数を呼び出す}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class F, class Tuple>
+constexpr decltype(auto) apply(F&& f, Tuple&& t);
+\end{lstlisting}
+\egroup
+
+\lstinline!std::apply!は\lstinline!tuple!のそれぞれの要素を順番に実引数に渡して関数を呼び出すヘルパー関数だ。
+\index{std::apply@\texttt{std::apply}}\index{tuple@\texttt{tuple}}
+
+ある要素数\lstinline!N!の\lstinline!tuple t!と関数オブジェクト\lstinline!f!に対して、\lstinline!apply( f, t )!は、\lstinline!f( get<0>(t), get<1>(t), ... , get<N-1>(t) )!のように\lstinline!f!を関数呼び出しする。
+
+\vskip 1zw
+\noindent
+\textsf{例}：
+
+\begin{lstlisting}[language=C++]
+template < typename ... Types >
+void f( Types ... args ) { }
+
+int main()
+{
+    // int, int, int
+    std::tuple t1( 1,2,3 ) ;
+
+    // f( 1, 2, 3 )の関数呼び出し
+    std::apply( f, t1 ) ;
+
+    // int, double, const char *
+    std::tuple t2( 123, 4.56, "hello" ) ;
+
+    // f( 123, 4.56, "hello" )の関数呼び出し
+    std::apply( f, t2 ) ;
+}
+\end{lstlisting}
+

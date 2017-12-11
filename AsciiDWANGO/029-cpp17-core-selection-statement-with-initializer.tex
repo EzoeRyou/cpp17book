@@ -1,0 +1,99 @@
+%
+% Section 3.15
+\hypersection{section3-15}{初期化文付き条件文}
+
+C++17では、条件文に初期化文を記述できるようになった。
+\index{しよきかぶんつきじようけんぶん@初期化文付き条件文}\index{じょうけんぶん@条件文!しよきかぶんつき@初期化文付き〜}
+
+\begin{lstlisting}[language=C++]
+if ( int x = 1 ; x )
+     /*...*/ ;
+
+switch( int x = 1 ; x )
+{
+    case 1 :
+        /*... */;
+}
+\end{lstlisting}
+
+これは、以下のコードと同じ意味になる。
+
+\begin{lstlisting}[language=C++]
+{
+    int x = 1 ;
+    if ( x ) ;
+}
+
+{
+    int x = 1 ;
+    switch( x )
+    {
+        case 1 : ;
+    }
+}
+\end{lstlisting}
+
+なぜこのような機能が追加されたかというと、変数を宣言し、\lstinline!if!文の条件に変数を使い、\lstinline!if!文を実行後は変数を使用しない、というパターンは現実のコードで頻出するからだ。
+
+\begin{lstlisting}[language=C++]
+void * ptr = std::malloc(10) ;
+if ( ptr != nullptr )
+{
+    // 処理
+    std::free(ptr) ;
+}
+// これ以降ptrは使わない
+
+FILE * file = std::fopen("text.txt", "r") ;
+if ( file != nullptr )
+{
+    // 処理
+    std::fclose( file ) ;
+}
+// これ以降fileは使わない
+
+auto int_ptr = std::make_unique<int>(42) ;
+if ( ptr )
+{
+    // 処理
+}
+// これ以降int_ptrは使わない
+\end{lstlisting}
+
+上記のコードには問題がある。これ以降変数は使わないが、変数自体は使えるからだ。
+
+\begin{lstlisting}[language=C++]
+auto ptr = std::make_unique<int>(42) ;
+if ( ptr )
+{
+    // 処理
+}
+// これ以降ptrは使わない
+
+// でも使える
+int value = *ptr ;
+\end{lstlisting}
+
+変数を使えないようにするには、ブロックスコープで囲むことで、変数をスコープから外してやればよい。
+
+\begin{lstlisting}[language=C++]
+{
+    auto int_ptr = std::make_unique<int>(42) ;
+    if ( ptr )
+    {
+        // 処理
+    }
+    // ptrは破棄される
+}
+// これ以降ptrは使わないし使えない
+\end{lstlisting}
+
+このようなパターンは頻出するので、初期化文付きの条件文が追加された。
+
+\begin{lstlisting}[language=C++]
+if ( auto ptr = std::make_unique<int>(42) ; ptr )
+{
+    // 処理
+}
+\end{lstlisting}
+

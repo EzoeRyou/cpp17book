@@ -1,0 +1,73 @@
+%
+% Section 2.4
+\hypersection{section2-4}{通常の関数の戻り値の型推定}
+\index{かんすうのもどりちのかたすいてい@関数の戻り値の型推定}
+
+関数の戻り値の型として\lstinline!auto!を指定すると、戻り値の型を\lstinline!return!文から推定してくれる。
+\index{auto@\texttt{auto}}
+
+\begin{lstlisting}[language=C++]
+// int ()
+auto a(){ return 0 ; }
+// double ()
+auto b(){ return 0.0 ; }
+
+// T(T)
+template < typename T >
+auto c(T t){ return t ; }
+\end{lstlisting}
+
+\lstinline!return!文の型が一致していないとエラーとなる。
+
+\begin{lstlisting}[language=C++]
+auto f()
+{
+    return 0 ; // エラー、一致していない
+    return 0.0 ; // エラー、一致していない
+}
+\end{lstlisting}
+
+すでに型が決定できる\lstinline!return!文が存在する場合、関数の戻り値の型を参照するコードも書ける。
+
+\begin{lstlisting}[language=C++]
+auto a()
+{
+    &a ; // エラー、aの戻り値の型が決定していない
+    return 0 ;
+}
+
+auto b()
+{
+    return 0 ;
+    &b ; // OK、戻り値の型はint
+}
+\end{lstlisting}
+
+関数\lstinline!a!へのポインターを使うには関数\lstinline!a!の型が決定していなければならないが、\lstinline!return!文の前に型は決定できないので関数\lstinline!a!はエラーになる。関数\lstinline!b!は\lstinline!return!文が現れた後なので戻り値の型が決定できる。
+
+再帰関数も書ける。
+
+\begin{lstlisting}[language=C++]
+auto sum( unsigned int i )
+{
+    if ( i == 0 )
+        return i ; // 戻り値の型はunsigned int
+    else
+        return sum(i-1)+i ; // OK
+}
+\end{lstlisting}
+
+このコードも、\lstinline!return!文の順番を逆にすると戻り値の型が決定できずエラーとなるので注意。
+
+\begin{lstlisting}[language=C++]
+auto sum( unsigned int i )
+{
+    if ( i != 0 )
+        return sum(i-1)+i ; // エラー
+    else
+        return i ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_return_type_deduction!, 値は201304。
+\index{\_\_cpp\_return\_type\_deduction@\texttt{\_\_cpp\_return\_type\_deduction}}

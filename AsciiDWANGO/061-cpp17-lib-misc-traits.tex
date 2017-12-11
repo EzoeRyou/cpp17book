@@ -1,0 +1,253 @@
+%
+% Section 9.15
+\hypersection{section9-15}{type\texttt{\_}traits}
+
+C++17では~\lstinline!<type_traits>!~に機能追加が行われた。
+\index{<type\_traits>@\texttt{<type\_traits>}}
+
+%
+% SubSection 9.15.1
+\hypersubsection{section9-15-1}{変数テンプレート版traits}
+
+C++17では、既存の\lstinline!traits!に変数テンプレートを利用した~\lstinline!_v!~版が追加された。
+\index{traits@\texttt{traits}!へんすうてんぷれとばん@変数テンプレート版}\index{\_vばん@\texttt{\_v}版}
+
+たとえば、\lstinline!is_integral<T>::value!と書く代わりに~\lstinline!is_integral_v<T>!~と書くことができる。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f( T x )
+{
+    constexpr bool b1 = std::is_integral<T>::value ; // データメンバー
+    constexpr bool b2 = std::is_integral_v<T> ; // 変数テンプレート
+    constexpr bool b3 = std::is_integral<T>{} ; // operator bool()
+}
+\end{lstlisting}
+
+%
+% SubSection 9.15.2
+\hypersubsection{section9-15-2}{論理演算traits}
+
+C++17ではクラステンプレート\lstinline!conjunction!,
+\lstinline!disjunction!,
+\lstinline!negation!が追加された。これはテンプレートメタプログラミングで論理積、論理和、否定を手軽に扱うための\lstinline!traits!だ。
+\index{ろんりえんざんtraits@論理演算\texttt{traits}}\index{traits@\texttt{traits}!ろんりえんざん@論理演算}
+
+%
+% SubsubSection 9.15.2.1
+\vskip 1zw
+\hypersubsubsection{section9-15-2-1}{conjunction : 論理積}
+\index{conjunction@\texttt{conjunction}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template<class... B> struct conjunction;
+\end{lstlisting}
+\egroup
+
+クラステンプレート~\lstinline!conjunction<B1, B2, ..., BN>!~はテンプレート実引数\lstinline!B1!,
+\lstinline!B2!, \ldots{},
+\lstinline!BN!に論理積を適用する。\lstinline!conjunction!はそれぞれのテンプレート実引数\lstinline!Bi!に対して、\lstinline!bool(Bi::value)!が\lstinline!false!となる最初の型を基本クラスに持つか、あるいは最後の\lstinline!BN!を基本クラスに持つ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std ;
+
+    // is_void<void>を基本クラスに持つ
+    using t1 =
+        conjunction<
+            is_same<int, int>, is_integral<int>,
+            is_void<void> > ;
+
+    // is_integral<double>を基本クラスに持つ
+    using t2 =
+        conjunction<
+            is_same<int, int>, is_integral<double>,
+            is_void<void> > ;
+
+}
+\end{lstlisting}
+
+%
+% SubsubSection 9.15.2.2
+\vskip 1zw
+\hypersubsubsection{section9-15-2-2}{disjunction : 論理和}
+\index{disjunction@\texttt{disjunction}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template<class... B> struct disjunction;
+\end{lstlisting}
+\egroup
+
+クラステンプレート\lstinline!disjunction<B1, B2, ..., BN>!はテンプレート実引数\lstinline!B1!,
+\lstinline!B2!, \ldots{},
+\lstinline!BN!に論理和を適用する。\lstinline!disjunction!はそれぞれのテンプレート実引数\lstinline!Bi!に対して、\lstinline!bool(Bi::value)!が\lstinline!true!となる最初の型を基本クラスに持つか、あるいは最後の\lstinline!BN!を基本クラスに持つ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std ;
+
+    // is_same<int,int>を基本クラスに持つ
+    using t1 =
+        disjunction<
+            is_same<int, int>, is_integral<int>,
+            is_void<void> > ;
+
+    // is_void<int>を基本クラスに持つ
+    using t2 =
+        disjunction<
+            is_same<int, double>, is_integral<double>,
+            is_void<int> > ;
+}
+\end{lstlisting}
+
+%
+% SubSection 9.15.2.3
+\vskip 1zw
+\hypersubsubsection{section9-15-2-3}{negation : 否定}
+\index{negation@\texttt{negation}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template<class B> struct negation;
+\end{lstlisting}
+\egroup
+
+クラステンプレート~\lstinline!negation<B>!~は\lstinline!B!に否定を適用する。\lstinline!negation!は基本クラスとして~\lstinline"bool_constant<!bool(B::value)>"~を持つ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std ;
+
+    // false
+    constexpr bool b1 = negation< true_type >::value ;
+    // true
+    constexpr bool b2 = negation< false_type >::value ; 
+}
+\end{lstlisting}
+
+% 改ページ
+\pagebreak
+%
+% SubSection 9.15.3
+\hypersubsection{section9-15-3}{is\texttt{\_}invocable : 呼び出し可能か確認するtraits}
+\index{is\_invocable@\texttt{is\_invocable}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class Fn, class... ArgTypes>
+struct is_invocable;
+
+template <class R, class Fn, class... ArgTypes>
+struct is_invocable_r;
+
+template <class Fn, class... ArgTypes>
+struct is_nothrow_invocable;
+
+template <class R, class Fn, class... ArgTypes>
+struct is_nothrow_invocable_r;
+\end{lstlisting}
+\egroup
+
+\lstinline!is_invocable!はテンプレート実引数で与えられた型\lstinline!Fn!がパラメーターパック\lstinline!ArgTypes!をパック展開した結果を実引数に関数呼び出しできるかどうか、そしてその戻り値は\lstinline!R!へ暗黙変換できるかどうかを確認する\lstinline!traits!だ。呼び出せるのであれば\lstinline!true_type!,
+そうでなければ\lstinline!false_type!を基本クラスに持つ。
+\index{true\_type@\texttt{true\_type}}\index{false\_type@\texttt{false\_type}}
+
+\lstinline!is_invocable!は関数呼び出しした結果の戻り値の型については問わない。
+
+\lstinline!is_invocable_r!は呼び出し可能性に加えて、関数呼び出しした結果の戻り値の型が\lstinline!R!へ暗黙変換できることが確認される。
+\index{is\_invocable\_r@\texttt{is\_invocable\_r}}
+
+\lstinline!is_nothrow_invocable!と\lstinline!is_nothrow_invocable_r!は、関数呼び出し（および戻り値型\lstinline!R!への暗黙変換）が無例外保証されていることも確認する。
+\index{is\_nothrow\_invocable@\texttt{is\_nothrow\_invocable}}\index{is\_nothrow\_invocable\_r@\texttt{is\_nothrow\_invocable\_r}}
+
+\begin{lstlisting}[language=C++]
+int f( int, double ) ;
+
+int main()
+{
+    // true
+    constexpr bool b1 =
+        std::is_invocable< decltype(&f), int, double >{} ;
+    // true
+    constexpr bool b2 =
+        std::is_invocable< decltype(&f), int, int >{} ;
+
+    // false
+    constexpr bool b3 =
+        std::is_invocable< decltype(&f), int >{} ;
+    // false
+    constexpr bool b4 =
+        std::is_invocable< decltype(&f), int, std::string >{} ;
+    
+    // true
+    constexpr bool b5 = 
+        std::is_invocable_r< int, decltype(&f), int, double >{} ;
+    // false
+    constexpr bool b6 =
+        std::is_invocable_r< double, decltype(&f), int, double >{} ;
+}
+\end{lstlisting}
+
+%
+% SubSection 9.15.4
+\hypersubsection{section9-15-4}{has\texttt{\_}unique\texttt{\_}object\texttt{\_}representations : 同値の内部表現が同一か確認するtraits}
+\index{has\_unique\_object\_representations<T>@\texttt{has\_unique\_object\_representations<T>}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T>
+struct has_unique_object_representations ;
+\end{lstlisting}
+\egroup
+
+\lstinline!has_unique_object_representations<T>!~は、\lstinline!T!型がトリビアルにコピー可能で、かつ\lstinline!T!型の同値である2つのオブジェクトの内部表現が同じ場合に、\lstinline!true!を返す。
+
+\lstinline!false!を返す例としては、オブジェクトがパディング（padding）と呼ばれるアライメント調整などのための値の表現に影響しないストレージ領域を持つ場合だ。パディングビットの値は同値に影響しないので、\lstinline!false!を返す。
+
+たとえば以下のようなクラス\lstinline!X!は、
+\begin{lstlisting}[language=C++]
+struct X
+{
+    std::uint8_t a ;
+    std::uint32_t b ;
+} ;
+\end{lstlisting}
+ある実装においては、4バイトにアライメントする必要があり、そのオブジェクトの本当のレイアウトは以下のようになっているかもしれない。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    std::uint8_t a ;
+
+    std::byte unused_padding[3] ;
+
+    std::uint32_t b ;
+} ;
+\end{lstlisting}
+
+この場合、\lstinline!unused_padding!の値には意味がなく、クラス\lstinline!X!の同値比較には用いられない。この場合、\lstinline!std::has_unique_representations_v<X>!~は\lstinline!false!になる。
+
+%
+% SubSection 9.15.5
+\hypersubsection{section9-15-5}{is\texttt{\_}nothrow\texttt{\_}swappable : 無例外swap可能か確認するtraits}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T>
+struct is_nothrow_swappable;
+
+template <class T, class U>
+struct is_nothrow_swappable_with;
+\end{lstlisting}
+\egroup
+
+\lstinline!is_nothrow_swappable<T>!~は\lstinline!T!型が\lstinline!swap!で例外を投げないときに\lstinline!true!を返す。
+\index{is\_nothrow\_swappable<T>@\texttt{is\_nothrow\_swappable<T>}}
+
+\lstinline!is_nothrow_swappable_with<T, U>!~は、\lstinline!T!型と\lstinline!U!型を相互に\lstinline!swap!するときに例外を投げないときに\lstinline!true!を返す。
+\index{is\_nothrow\_swappable\_with<T, U>@\texttt{is\_nothrow\_swappable\_with<T, U>}}

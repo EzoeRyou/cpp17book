@@ -1,0 +1,29 @@
+%
+% Section 9.17
+\hypersection{section9-17}{emplaceの戻り値}
+\index{emplace@\texttt{emplace}!もどりち@戻り値}
+
+C++17ではシーケンスコンテナーの\lstinline!emplace_front!/\lstinline!emplace_back!,
+\lstinline!queue!と\lstinline!stack!の\lstinline!emplace!が構築した要素へのリファレンスを返すように変更された。
+\index{emplace\_front@\texttt{emplace\_front}}\index{emplace\_back@\texttt{emplace\_back}}\index{queue@\texttt{queue}}\index{stack@\texttt{stack}}
+
+そのため、C++14では以下のように書いていたコードが、
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> v ;
+
+    v.emplace_back(0) ; // void
+    int value = v.back() ;
+}
+\end{lstlisting}
+以下のように書けるようになった。
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> v ;
+
+    int value = v.emplace_back(0) ;
+}
+\end{lstlisting}
+

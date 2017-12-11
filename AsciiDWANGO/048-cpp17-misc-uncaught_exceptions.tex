@@ -1,0 +1,74 @@
+%
+% Section 9.2
+\hypersection{section9-2}{std::uncaught\texttt{\_}exceptions}
+\index{std::uncaught\_exceptions@\texttt{std::uncaught\_exceptions}}
+
+C++14までは、まだ\lstinline!catch!されていない例外がある場合は、\lstinline[breaklines=true]!bool std::uncaught_exception()!で判定することができた。
+\index{std::uncaught\_exception@\texttt{std::uncaught\_exception}}
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    ~X()
+    {
+        if ( std::uncaught_exception() )
+        {
+            // デストラクターはスタックアンワインディング中に呼ばれた
+        }
+        else
+        {
+            // 通常の破棄
+        }
+    }
+} ;
+
+int main()
+{
+    {
+        X x ;
+    }// 通常の破棄
+
+    {
+        X x ;
+        throw 0 ;
+    }// スタックアンワインディング中
+
+}
+\end{lstlisting}
+
+\lstinline!bool std::uncaught_exception()!は、C++17では非推奨扱いになった。いずれ廃止される見込みだ。
+
+廃止の理由としては、単に以下のような例で役に立たないからだ。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    ~X()
+    {
+        try {
+            // true
+            bool b = std::uncaught_exception() ;
+        } catch( ... ) { }
+    }
+} ;
+\end{lstlisting}
+
+このため、\lstinline!int std::uncaught_exceptions()!が新たに追加された。この関数は現在\lstinline!catch!されていない例外の個数を返す。
+\index{std::uncaught\_exceptions@\texttt{std::uncaught\_exceptions}}
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    ~X()
+    {
+        try {
+            if ( int x = std::uncaught_exceptions() ; x > 1 )
+            {
+                // ネストされた例外
+            }
+        } catch( ... )
+    }
+
+} ;
+\end{lstlisting}
+

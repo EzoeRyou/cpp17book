@@ -1,0 +1,2010 @@
+%
+% Chapter 10
+\hyperchapter{chapter10}{ファイルシステム}{ファイルシステム}
+
+ヘッダーファイル~\lstinline!<filesystem>!~で定義されている標準ライブラリのファイルシステムは、ファイルやディレクトリーとその属性を扱うためのライブラリだ。
+\index{<filesystem>@\<filesystem>}\index{ふあいるしすてむ@ファイルシステム}
+
+一般に「ファイルシステム」といった場合、たとえばLinuxのext4, Microsoft
+WindowsのFATやNTFS, Apple
+MacのHFS+やAPFSといったファイルとその属性を表現するためのストレージ上のデータ構造を意味する。C++の標準ライブラリのファイルシステムとは、そのようなファイルシステムを実現するデータ構造を操作するライブラリではない。ファイルシステムというデータ構造で抽象化された、ファイルやディレクトリーとその属性、それに付随する要素、たとえばパスやファイルやディレクトリーを操作するためのライブラリのことだ。
+
+また、ファイルシステムライブラリでは、「ファイル」という用語は単に通常のファイルのみならず、ディレクトリー、シンボリックリンク、FIFO（名前付きパイプ）、ソケットなどの特殊なファイルも含む。
+
+本書ではファイルシステムライブラリのすべてを詳細に解説していない。ファイルシステムライブラリは量が膨大なので、特定の関数の意味については、C++コンパイラーに付属のリファレンスマニュアルなどを参照するとよい。
+
+%
+% Section 10.1
+\hypersection{section10-1}{名前空間}
+
+ファイルシステムライブラリは\lstinline!std::filesystem!名前空間スコープの下に宣言されている。
+\index{std::filesystem@\texttt{std::filesystem}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::filesystem::path p("/bin") ;
+}
+\end{lstlisting}
+
+この名前空間は長いので、ファイルシステムライブラリを使うときは、関数のブロックスコープ単位で\lstinline!using!ディレクティブを使うか、名前空間エイリアスを使って短い別名を付けるとよい。
+
+\begin{lstlisting}[language=C++]
+void using_directive()
+{
+    // usingディレクティブ
+    using namespace std::filesystem ;
+
+    path p("/etc") ;
+}
+
+void namespace_alias()
+{
+    // 名前空間エイリアス
+    namespace fs = std::filesystem ;
+
+    fs::path p("/usr") ;
+}
+\end{lstlisting}
+
+%
+% Section 10.2
+\hypersection{section10-2}{POSIX準拠}
+
+C++のファイルシステムのファイル操作の挙動は、POSIX規格に従う。実装によってはPOSIXに規定された挙動を提供できない場合もある。その場合は制限の範囲内で、できるだけPOSIXに近い挙動を行う。実装がどのような意味のある挙動も提供できない場合、エラーが通知される。
+
+%
+% Section 10.3
+\hypersection{section10-3}{ファイルシステムの全体像}
+
+ファイルシステムライブラリの全体像を簡単に箇条書きすると以下のとおり。
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  クラス\lstinline!path!でファイルパス文字列を扱う
+\item
+  例外クラス\lstinline!filesystem_error!とクラス\lstinline!error_code!でエラー通知
+\item
+  クラス\lstinline!file_status!でファイルの情報とパーミッションの取得、設定
+\item
+  クラス\lstinline!directory_entry!でディレクトリーの情報の取得、設定
+\item
+  クラス\lstinline!directory_iterator!でディレクトリー構造をイテレーターとしてたどる
+\item
+  多数のフリー関数でファイルとディレクトリーの操作
+\end{itemize}
+
+%
+% Section 10.4
+\hypersection{section10-4}{エラー処理}
+
+ファイルシステムライブラリでエラーが発生した場合、エラーの通知方法には2種類の方法がある。例外を使う方法と、ヘッダーファイル~\lstinline!<system_error>!~で定義されているエラー通知用のクラス\lstinline!std::error_code!へのリファレンスを実引数として渡してエラー内容を受け取る方法だ。
+\index{<system\_error>@\texttt{<system\_error>}}\index{std::error\_code@\texttt{std::error\_code}}
+
+エラー処理の方法は、エラーの起こる期待度によって選択できる。一般に、エラーがめったに起こらない場合、エラーが起こるのは予期していない場合、エラー処理には例外を使ったほうがよい。エラーが頻繁に起こる場合、エラーが起こることが予期できる場合、エラー処理には例外を使わないほうがよい。
+
+%
+% SubSection 10.4.1
+\hypersubsection{section10-4-1}{例外}
+
+ファイルシステムライブラリの関数のうち、\lstinline!std::error_code &!~型を実引数に取らない関数は、以下のようにエラー通知を行う。
+
+\begin{itemize}
+\item
+  OSによるファイルシステム操作においてエラーが発生した場合、\lstinline!std::filesystem::filesystem_error!型の例外が\lstinline!throw!される。1つの\lstinline!path!を実引数に取る関数の場合、\lstinline!filesystem_error!のメンバー関数\lstinline!path1!で実引数の\lstinline!path!が得られる。2つの\lstinline!path!を実引数に取る関数の場合、\lstinline!filesystem_error!のメンバー関数\lstinline!path1!,
+  \lstinline!path2!で第一、第二引数がそれぞれ得られる。\lstinline!filesystem_error!はエラー内容に応じた\lstinline!error_code!を持つ
+  \index{std::filesystem::filesystem\_error@\texttt{std::filesystem::filesystem\_error}}\index{filesystem\_error@\texttt{filesystem\_error}}
+\item
+  ストレージの確保に失敗した場合、既存の例外による通知が行われる
+\item
+  デストラクターは例外を投げない
+\end{itemize}
+
+例外を使ったエラー処理は以下のとおり。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    try {
+        // ファイル名から同じファイル名へのコピーによるエラー
+        path file("foobar.txt") ;
+        std::ofstream{ file } ;
+        copy_file( file, file ) ;
+       
+    } catch( filesystem_error & e )
+    { // エラーの場合
+        auto path1 = e.path1() ; // 第一引数
+        auto path2 = e.path2() ; // 第二引数
+        auto error_code = e.code() ; // error_code
+        
+        std::cout
+            << "error number: " << error_code.value ()
+            << "\nerror message: " << error_code.message() 
+            << "\npath1: " << path1
+            << "\npath2: " << path2 << '\n' ;
+    }
+}
+\end{lstlisting}
+
+\lstinline!filesystem_error!は以下のようなクラスになっている。
+
+\begin{lstlisting}[language=C++]
+namespace std::filesystem {
+    class filesystem_error : public system_error {
+    public:
+        // 第一引数
+        const path& path1() const noexcept;
+        // 第二引数
+        const path& path2() const noexcept;
+        // エラー内容を人間が読めるnull終端文字列で返す
+        const char* what() const noexcept override;
+    };
+}
+\end{lstlisting}
+
+%
+% SubSection 10.4.2
+\hypersubsection{section10-4-2}{非例外}
+
+ファイルシステムライブラリの関数のうち、\lstinline!std::error_code &!~型を実引数に取る関数は、以下のようにエラー通知を行う。
+\index{std::error\_code@\texttt{std::error\_code}}
+
+\begin{itemize}[leftmargin=*]
+\item
+  OSによるファイルシステム操作においてエラーが発生した場合、\lstinline!error_code &!~型の実引数がエラー内容に応じて設定される。エラーがない場合、\lstinline!error_code &!~型の実引数に対してメンバー関数\lstinline!clear()!が呼ばれる。
+  \index{error\_code@\texttt{error\_code}}\index{clear@\texttt{clear}}
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    // ファイル名から同じファイル名へのコピーによるエラー
+    path file("foobar.txt") ;
+    std::ofstream{ file } ;
+    std::error_code error_code;
+    copy_file( file, file, error_code ) ;
+
+    if ( error_code )
+    { // エラーの場合
+        auto path1 = file ; // 第一引数
+        auto path2 = file ; // 第二引数
+        
+        std::cout
+            << "error number: " << error_code.value ()
+            << "\nerror message: " << error_code.message() 
+            << "\npath1: " << path1
+            << "\npath2: " << path2 << '\n' ;
+    }
+}
+\end{lstlisting}
+
+%
+% Section 10.5
+\hypersection{section10-5}{path : ファイルパス文字列クラス}
+\index{path@\texttt{path}}\index{ふあいるぱすもじれつ@ファイルパス文字列}
+
+\lstinline!std::filesystem::path!はファイルパスを文字列で表現するためのクラスだ。文字列を表現するクラスとしてC++にはすでに\lstinline!std::string!があるが、ファイルパスという文字列を表現するために、別の専用クラスが作られた。
+\index{std::filesystem::path@\texttt{std::filesystem::path}}
+
+クラス\lstinline!path!は以下の機能を提供する。
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  ファイルパス文字列の表現
+\item
+  ファイルパス文字列の操作
+\end{itemize}
+
+\lstinline!path!はファイルパス文字列の表現と操作だけを提供するクラスで、物理ファイルシステムへの変更のコミットはしない。
+
+ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を\lstinline!char!型としてUTF-8エンコードで表現するOSが多いが、Microsoft
+Windowsで本書執筆現在、文字型を\lstinline!wchar_t!としてUTF-16エンコードで表現する慣習になっている。
+
+また、OSによってはラテンアルファベットの大文字小文字を区別しなかったり、区別はするが無視されたりする実装もある。
+
+クラス\lstinline!path!はそのようなファイルパス文字列の差異を吸収してくれる。
+
+クラス\lstinline!path!には以下のようなネストされた型名がある。
+
+\begin{lstlisting}[language=C++]
+namespace std::filesystem {
+class path {
+public:
+    using value_type = see below ;
+    using string_type = basic_string<value_type>;
+    static constexpr value_type preferred_separator = see below ;
+} ;
+\end{lstlisting}
+
+\lstinline!value_type!と\lstinline!string_type!は\lstinline!path!が内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。\lstinline!preferred_separator!は、推奨されるディレクトリー区切り文字だ。たとえばPOSIX互換環境では~\lstinline!/!~が用いられるが、Microsoft
+Windowsでは~\lstinline!\!~が使われている。
+\index{value\_type@\texttt{value\_type}}\index{string\_type@\texttt{string\_type}}\index{preferred\_separator@\texttt{preferred\_separator}}\index{でいれくとりくぎりもじ@ディレクトリー区切り文字}
+
+%
+% SubSection 10.5.1
+\hypersubsection{section10-5-1}{path : ファイルパスの文字列}
+
+ファイルパスは文字列で表現する。C++の文字列のエンコードには以下のものがある。
+\index{もじれつえんこど@文字列エンコード}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \lstinline!char!: ネイティブナローエンコード
+  \index{char@\texttt{char}}\index{ねいていぶなろえんこど@ネイティブナローエンコード}
+\item
+  \lstinline!wchar_t!: ネイティブワイドエンコード
+  \index{wchar\_t@\texttt{wchar\_t}}\index{ねいていぶわいどえんこど@ネイティブワイドエンコード}
+\item
+  \lstinline!char!: UTF-8エンコード
+  \index{char@\texttt{char}}\index{UTF-8えんこど@UTF-8エンコード}
+\item
+  \lstinline!char16_t!: UTF-16エンコード
+  \index{char16\_t@\texttt{char16\_t}}\index{UTF-16えんこど@UTF-16エンコード}
+\item
+  \lstinline!char32_t!: UTF-32エンコード
+  \index{char32\_t@\texttt{char32\_t}}\index{UTF-32えんこど@UTF-32エンコード}
+\end{itemize}
+
+\lstinline!path::value_type!がどの文字型を使い、どの文字列エンコードを使っているかは実装依存だ。\lstinline!path!はどの文字列エンコードが渡されても、\lstinline!path::value_type!の文字型と文字エンコードになるように自動的に変換が行われる。
+\index{path::value\_type@\texttt{path::value\_type}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    // ネイティブナローエンコード
+    path p1( "/dev/null" ) ;
+    // ネイティブワイドエンコード
+    path p2( L"/dev/null" ) ;
+    // UTF-16エンコード
+    path p3( u"/dev/null" ) ;
+    // UTF-32エンコード
+    path p4( U"/dev/null" ) ;
+}
+\end{lstlisting}
+
+なので、どの文字列エンコードで渡しても動く。
+
+C++ではUTF-8エンコードの文字型は\lstinline!char!で、これはネイティブナローエンコードの文字型と同じなので、型システムによって区別できない。そのため、UTF-8文字列リテラルを渡すと、ネイティブナローエンコードとして認識される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    // ネイティブナローエンコードとして解釈される
+    path p( u8"ファイル名" ) ;
+}
+\end{lstlisting}
+
+このコードは、ネイティブナローエンコードがUTF-8ではない場合、動く保証のない移植性の低いコードだ。UTF-8エンコードを移植性の高い方法でファイルパスとして使いたい場合、\lstinline!u8path!を使うとよい。
+\index{u8path@\texttt{u8path}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    // UTF-8エンコードとして解釈される
+    // 実装の使う文字エンコードに変換される
+    path = u8path( u8"ファイル名" ) ;
+}
+\end{lstlisting}
+
+\lstinline!u8path(Source)!は\lstinline!Source!をUTF-8エンコードされた文字列として扱うので、通常の文字列リテラルを渡すと、ネイティブナローエンコードがUTF-8ではない環境では問題になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    // UTF-8エンコードとして解釈される
+    // ネイティブナローエンコードがUTF-8ではない場合、問題になる
+    path = u8path( "ファイル名" ) ;
+}
+\end{lstlisting}
+
+\lstinline!u8path!を使う場合は、文字列は必ずUTF-8エンコードしなければならない。
+
+環境によっては、ファイルパスに使える文字に制限があり、また特定の文字列は特別な意味を持つ予約語になっていることもあるので、移植性の高いプログラムの作成に当たってはこの点でも注意が必要だ。たとえば、環境によっては大文字小文字の区別をしないかもしれない。また、\lstinline!CON!や\lstinline!AUX!のような文字列が特別な意味を持つかもしれない。
+
+\lstinline!path!に格納されているファイルパス文字列を取得する方法は、環境依存の文字列エンコードとファイルパスの表現方法の差異により、さまざまな方法が用意されている。
+
+ファイルパス文字列のフォーマットには以下の2つがある。
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  ネイティブ：　実装依存のフォーマット
+\item
+  ジェネリック：汎用的な標準のフォーマット
+\end{itemize}
+
+POSIX準拠の環境においては、ネイティブとジェネリックはまったく同じだ。POSIX準拠ではない環境では、ネイティブとジェネリックは異なるフォーマットを持つ可能性がある。
+
+たとえば、Microsoft
+Windowsでは、ネイティブのファイルパス文字列はディレクトリーの区切り文字にPOSIX準拠の~\lstinline!/!~ではなく~\lstinline!\!~を使っている。
+
+まずメンバー関数\lstinline!native!と\lstinline!c_str!がある。
+\index{native@\texttt{native}}\index{c\_str@\texttt{c\_str}}
+
+\begin{lstlisting}[language=C++]
+class path {
+{
+public :
+    const string_type& native() const noexcept;
+    const value_type* c_str() const noexcept;
+} ;
+\end{lstlisting}
+
+これはクラス\lstinline!path!が内部で使っている実装依存のネイティブな文字列型をそのまま返すものだ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path p = current_path() ;
+
+    // 実装依存のbasic_stringの特殊化
+    path::string_type str = p.native() ;
+
+    // 実装依存の文字型
+    path::value_type const * ptr = p.c_str() ;
+    
+}
+\end{lstlisting}
+
+このメンバー関数を使うコードは移植性に注意が必要だ。
+
+\lstinline!str!の型は\lstinline!path::string_type!で、\lstinline!ptr!の型は実装依存の~\lstinline[breaklines=true]!path::value_type const *!~だ。\lstinline!path::value_typeとpath::string_type!は、\lstinline!char!や\lstinline!wchar_t!,
+\lstinline!std::string!や\lstinline!std::wstring!のようなC++が標準で定義する型ではない可能性がある。
+
+そして、\lstinline!path::string_type!への変換関数\lstinline!operator string_type()!がある。
+\index{path::string\_type@\texttt{path::string\_type}}\index{string\_type@\texttt{string\_type}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::experimental::filesystem ;
+
+    auto p = current_path() ;
+
+    // 暗黙の型変換
+    path::string_type str = p ;
+}
+\end{lstlisting}
+
+\lstinline!path!の\lstinline!operator string_type()!は、ネイティブの文字列型を既存のファイルストリームライブラリでオープンできる形式に変換して返す。たとえば空白文字を含むファイルパスのために、二重引用符で囲まれている文字列に変換されるかもしれない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path name("foo bar.txt") ;
+    std::basic_ofstream<path::value_type> file( name ) ;
+    file << "hello" ;
+}
+\end{lstlisting}
+
+ネイティブのファイルパス文字列を\lstinline!string!, \lstinline!wstring!,
+\lstinline!u16string!,
+\lstinline!u32string!に変換して取得するメンバー関数に以下のものがある。
+\index{string@\texttt{string}}\index{wstring@\texttt{wstring}}\index{u16string@\texttt{u16string}}\index{u32string@\texttt{u32string}}
+
+\begin{lstlisting}[language=C++]
+class path {
+public :
+    std::string string() const;
+    std::wstring wstring() const;
+    std::string u8string() const;
+    std::u16string u16string() const;
+    std::u32string u32string() const;
+} ;
+\end{lstlisting}
+
+このうち、メンバー関数\lstinline!string!はネイティブナローエンコードされた\lstinline!std::string!,
+メンバー関数\lstinline!u8string!はUTF-8エンコードされた\lstinline!std::string!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path name("hello.txt") ;
+    std::ofstream file( name.string() ) ;
+    file << "hello" ;
+}
+\end{lstlisting}
+
+ファイルパス文字列をジェネリックに変換して返す\lstinline!generic_string()!系のメンバー関数がある。
+\index{generic\_string@\texttt{generic\_string}}
+
+\begin{lstlisting}[language=C++]
+class path {
+public :
+    std::string generic_string() const;
+    std::wstring generic_wstring() const;
+    std::string generic_u8string() const;
+    std::u16string generic_u16string() const;
+    std::u32string generic_u32string() const
+} ;
+\end{lstlisting}
+
+使い方はネイティブな文字列を返す\lstinline!string()!系のメンバー関数と同じだ。
+
+ファイルパスの文字列の文字型と文字列エンコードは環境ごとに異なるので、移植性の高いコードを書くときには注意が必要だ。
+
+現実的には、モダンなPOSIX準拠の環境では、文字型は\lstinline!char!,
+文字列型は\lstinline!std::string!, エンコードはUTF-8になる。
+
+Microsoft
+WindowsのWin32サブシステムとMSVCはPOSIX準拠ではなく、本書執筆時点では、歴史的経緯により、文字型は\lstinline!wchar_t!,
+文字列型は\lstinline!std::wstring!, エンコードはUTF-16となっている。
+
+%
+% SubSection 10.5.2
+\hypersubsection{section10-5-2}{ファイルパスの操作}
+\index{ふあいるぱす@ファイルパス!そうさ@操作}
+
+クラス\lstinline!path!はファイルパス文字列の操作を提供している。\lstinline!std::string!とは違い、\lstinline!find!や\lstinline!substr!のような操作は提供していないが、ファイルパス文字列に特化した操作を提供している。
+\index{path@\texttt{path}}
+
+\lstinline!operator /!,
+\lstinline!operator /=!~はセパレーターで区切ったファイルパス文字列の追加を行う。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path p("/") ;
+
+    // "/usr"
+    p /= "usr" ;
+    // "usr/local/include"
+    p = p / "local" / "include" ;
+}
+\end{lstlisting}
+
+\lstinline!operator +=!~は単なる文字列の結合を行う。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path p("/") ;
+
+    // "/usr"
+    p += "usr" ;
+    // "/usrlocal"
+    p += "local" ;
+    // "/usrlocalinclude"
+    p += "include" ;
+}
+\end{lstlisting}
+
+\lstinline!operator /!~と違い、\lstinline!operator +!~は存在しない。
+
+その他にも、\lstinline!path!はさまざまなファイルパス文字列に対する操作を提供している。以下はその一例だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path p( "/home/cpp/src/main.cpp" ) ;
+
+    // "main.cpp"
+    path filename = p.filename() ;
+    // "main"
+    path stem = p.stem() ;
+    // ".cpp"
+    path extension = p.extension() ;
+    // "/home/cpp/src/main.o"
+    p.replace_extension("o") ;
+    // "/home/cpp/src/"
+    p.remove_filename() ;
+}
+\end{lstlisting}
+
+\lstinline!path!はファイルパス文字列に対してよく行う文字列処理を提供している。たとえばファイル名だけ抜き出す処理、拡張子だけ抜き出す処理、拡張子を変える処理などだ。
+
+%
+% Section 10.6
+\hypersection{section10-6}{file\texttt{\_}status}
+
+クラス\lstinline!file_status!はファイルのタイプとパーミッションを保持するクラスだ。
+\index{file\_status@\texttt{file\_status}}\index{ふあいるのたいぷ@ファイルのタイプ}\index{ぱみつしよん@パーミッション}
+
+ファイルのタイプとパーミッションはファイルパス文字列を指定して取得する方法が別途あるが、その方法では毎回物理ファイルシステムへのアクセスが発生する。\lstinline!file_status!はファイルのタイプとパーミッション情報を保持するクラスとして、いわばキャッシュの役割を果たす。
+
+\lstinline!file_status!は物理ファイルシステムへの変更のコミットはしない。
+
+\lstinline!file_status!クラスは\lstinline!status(path)!もしくは\lstinline!status(path, error_code)!で取得できる。あるいは、\lstinline!directory_entry!のメンバー関数\lstinline!status()!から取得できる。
+\index{status@\texttt{status}}\index{directory\_entry@\texttt{directory\_entry}}
+
+タイプというのは、ファイルが種類を表す\lstinline!enum!型\lstinline!file_type!で、通常のファイルやディレクトリーやシンボリックリンクといったファイルの種類を表す。
+\index{file\_type@\texttt{file\_type}}
+
+パーミッションというのは、ファイルの権限を表すビットマスクの\lstinline!enum!型\lstinline!perms!で、ファイルの所有者とグループと他人に対す読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
+\index{perms@\texttt{perms}}
+
+ファイルのタイプとパーミッションを取得するメンバー関数は以下のとおり。
+\index{type@\texttt{type}}\index{permissions@\texttt{permissions}}
+
+\begin{lstlisting}[language=C++]
+class file_type {
+public :
+    file_type type() const noexcept;
+    perms permissions() const noexcept;
+} ;
+\end{lstlisting}
+
+以下のように使う。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    directory_iterator iter("."), end ;
+
+    int regular_files = 0 ;
+    int execs = 0 ;
+
+    std::for_each( iter, end, [&]( auto entry )
+    {
+        auto file_status = entry.status() ;
+        // is_regular_file( file_status )でも可
+        if ( file_status.type() == file_type::regular )
+            ++regular_files ;
+
+        constexpr auto exec_bits = 
+            perms::owner_exec | perms::group_exec | perms::others_exec ;
+
+        auto permissions = file_status.permissions() ;
+        if ( (  permissions != perms::unknown) &&
+                (permissions & exec_bits) != perms::none ) 
+            ++execs ;
+    } ) ;
+
+    std::cout
+        << "Current directory has "
+        << regular_files
+        << " regular files.\n" ;
+        << execs
+        << " files are executable.\n" ;
+}
+\end{lstlisting}
+
+このプログラムは、カレントディレクトリーにある通常のファイルの数と、実行可能なファイルの数を表示する。
+
+ファイルパーミッションを表現する\lstinline!enum!型\lstinline!perms!は、パーミッションが不明な場合\lstinline!perms::unknown!になる。この値は\lstinline!0xFFFF!なのでビット演算をする場合には注意が必要だ。
+
+それ以外の\lstinline!perms!の値はPOSIXに準拠しているが、\lstinline!perms!は\lstinline!scoped enum!型なので、明示的なキャストが必要だ。
+
+\begin{lstlisting}[language=C++]
+// エラー
+std::filesystem::perms a = 0755 ;
+
+// OK
+std::filesystem::perms b = std::filesystem::perms(0755) ;
+\end{lstlisting}
+
+ファイルのタイプとパーミッションを書き換えるメンバー関数は以下のとおり。
+
+\begin{lstlisting}[language=C++]
+void type(file_type ft) noexcept;
+void permissions(perms prms) noexcept;
+\end{lstlisting}
+
+ただし、\lstinline!file_status!というのは単なるキャッシュ用のクラスなので、\lstinline!file_status!のタイプとパーミッションを「書き換える」というのは、単に\lstinline!file_status!のオブジェクトに保持されている値を書き換えるだけで、物理ファイルシステムに反映されるものではない。物理ファイルシステムを書き換えるには、フリー関数の\lstinline!permissions!を使う。
+
+%
+% Section 10.7
+\hypersection{section10-7}{directory\texttt{\_}entry}
+\index{directory\_entry@\texttt{directory\_entry}}
+
+クラス\lstinline!directory_entry!はファイルパス文字列を保持し、ファイルパスの指し示すファイルの情報を取得できるクラスだ。
+
+物理ファイルシステムからファイルの情報を毎回読むのは非効率的だ。\lstinline!directory_entry!はいわばファイル情報のキャッシュとしての用途を持つ。
+
+\lstinline!directory_entry!は物理ファイルシステムから情報を読み込むだけで、変更のコミットはしない。
+
+\lstinline!directory_entry!の構築は、コンストラクターに引数として\lstinline!path!を与える他、\lstinline!directory_iterator!と\lstinline!recursive_directory_iterator!からも得ることができる。
+\index{directory\_iterator@\texttt{directory\_iterator}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    path p(".") ;
+
+    // ファイルパス文字列から得る
+    directory_entry e1(p) ;
+
+    // イテレーターから得る
+    directory_iterator i1(p) ;
+    directory_entry e2 = *i1 ;
+
+    recursive_directory_iterator i2(p) ;
+    directory_entry e3 = *i2 ;
+}
+\end{lstlisting}
+
+\lstinline!directory_entry!にはさまざまなファイル情報を取得するメンバー関数があるが、これは同じ機能のものがフリー関数でも用意されている。\lstinline!directory_entry!を使うと、ファイル情報をキャッシュできるため、同じファイルパスに対して、物理ファイルシステムの変更がないときに複数回のファイル情報取得を行うのが効率的になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    directory_entry entry("/home/cpp/foo") ;
+
+    // 存在確認
+    bool b = entry.exists() ;
+
+    // "/home/cpp/foo"
+    path p = entry.path() ;
+    file_status s = entry.status() ;
+
+    // ファイルサイズを取得
+    std::uintmax_t size = entry.file_size() ;
+
+    {
+        std::ofstream foo( entry.path() ) ;
+        foo << "hello" ;
+    }
+
+    // 物理ファイルシステムから情報を更新
+    entry.refresh() ;
+    // もう一度ファイルサイズを取得
+    size = entry.file_size() ;
+
+    // 情報を取得するファイルパスを
+    // "/home/cpp/bar"
+    // に置き換えてrefresh()を呼び出す
+    entry.replace_filename("bar") ;
+}
+\end{lstlisting}
+
+\lstinline!directory_entry!はキャッシュ用のクラスで、自動的に物理ファイルシステムの変更に追随しないので、最新の情報を取得するには、明示的にメンバー関数\lstinline!refresh!を呼び出す必要がある。
+\index{refresh@\texttt{refresh}}
+
+%
+% Section 10.8
+\hypersection{section10-8}{directory\texttt{\_}iterator}
+
+\lstinline!directory_iterator!は、あるディレクトリー下に存在するファイルパスをイテレーターの形式で列挙するためのクラスだ。
+\index{directory\_iterator@\texttt{directory\_iterator}}
+
+たとえば、カレントディレクトリー下のファイルパスをすべて列挙するコードは以下のようになる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+    directory_iterator iter("."), end ;
+    std::copy( iter, end,
+        std::ostream_iterator<path>(std::cout, "\n") ) ;
+}
+\end{lstlisting}
+
+\lstinline!directory_iterator!はコンストラクターとして\lstinline!path!を渡すと、そのディレクトリー下の最初のファイルに相当する\lstinline!directory_entry!を返すイテレーターとなる。コンストラクターで指定されたディレクトリー下にファイルが存在しない場合、終端イテレーターになる。
+
+\lstinline!directory_iterator!のデフォルトコンストラクターは終端イテレーターになる。終端イテレーターはデリファレンスできない。
+
+\lstinline!directory_iterator::value_type!は\lstinline!directory_entry!で、イテレーターのカテゴリーは入力イテレーターとなる。
+
+\lstinline!directory_iterator!はカレントディレクトリー（\lstinline!.!）と親ディレクトリー（\lstinline!..!）は列挙しない。
+
+\lstinline!directory_iterator!がディレクトリー下のファイルをどのような順番で列挙するかは未規定だ。
+
+\lstinline!directory_iterator!によって返されるファイルパスは存在しない可能性があるので、ファイルが存在することを当てにしてはいけない。たとえば、存在しないファイルへのシンボリックリンクかもしれない。
+
+\lstinline!directory_iterator!のオブジェクトが作成された後に物理ファイルシステムになされた変更は、反映されるかどうか未規定である。
+
+\lstinline!directory_iterator!のコンストラクターは列挙時の動作を指定できる\lstinline!directory_options!を実引数に受け取ることができる。しかし、C++17の標準規格の範囲では\lstinline!directory_iterator!の挙動を変更する\lstinline!directory_options!は規定されていない。
+\index{directory\_options@\texttt{directory\_options}}
+
+%
+% SubSection 10.8.1
+\hypersubsection{section10-8-1}{エラー処理}
+
+\lstinline!directory_iterator!は構築時にエラーが発生することがある。このエラーを例外ではなく\lstinline!error_code!で受け取りたい場合、コンストラクターの実引数で\lstinline!error_code!へのリファレンスを渡す。
+\index{error\_code@\texttt{error\_code}}\index{directory\_iterator@\texttt{directory\_iterator}!error\_code@\texttt{error\_code}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    std::error_code err ;
+
+    directory_iterator iter("this-directory-does-not-exist", err) ;
+
+    if ( err )
+    {
+        // エラー処理
+    }
+}
+\end{lstlisting}
+
+\lstinline!directory_iterator!はインクリメント時にエラーが発生することがある。このエラーを例外ではなく\lstinline!error_code!で受け取りたい場合、メンバー関数\lstinline!increment!を呼び出す。
+\index{increment@\texttt{increment}}\index{directory\_iterator@\texttt{directory\_iterator}!increment@\texttt{increment}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::experimental::filesystem ; 
+
+    recursive_directory_iterator iter("."), end ;
+
+    std::error_code err ;
+
+    for ( ; iter != end && !err ; iter.increment( err ) )
+    {
+        std::cout << *iter << "\n" ;
+    }
+
+    if ( err )
+    {
+        // エラー処理
+    }
+}
+\end{lstlisting}
+
+%
+% Section 10.9
+\hypersection{section10-9}{recursive\texttt{\_}directory\texttt{\_}iterator}
+
+\lstinline!recursive_directory_iterator!は指定されたディレクトリー下に存在するサブディレクトリーの下も含めて、すべてのファイルを列挙する。使い方は\lstinline!directory_iterator!とほぼ同じだ。
+\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ; 
+    recursive_directory_iterator iter("."), end ;
+
+    std::copy(  iter, end,
+                std::ostream_iterator<path>(std::cout, "\n") ) ;
+}
+\end{lstlisting}
+
+メンバー関数\lstinline!options!, \lstinline!depth!,
+\lstinline!recursion_pending!, \lstinline!pop!,
+\lstinline!disable_recursion_pending!をデリファレンスできないイテレーターに対して呼び出した際の挙動は未定義だ。
+
+%
+% SubSection 10.9.1
+\hypersubsection{section10-9-1}{オプション}
+
+\lstinline!recursive_directory_iterator!はコンストラクターの実引数に\lstinline!directory_options!型の\lstinline!scoped enum!値を取ることによって、挙動を変更できる。\lstinline!directory_options!型の\lstinline!enum!値はビットマスクになっていて、以下の3つのビットマスク値が規定されている。
+\index{directory\_options@\texttt{directory\_options}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!directory\_options@\texttt{directory\_options}}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{35truemm}p{70truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!none! &
+デフォルト。ディレクトリーシンボリックリンクをスキップ。パーミッション違反はエラー\tabularnewline
+\lstinline!follow_directory_symlink! &
+ディレクトリーシンボリックリンクの中も列挙\tabularnewline
+\lstinline!skip_permission_denied! &
+パーミッション違反のディレクトリーはスキップ\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+このうち取りうる組み合わせは、\lstinline!none!,
+\lstinline!follow_directory_symlink!,
+\lstinline[breaklines=true]!skip_ permission_denied!,
+\lstinline!follow_directory_symlink | skip_permission_denied!の4種類になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ; 
+    recursive_directory_iterator
+        iter("/", directory_options::skip_permission_denied), end ;
+
+    std::copy(  iter, end,
+                std::ostream_iterator<path>(std::cout, "\n") ) ;
+}
+\end{lstlisting}
+
+\lstinline!follow_directory_symlink!は、親ディレクトリーへのシンボリックリンクが存在する場合、イテレーターが終端イテレーターに到達しない可能性があるので注意すること。
+\index{follow\_directory\_symlink@\texttt{follow\_directory\_symlink}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!follow\_directory\_symlink@\texttt{follow\_directory\_symlink}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    // 自分自身を含むディレクトリーに対するシンボリックリンク
+    create_symlink(".", "foo") ;
+
+    recursive_directory_iterator
+        iter(".", directory_options::follow_directory_symlink), end ;
+
+    // エラー、もしくは終了しない
+    std::copy( iter, end, std::ostream_iterator<path>(std::cout) ) ;
+}
+\end{lstlisting}
+
+\lstinline!recursive_directory_iterator!の現在の\lstinline!directory_options!を得るには、メンバー関数\lstinline!options!を呼ぶ。
+\index{options@\texttt{options}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!options@\texttt{options}}
+
+\begin{lstlisting}[language=C++]
+class recursive_directory_iterator {
+public :
+    directory_options options() const ;
+} ;
+\end{lstlisting}
+
+%
+% SubSection 10.9.2
+\hypersubsection{section10-9-2}{depth : 深さ取得}
+
+\lstinline!recursive_directory_iterator!が現在列挙しているディレクトリーの深さを知るには、メンバー関数\lstinline!depth!を呼ぶ。
+\index{depth@\texttt{depth}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!depth@\texttt{depth}}
+
+\begin{lstlisting}[language=C++]
+class recursive_directory_iterator {
+public :
+    int depth() const ;
+} ;
+\end{lstlisting}
+
+最初のディレクトリーの深さは0で、次のサブディレクトリーの深さは1、それ以降のサブディレクトリーも同様に続く。
+
+%
+% SubSection 10.9.3
+\hypersubsection{section10-9-3}{pop : 現在のディレクトリーの列挙中止}
+
+メンバー関数\lstinline!pop!を呼ぶと、現在列挙中のディレクトリーの列挙を取りやめ、親ディレクトリーに戻る。現在のディレクトリーが初期ディレクトリーの場合、つまり\lstinline!depth() == 0!の場合は、終端イテレーターになる。
+\index{pop@\texttt{pop}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!pop@\texttt{pop}}
+
+\begin{lstlisting}[language=C++]
+class recursive_directory_iterator {
+public :
+    void pop();
+    void pop(error_code& ec);
+} ;
+\end{lstlisting}
+
+たとえば、カレントディレクトリーが以下のようなディレクトリーツリーで、イテレーターが以下に書かれた順番でファイルを列挙する環境の場合、
+\begin{lstlisting}
+a
+b
+b/a
+b/c
+b/d
+c
+d
+\end{lstlisting}
+以下のようなプログラムを実行すると、
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::filesystem ;
+
+    recursive_directory_iterator iter("."), end ;
+
+    auto const p = canonical("b/a") ;
+
+    for ( ; iter != end ; ++iter )
+    {
+        std::cout << *iter << '\n' ;
+
+        if ( canonical(iter->path()) == p )
+            iter.pop() ;
+    }
+}
+\end{lstlisting}
+標準出力が指すファイルとその順番は以下のようになる。
+\begin{lstlisting}
+a
+b
+b/a
+c
+d
+\end{lstlisting}
+
+``\lstinline!b/a!''に到達した時点で\lstinline!pop()!が呼ばれるので、それ以上のディレクトリー\lstinline!b!下の列挙が中止され、親ディレクトリーであるカレントディレクトリーに戻る。
+
+%
+% SubSection 10.9.4
+\hypersubsection{section10-9-4}{recursion\texttt{\_}pending : 現在のディレクトリーの再帰をスキップ}
+
+\lstinline!disable_recursion_pending!は現在のディレクトリーの下を再帰的に列挙することをスキップする機能だ。
+\index{disable\_recursion\_pending@\texttt{disable\_recursion\_pending}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!disable\_recursion\_pending@\texttt{disable\_recursion\_pending}}
+
+\begin{lstlisting}[language=C++]
+class recursive_directory_iterator {
+public :
+    bool recursion_pending() const ;
+    void disable_recursion_pending() ;
+} ;
+\end{lstlisting}
+
+\lstinline!recursion_pending()!は、直前のイテレーターのインクリメント操作の後に\lstinline!disable_recursion_pending()!が呼ばれていない場合、\lstinline!true!を返す。そうでない場合は\lstinline!false!を返す。
+\index{recursion\_pending@\texttt{recursion\_pending}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!recursion\_pending@\texttt{recursion\_pending}}
+
+言い換えれば、\lstinline!disable_recursion_pending()!を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、\lstinline!recursion_pneding()!は\lstinline!false!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std ;
+    recursive_directory_iterator iter("."), end ;
+
+    // true
+    bool b1 = iter.recursion_pending() ;
+
+    iter.disable_recursion_pending() ;
+    // false
+    bool b2 = iter.recursion_pending() ;
+
+    ++iter ;
+    //  true
+    bool b3 = iter.recursion_pending() ;
+
+
+    iter.disable_recursion_pending() ;
+    // false
+    bool b4 = iter.recursion_pending() ;
+}
+\end{lstlisting}
+
+現在\lstinline!recursive_directory_iterator!が指しているファイルパスがディレクトリーである場合、そのイテレーターをインクリメントすると、そのディレクトリー下を再帰的に列挙することになる。しかし、\lstinline!recursion_pending()!が\lstinline!false!を返す場合、ディレクトリーの最適的な列挙はスキップされる。インクリメント操作が行われた後は\lstinline!recursion_pending()!の結果は\lstinline!true!に戻る。
+
+つまり、\lstinline!disable_recursion_pending!は、現在指しているディレクトリー下を再帰的に列挙することをスキップする機能を提供する。
+
+たとえば、カレントディレクトリーが以下のようなディレクトリーツリーで、イテレーターが以下に書かれた順番でファイルを列挙する環境の場合、
+\begin{lstlisting}
+a
+b
+b/a
+b/c
+b/d
+c
+d
+\end{lstlisting}
+以下のようなプログラムを実行すると、
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::filesystem ;
+
+    recursive_directory_iterator iter("."), end ;
+
+    auto const p = canonical("b/a") ;
+
+    for ( ; iter != end ; ++iter )
+    {
+        std::cout << *iter << '\n' ;
+
+        if ( iter->is_directory() )
+            iter.disable_recursion_pending() ;
+    }
+}
+\end{lstlisting}
+標準出力が指すファイルとその順番は以下のようになる。
+\begin{lstlisting}
+a
+b
+c
+d
+\end{lstlisting}
+
+このプログラムはディレクトリーであれば必ず\lstinline!disable_recursion_pending()!が呼ばれるので、サブディレクトリーの再帰的な列挙は行われず、結果的に動作は\lstinline!directory_iterator!と同じになる。
+
+\lstinline!disable_recursion_pending!を呼び出すことによって、選択的にディレクトリーの再帰的な列挙をスキップさせることができる。
+
+% 改ページ
+\pagebreak
+%
+% Section 10.10
+\hypersection{section10-10}{ファイルシステム操作関数}
+
+%
+% SubSection 10.10.1
+\hypersubsection{section10-10-1}{ファイルパス取得}
+\index{ふあいるぱす@ファイルパス!しゆとく@取得}
+
+%
+% SubsubSection 10.10.1.1
+\hypersubsubsection{section10-10-1-1}{current\texttt{\_}path}
+\index{current\_path@\texttt{current\_path}}\index{ふあいるぱす@ファイルパス!current\_path@\texttt{current\_path}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path current_path();
+path current_path(error_code& ec);
+\end{lstlisting}
+\egroup
+
+カレント・ワーキング・ディレクトリー（current working
+directory）への絶対パスを返す。
+
+%
+% SubsubSection 10.10.1.2
+\vskip 1zw
+\hypersubsubsection{section10-10-1-2}{temp\texttt{\_}directory\texttt{\_}path}
+\index{temp\_directory\_path@\texttt{temp\_directory\_path}}\index{ふあいるぱす@ファイルパス!temp\_directory\_path@\texttt{temp\_directory\_path}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path temp_directory_path();
+path temp_directory_path(error_code& ec);
+\end{lstlisting}
+\egroup
+
+一時ファイルを作成するのに最適な一時ディレクトリー（temporary
+directory）へのファイルパスを返す。
+
+%
+% SubSection 10.10.2
+\hypersubsection{section10-10-2}{ファイルパス操作}
+\index{ふあいるぱす@ファイルパス!そうさ@操作}
+
+%
+% SubsubSection 10.10.2.1
+\hypersubsubsection{section10-10-2-1}{absolute}
+\index{absolute@\texttt{absolute}}\index{ふあいるぱす@ファイルパス!absolute@\texttt{absolute}}
+
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path absolute(const path& p);
+path absolute(const path& p, error_code& ec);
+\end{lstlisting}
+\egroup
+
+\lstinline!p!への絶対パスを返す。\lstinline!p!の指すファイルが存在しない場合の挙動は未規定。
+
+%
+% SubsubSection 10.10.2.2
+\vskip 1.0zw
+\hypersubsubsection{section10-10-2-2}{canonical}
+\index{canonical@\texttt{canonical}}\index{ふあいるぱす@ファイルパス!canonical@\texttt{canonical}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path canonical(const path& p, const path& base = current_path());
+path canonical(const path& p, error_code& ec);
+path canonical(const path& p, const path& base, error_code& ec);
+\end{lstlisting}
+\egroup
+
+存在するファイルへのファイルパス\lstinline!p!への、シンボリックリンク、カレントディレクトリー（\lstinline!.!）、親ディレクトリー（\lstinline!..!）の存在しない絶対パスを返す。
+
+%
+% SubsubSection 10.10.2.3
+\vskip 1.0zw
+\hypersubsubsection{section10-10-2-3}{weakly\texttt{\_}canonical}
+\index{weakly\_canonical@\texttt{weakly\_canonical}}\index{ふあいるぱす@ファイルパス!weakly\_canonical@\texttt{weakly\_canonical}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path weakly_canonical(const path& p);
+path weakly_canonical(const path& p, error_code& ec);
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!のシンボリックリンクが解決され、正規化されたパスを返す。ファイルパスの正規化についての定義は長くなるので省略。
+
+%
+% SubsubSection 10.10.2.4
+\vskip 1.0zw
+\hypersubsubsection{section10-10-2-4}{relative}
+\index{relative@\texttt{relative}}\index{ふあいるぱす@ファイルパス!relative@\texttt{relative}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path relative(const path& p, error_code& ec);
+path relative(const path& p, const path& base = current_path());
+path relative(const path& p, const path& base, error_code& ec);
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!base!からファイルパス\lstinline!p!に対する相対パスを返す。
+
+%
+% SubsubSection 10.10.2.5
+\vskip 1.0zw
+\hypersubsubsection{section10-10-2-5}{proximate}
+\index{proximate@\texttt{proximate}}\index{ふあいるぱす@ファイルパス!proximate@\texttt{proximate}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path proximate(const path& p, error_code& ec);
+path proximate(const path& p, const path& base = current_path());
+path proximate(const path& p, const path& base, error_code& ec);
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!base!からのファイルパス\lstinline!p!に対する相対パスが空パスでなければ相対パスを返す。相対パスが空パスならば\lstinline!p!が返る。
+
+%
+% SubSection 10.10.3
+\hypersubsection{section10-10-3}{作成}
+
+%
+% SubsubSection 10.10.3.1
+\hypersubsubsection{section10-10-3-1}{create\texttt{\_}directory}
+\index{create\_directory@\texttt{create\_directory}}\index{でいれくとり@ディレクトリー!create\_directory@\texttt{create\_directory}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool create_directory(const path& p);
+bool create_directory(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!p!の指すディレクトリーを1つ作成する。新しいディレクトリーが作成できた場合は\lstinline!true!を、作成できなかった場合は\lstinline!false!を返す。\lstinline!p!が既存のディレクトリーを指していて新しいディレクトリーが作成できなかった場合はエラーにはならない。単に\lstinline!false!が返る。
+
+\begin{lstlisting}[language=C++]
+bool create_directory(
+    const path& p, const path& existing_p);
+
+bool create_directory(
+    const path& p, const path& existing_p,
+    error_code& ec) noexcept;
+\end{lstlisting}
+
+新しく作成するディレクトリー\lstinline!p!のアトリビュートを既存のディレクトリー\lstinline!existing_p!と同じものにする。
+
+%
+% SubsubSection 10.10.3.2
+\vskip 1.0zw
+\hypersubsubsection{section10-10-3-2}{create\texttt{\_}directories}
+\index{create\_directories@\texttt{create\_directories}}\index{でいれくとり@ディレクトリー!create\_directories@\texttt{create\_directories}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool create_directories(const path& p);
+bool create_directories(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!の中のディレクトリーで存在しないものをすべて作成する。
+
+以下のプログラムは、カレントディレクトリーの下のディレクトリー\lstinline!a!の下のディレクトリー\lstinline!b!の下にディレクトリー\lstinline!c!を作成する。もし、途中のディレクトリーである\lstinline!a!,
+\lstinline!b!が存在しない場合、それも作成する。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+    create_directories("./a/b/c") ;
+}
+\end{lstlisting}
+
+戻り値は、ディレクトリーを作成した場合\lstinline!true!,
+そうでない場合\lstinline!false!。
+
+%
+% SubsubSection 10.10.3.3
+\vskip 1.0zw
+\hypersubsubsection{section10-10-3-3}{create\texttt{\_}directory\texttt{\_}symlink}
+\index{create\_directory\_symlink@\texttt{create\_directory\_symlink}}\index{でいれくとり@ディレクトリー!create\_directory\_symlink@\texttt{create\_directory\_symlink}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void create_directory_symlink(
+    const path& to, const path& new_symlink);
+void create_directory_symlink(
+    const path& to, const path& new_symlink,
+    error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ディレクトリー\lstinline!to!に解決されるシンボリックリンク\lstinline!new_symlink!を作成する。
+
+一部のOSでは、ディレクトリーへのシンボリックリンクとファイルへのシンボリックリンクを作成時に明示的に区別する必要がある。ポータブルなコードはディレクトリーへのシンボリックリンクを作成するときには\lstinline!create_symlink!ではなく\lstinline!create_directory_symlink!を使うべきである。
+
+一部のOSはシンボリックリンクをサポートしていない。ポータブルなコードでは注意すべきである。
+
+%
+% SubsubSection 10.10.3.4
+\vskip 1.0zw
+\hypersubsubsection{section10-10-3-4}{create\texttt{\_}symlink}
+\index{create\_symlink@\texttt{create\_symlink}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void create_symlink(
+    const path& to, const path& new_symlink);
+void create_symlink(
+    const path& to, const path& new_symlink,
+    error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!to!に解決されるシンボリックリンク\lstinline!new_symlink!を作成する。
+\index{しんぼりつくりんく@シンボリックリンク}
+
+%
+% SubsubSection 10.10.3.5
+\vskip 1.0zw
+\hypersubsubsection{section10-10-3-5}{create\texttt{\_}hard\texttt{\_}link}
+\index{create\_hard\_link@\texttt{create\_hard\_link}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void create_hard_link(
+    const path& to, const path& new_hard_link);
+void create_hard_link(
+    const path& to, const path& new_hard_link,
+    error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!to!に解決されるハードリンク\lstinline!new_hard_link!を作成する。
+\index{はどりんく@ハードリンク}
+
+%
+% SubSection 10.10.4
+\hypersubsection{section10-10-4}{コピー}
+
+%
+% SubsubSection 10.10.4.1
+\hypersubsubsection{section10-10-4-1}{copy\texttt{\_}file}
+\index{copy\_file@\texttt{copy\_file}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool copy_file( const path& from, const path& to);
+bool copy_file( const path& from, const path& to,
+                error_code& ec) noexcept;
+bool copy_file( const path& from, const path& to,
+                copy_options options);
+bool copy_file( const path& from, const path& to,
+                copy_options options,
+                error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!from!のファイルをファイルパス\lstinline!to!にコピーする。
+
+\lstinline!copy_options!はコピーの挙動を変えるビットマスクの\lstinline!enum!型で、以下の\lstinline!enum!値がサポートされている。
+\index{copy\_options@\texttt{copy\_options}}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{35truemm}p{70truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!none! &
+デフォルト、ファイルがすでに存在する場合はエラー\tabularnewline
+\lstinline!skip_existing! &
+既存のファイルを上書きしない。スキップはエラーとして報告しない\tabularnewline
+\lstinline!overwrite_existing! &
+既存のファイルを上書きする\tabularnewline
+\lstinline!update_existing! &
+既存のファイルが上書きしようとするファイルより古ければ上書きする\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+%
+% SubsubSection 10.10.4.2
+\vskip 1.0zw
+\hypersubsubsection{section10-10-4-2}{copy}
+\index{copy@\texttt{copy}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void copy(  const path& from, const path& to);
+void copy(  const path& from, const path& to,
+            error_code& ec) noexcept;
+void copy(  const path& from, const path& to,
+            copy_options options);
+void copy(  const path& from, const path& to,
+            copy_options options,
+            error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!from!のファイルをファイルパス\lstinline!to!にコピーする。
+
+\lstinline!copy_options!はコピーの挙動を変えるビットマスク型の\lstinline!enum!型で、以下の\lstinline!enum!値がサポートされている。
+\index{copy\_options@\texttt{copy\_options}}
+
+\begin{itemize}[leftmargin=*]
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  サブディレクトリーに関する指定
+\end{itemize}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{30truemm}p{75truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!none! &
+デフォルト、サブディレクトリーはコピーしない\tabularnewline
+\lstinline!recursive! &
+サブディレクトリーとその中身もコピーする\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+\begin{itemize}[leftmargin=*]
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  シンボリックリンクに関する指定
+\end{itemize}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{30truemm}p{75truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!none! &
+デフォルト、シンボリックリンクをフォローする\tabularnewline
+\lstinline!copy_symlinks! &
+シンボリックリンクをシンボリックリンクとしてコピーする。シンボリックリンクが指すファイルを直接コピーしない\tabularnewline
+\lstinline!skip_symlinks! & シンボリックリンクを無視する\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+\begin{itemize}[leftmargin=*]
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  コピー方法に関する指定
+\end{itemize}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{30truemm}p{75truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!none! &
+デフォルト、ディレクトリー下の中身をコピーする\tabularnewline
+\lstinline!directories_only! &
+ディレクトリー構造のみをコピーする。非ディレクトリーファイルはコピーしない\tabularnewline
+\lstinline!create_symlinks! &
+ファイルをコピーするのではなく、シンボリックリンクを作成する。コピー先がカレントディレクトリーではない場合、コピー元のファイルパスは絶対パスでなければならない\tabularnewline
+\lstinline!create_hard_links! &
+ファイルをコピーするのではなく、ハードリンクを作成する\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+%
+% SubsubSection 10.10.4.3
+\vskip 1.0zw
+\hypersubsubsection{section10-10-4-3}{copy\texttt{\_}symlink}
+\index{copy\_symlink@\texttt{copy\_symlink}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void copy_symlink(  const path& existing_symlink,
+                    const path& new_symlink);
+void copy_symlink(  const path& existing_symlink,
+                    const path& new_symlink,
+                    error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!existing_symlink!を\lstinline!new_symlink!にコピーする。
+
+%
+% SubSection 10.10.5
+\hypersubsection{section10-10-5}{削除}
+
+%
+% SubsubSection 10.10.5.1
+\hypersubsubsection{section10-10-5-1}{remove}
+\index{remove@\texttt{remove}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool remove(const path& p);
+bool remove(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!の指すファイルが存在するのであれば削除する。ファイルがシンボリックリンクの場合、シンボリックリンクファイルが削除される。フォロー先は削除されない。
+
+戻り値として、ファイルが存在しない場合\lstinline!false!を返す。それ以外の場合\lstinline!true!を返す。\lstinline!error_code!でエラー通知を受け取る関数オーバーロードでは、エラーならば\lstinline!false!が返る。
+
+%
+% SubsubSection 10.10.5.2
+\vskip 1.0zw
+\hypersubsubsection{section10-10-5-2}{remove\texttt{\_}all}
+\index{remove\_all@\texttt{remove\_all}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+uintmax_t remove_all(const path& p);
+uintmax_t remove_all(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!の下の存在するファイルをすべて削除した後、\lstinline!p!の指すファイルも削除する。
+
+つまり、\lstinline!p!がディレクトリーファイルを指していて、そのディレクトリー下にサブディレクトリーやファイルが存在する場合、それらがすべて削除され、ディレクトリー\lstinline!p!も削除される。
+
+\lstinline!p!がディレクトリーではないファイルを指す場合、\lstinline!p!が削除される。
+
+戻り値として、削除したファイルの個数が返る。\lstinline!error_code!でエラー通知を受け取る関数オーバーロードの場合、エラーならば\lstinline!static_cast<uintmax_t>(-1)!が返る。
+
+% 改ページ
+\pagebreak
+%
+% SubSection 10.10.6
+\hypersubsection{section10-10-6}{変更}
+
+%
+% SubsubSection 10.10.6.1
+\hypersubsubsection{section10-10-6-1}{permissions}
+\index{permissions@\texttt{permissions}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void permissions(   const path& p, perms prms,
+                    perm_options opts=perm_options::replace);
+void permissions(   const path& p, perms prms,
+                    error_code& ec) noexcept;
+void permissions(   const path& p, perms prms,
+                    perm_options opts,
+                    error_code& ec);
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!のパーミッションを変更する。
+\index{ぱみつしよん@パーミッション}
+
+\lstinline!opts!は\lstinline!perm_options!型の\lstinline!enum!値、\lstinline!replace!,
+\lstinline!add!,
+\lstinline!remove!のうちいずれか1つと、別途\lstinline!nofollow!を指定することができる。省略した場合は\lstinline!replace!になる。
+
+カレントディレクトリーに存在するファイル\lstinline!foo!を、すべてのユーザーに対して実行権限を付加するには、以下のように書く。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    permissions( "./foo", perms(0111), perm_options::add ) ;
+}
+\end{lstlisting}
+
+\lstinline!perm_options!は以下のような\lstinline!enum!値を持つ。
+\index{perm\_options@\texttt{perm\_options}}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{20truemm}p{85truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!replace! &
+ファイルのパーミッションを\lstinline!prms!で置き換える\tabularnewline
+\lstinline!add! &
+ファイルのパーミッションに\lstinline!prms!で指定されたものを追加する\tabularnewline
+\lstinline!remove! &
+ファイルのパーミッションから\lstinline!prms!で指定されたものを取り除く\tabularnewline
+\lstinline!nofollow! &
+ファイルがシンボリックリンクの場合、シンボリックリンクのフォロー先のファイルではなく、シンボリックリンクそのもののパーミッションを変更する\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+たとえば、パーミッションを置き換えつつ、シンボリックリンクそのもののパーミッションを書き換えたい場合は、
+\begin{lstlisting}[language=C++]
+perm_options opts = perm_options::replace | perm_options::nofollow ;
+\end{lstlisting}
+と書く。
+
+%
+% SubsubSection 10.10.6.2
+\vskip 1.0zw
+\hypersubsubsection{section10-10-6-2}{rename}
+\index{rename@\texttt{rename}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void rename(const path& old_p, const path& new_p);
+void rename(const path& old_p, const path& new_p,
+            error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイル\lstinline!old_p!をファイル\lstinline!new_p!にリネームする。
+
+\lstinline!old_p!と\lstinline!new_p!が同じ存在するファイルを指す場合、何もしない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std:filesystem ;
+
+    // 何もしない
+    rename("foo", "foo") ;
+}
+\end{lstlisting}
+
+それ以外の場合、リネームに伴って以下のような挙動も発生する。
+
+もし、リネーム前に\lstinline!new_p!が既存のファイルを指していた場合、リネームに伴って\lstinline!new_p!は削除される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::experimental::filesystem ;
+
+    {
+        std::ofstream old_p("old_p"), new_p("new_p") ;
+
+        old_p << "old_p" ;
+        new_p << "new_p" ;
+    }
+
+    // ファイルold_pの内容は"old_p"
+    // ファイルnew_pの内容は"new_p"
+
+    // ファイルold_pをnew_pにリネーム
+    // もともとのnew_pは削除される
+    rename("old_p", "new_p") ;
+
+    std::ifstream new_p("new_p") ;
+
+    std::string text ;
+    new_p >> text ;
+
+    // "old_p"
+    std::cout << text ;
+}
+\end{lstlisting}
+
+もし、\lstinline!new_p!が既存の空ディレクトリーを指していた場合、POSIX準拠OSであれば、リネームに伴って\lstinline!new_p!は削除される。他のOSではエラーになるかもしれない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::experimental::filesystem ;
+
+    create_directory("old_p") ;
+    create_directory("new_p") ;
+
+    // POSIX準拠環境であればエラーにならないことが保証される
+    rename("old_p", "new_p") ;
+}
+\end{lstlisting}
+
+\lstinline!old_p!がシンボリックリンクの場合、フォロー先ではなくシンボリックリンクファイルがリネームされる。
+
+%
+% SubsubSection 10.10.6.3
+\vskip 1.0zw
+\hypersubsubsection{section10-10-6-3}{resize\texttt{\_}file}
+\index{resize\_file@\texttt{resize\_file}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void resize_file(   const path& p, uintmax_t new_size);
+void resize_file(   const path& p, uintmax_t new_size,
+                    error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!path!の指すファイルのファイルサイズを\lstinline!new_size!にする。
+
+リサイズはPOSIXの\lstinline!truncate()!で行われたかのように振る舞う。つまり、ファイルを小さくリサイズした場合、余計なデータは捨てられる。ファイルを大きくリサイズした場合、増えたデータは\lstinline!null!バイト（\lstinline!\0!）でパディングされる。ファイルの最終アクセス日時も更新される。
+
+%
+% SubSection 10.10.7
+\hypersubsection{section10-10-7}{情報取得}
+
+%
+% SubsubSection 10.10.7.1
+\hypersubsubsection{section10-10-7-1}{ファイルタイプの判定}
+
+ファイルタイプを表現する\lstinline!file_type!型の\lstinline!enum!があり、その\lstinline!enum!値は以下のようになっている。
+\index{ふあいるたいぷ@ファイルタイプ}\index{file\_type@\texttt{file\_type}}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{25truemm}p{80truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!none! & ファイルタイプが決定できないかエラー\tabularnewline
+\lstinline!not_found! &
+ファイルが発見できなかったことを示す疑似ファイルタイプ\tabularnewline
+\lstinline!regular! & 通常のファイル\tabularnewline
+\lstinline!directory! & ディレクトリーファイル\tabularnewline
+\lstinline!symlink! & シンボリックリンクファイル\tabularnewline
+\lstinline!block! & ブロックスペシャルファイル\tabularnewline
+\lstinline!fifo! & FIFOもしくはパイプファイル\tabularnewline
+\lstinline!socket! & ソケットファイル\tabularnewline
+\lstinline!unknown! &
+ファイルは存在するがファイルタイプは決定できない\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+この他に、実装依存のファイルタイプが追加されている可能性がある。
+
+ファイルタイプを調べるには、\lstinline!file_status!のメンバー関数\lstinline!type!の戻り値を調べればよい。
+\index{file\_status@\texttt{file\_status}}
+
+以下のプログラムは、カレントディレクトリーに存在するファイル\lstinline!foo!がディレクトリーかどうかを調べるコードだ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    auto s = status("./foo") ;
+    bool b = s.type() == file_type::directory ;
+}
+\end{lstlisting}
+
+また、\lstinline!status!もしくは\lstinline!path!からファイルタイプがディレクトリーであるかどうかを判定できる\lstinline!is_directory!も用意されている。
+\index{is\_directory@\texttt{is\_directory}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::filesystem ;
+
+    bool b1 = is_directory("./foo") ;
+
+    auto s = status("./foo") ;
+    bool b2 = is_directory(s) ;
+}
+\end{lstlisting}
+
+\lstinline!file_status!はファイル情報をキャッシュするので、物理ファイルシステムに変更を加えない状態で、同じファイルに対して何度もファイル情報を取得する場合は、\lstinline!file_status!を使ったほうがよい。
+\index{file\_status@\texttt{file\_status}}
+
+このような\lstinline!is_x!という形式のフリー関数は、いずれも以下の形式を取る。
+\index{is\_x@\texttt{is\_x}}
+
+\begin{lstlisting}[language=C++]
+bool is_x(file_status s) noexcept;
+bool is_x(const path& p);
+bool is_x(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+
+以下はフリー関数の名前と、どのファイルタイプであるかを判定する表だ。
+
+\small
+\begin{longtable}[l]{@{\ \ }p{25truemm}p{80truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!is_regular_file! & 通常のファイル\tabularnewline
+\lstinline!is_directory! & ディレクトリーファイル\tabularnewline
+\lstinline!is_symlink! & シンボリックリンクファイル\tabularnewline
+\lstinline!is_block! & ブロックスペシャルファイル\tabularnewline
+\lstinline!is_fifo! & FIFOもしくはパイプファイル\tabularnewline
+\lstinline!is_socket! & ソケットファイル\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+また、単一のファイルタイプを調べるのではない以下のような名前のフリー関数が存在する。
+
+\small
+\begin{longtable}[l]{@{\ \ }p{25truemm}p{80truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!is_other! &
+ファイルが存在し、通常のファイルでもディレクトリーでもシンボリックリンクでもないタイプ\tabularnewline
+\lstinline!is_empty! &
+ファイルがディレクトリーの場合、ディレクトリー下が空であれば\lstinline!true!を返す。ファイルが非ディレクトリーの場合、ファイルサイズが0であれば\lstinline!true!を返す。\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize
+
+% 改ページ
+\pagebreak
+%
+% SubsubSection 10.10.7.2
+\hypersubsubsection{section10-10-7-2}{status}
+\index{status@\texttt{status}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+file_status status(const path& p);
+file_status status(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!のファイルの情報を格納する\lstinline!file_status!を返す。
+
+\lstinline!p!がシンボリックリンクの場合、フォロー先のファイルの\lstinline!file_status!を返す。
+
+%
+% SubsubSection 10.10.7.3
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-3}{status\texttt{\_}known}
+\index{status\_known@\texttt{status\_known}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool status_known(file_status s) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline"s.type() != file_type::none"を返す。
+
+%
+% SubsubSection 10.10.7.4
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-4}{symlink\texttt{\_}status}
+\index{symlink\_status@\texttt{symlink\_status}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+file_status symlink_status(const path& p);
+file_status symlink_status(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!status!と同じだが、\lstinline!p!がシンボリックリンクの場合、そのシンボリックリンクファイルの\lstinline!status!を返す。
+
+%
+% SubsubSection 10.10.7.5
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-5}{equivalent}
+\index{equivalent@\texttt{equivalent}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool equivalent(const path& p1, const path& p2);
+bool equivalent(const path& p1, const path& p2,
+                error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!p1!と\lstinline!p2!が物理ファイルシステム上、同一のファイルである場合、\lstinline!true!を返す。そうでない場合\lstinline!false!を返す。
+
+%
+% SubsubSection 10.10.7.6
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-6}{exists}
+\index{exists@\texttt{exists}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool exists(file_status s) noexcept;
+bool exists(const path& p);
+bool exists(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!s!,
+\lstinline!p!が指すファイルが存在するのであれば\lstinline!true!を返す。そうでない場合\lstinline!false!を返す。
+
+%
+% SubsubSection 10.10.7.7
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-7}{file\texttt{\_}size}
+\index{file\_size@\texttt{file\_size}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+uintmax_t file_size(const path& p);
+uintmax_t file_size(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!p!の指すファイルのファイルサイズを返す。
+
+ファイルが存在しない場合エラーとなる。ファイルが通常のファイルの場合、ファイルサイズを返す。それ以外の場合、挙動は実装依存となる。
+
+エラー通知を\lstinline!error_code!で受け取る関数オーバーロードでエラーのとき、戻り値は\lstinline!static_cast<uintmax_t>(-1)!となる。
+
+%
+% SubsubSection 10.10.7.8
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-8}{hard\texttt{\_}link\texttt{\_}count}
+\index{hard\_link\_count@\texttt{hard\_link\_count}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+uintmax_t hard_link_count(const path& p);
+uintmax_t hard_link_count(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!p!の指すファイルのハードリンク数を返す。
+
+エラー通知を\lstinline!error_code!で受け取る関数オーバーロードでエラーのとき、戻り値は\lstinline!static_cast<uintmax_t>(-1)!となる。
+
+%
+% SubsubSection 10.10.7.9
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-9}{last\texttt{\_}write\texttt{\_}time}
+\index{last\_write\_time@\texttt{last\_write\_time}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+file_time_type last_write_time( const path& p);
+file_time_type last_write_time( const path& p,
+                                error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!p!の指すファイルの最終更新日時を返す。
+
+\begin{lstlisting}[language=C++]
+void last_write_time(   const path& p, file_time_type new_time);
+void last_write_time(   const path& p, file_time_type new_time,
+                        error_code& ec) noexcept;
+\end{lstlisting}
+
+\lstinline!p!の指すファイルの最終更新日時を\lstinline!new_time!にする。
+
+\lstinline!last_write_time(p, new_time)!を呼び出した後に、\lstinline[breaklines=true]!last_write_time(p) == new_time!である保証はない。なぜならば、物理ファイルシステムの実装に起因する時刻の分解能や品質の問題があるからだ。
+
+\lstinline!file_time_type!は、\lstinline!std::chrono_time_point!の特殊化で以下のように定義されている。
+\index{file\_time\_type@\texttt{file\_time\_type}}\index{std::chrono\_time\_point@\texttt{std::chrono\_time\_point}}
+
+\begin{lstlisting}[language=C++]
+namespace std::filesystem {
+    using file_time_time = std::chrono::time_point< trivial-clock > ;
+}
+\end{lstlisting}
+
+\lstinline!trivial-clock!とは、クロック（より正確にはTrivialClock）の要件を満たすクロックで、ファイルシステムのタイムスタンプの値を正確に表現できるものとされている。クロックの具体的な型は実装依存なので、完全にポータブルなコードではファイルシステムで時間を扱うのは極めて困難になる。せいぜい現在時刻を設定するとか、差分の時間を設定するぐらいしかできない。
+\index{trivial-clock@\texttt{trivial-clock}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::experimental::filesystem ;
+    using namespace std::chrono ;
+    using namespace std::literals ;
+
+    // 最終更新日時を取得
+    auto timestamp = last_write_time( "foo" ) ;
+
+    // 時刻を1時間進める
+    timestamp += 1h ;
+    // 更新
+    last_write_time( "foo", timestamp ) ;
+
+
+    // 現在時刻を取得
+    auto now = file_time_type::clock::now() ;
+
+    last_write_time( "foo", now ) ;
+}
+\end{lstlisting}
+
+ただし、多くの実装では\lstinline!file_time_type!として、\lstinline[breaklines=true]!time_point<std::chrono::system_clock>!~が使われている。\lstinline!file_time_type::clock!が\lstinline!system_clock!であれば、\lstinline!system_clock::to_time_t!と\lstinline!system_clock::from_time_t!によって\lstinline!time_t!型との相互変換ができるために、いくぶんマシになる。
+
+\begin{lstlisting}[language=C++]
+// file_time_type::clockがsystem_clockである場合
+
+int main()
+{
+    using namespace std::experimental::filesystem ;
+    using namespace std::chrono ;
+
+    // 最終更新日時を文字列で得る
+    auto time_point_value = last_write_time( "foo" ) ;
+    time_t time_t_value =
+        system_clock::to_time_t( time_point_value ) ;
+    std::cout << ctime( &time_t_value ) << '\n' ;
+
+   
+    // 最終更新日時を2017-10-12 19:02:58に設定
+    tm struct_tm{} ;
+    struct_tm.tm_year = 2017 - 1900 ;
+    struct_tm.tm_mon = 10 ;
+    struct_tm.tm_mday = 12 ;
+    struct_tm.tm_hour = 19 ;
+    struct_tm.tm_min = 2 ;
+    struct_tm.tm_sec = 58 ;
+
+    time_t timestamp = std::mktime( &struct_tm ) ;
+    auto tp = system_clock::from_time_t( timestamp ) ;
+
+    last_write_time( "foo", tp ) ;
+}
+\end{lstlisting}
+
+あまりマシになっていないように見えるのは、C++では現在~\lstinline!<chrono>!~から利用できるC++風のモダンなカレンダーライブラリがないからだ。この問題は将来の規格改定で改善されるだろう。
+\index{<chrono>@\texttt{<chrono>}}
+
+%
+% SubsubSection 10.10.7.10
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-10}{read\texttt{\_}symlink}
+\index{read\_symlink@\texttt{read\_symlink}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+path read_symlink(const path& p);
+path read_symlink(const path& p, error_code& ec);
+\end{lstlisting}
+\egroup
+
+シンボリックリンク\lstinline!p!の解決される先のファイルパスを返す。
+
+\lstinline!p!がシンボリックリンクではない場合はエラーになる。
+
+%
+% SubsubSection 10.10.7.11
+\vskip 1.0zw
+\hypersubsubsection{section10-10-7-11}{space}
+\index{space@\texttt{space}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+space_info space(const path& p);
+space_info space(const path& p, error_code& ec) noexcept;
+\end{lstlisting}
+\egroup
+
+ファイルパス\lstinline!p!が指す先の容量を取得する。
+
+クラス\lstinline!space_info!は以下のように定義されている。
+\index{space\_info@\texttt{space\_info}}
+
+\begin{lstlisting}[language=C++]
+struct space_info {
+    uintmax_t capacity;
+    uintmax_t free;
+    uintmax_t available;
+};
+\end{lstlisting}
+
+この関数は、POSIXの\lstinline!statvfs!関数を呼び出した結果の\lstinline!struct statvfs!の\lstinline!f_blocks!,
+\lstinline!f_bfree!,
+\lstinline!f_bavail!メンバーを、それぞれ\lstinline!f_frsize!で乗じて、\lstinline!space_info!のメンバー\lstinline!capacity!,
+\lstinline!free!,
+\lstinline!available!として返す。値の決定できないメンバーには\lstinline!static_cast<uintmax_t>(-1)!が代入される。
+\index{statvfs@\texttt{statvfs}}
+
+エラー通知を\lstinline!error_code!で返す関数オーバーロードがエラーの場合、\lstinline!space_info!のメンバーにはすべて\lstinline!static_cast<uintmax_t>(-1)!が代入される。
+
+\lstinline!space_info!のメンバーの意味をわかりやすく説明すると、以下の表のようになる。
+\index{space\_info@\texttt{space\_info}}
+
+\small
+\begin{longtable}[l]{@{\ \ }p{25truemm}p{80truemm}@{\ \ }}
+\toprule
+名前 & 意味\tabularnewline
+\midrule
+\endhead
+\lstinline!capacity! & 総容量\tabularnewline
+\lstinline!free! & 空き容量\tabularnewline
+\lstinline!available! &
+権限のないユーザーが使える空き容量\tabularnewline
+\bottomrule
+\end{longtable}
+\normalsize

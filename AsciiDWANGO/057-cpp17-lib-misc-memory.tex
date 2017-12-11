@@ -1,0 +1,194 @@
+%
+% Section 9.11
+\hypersection{section9-11}{メモリー管理アルゴリズム}
+
+C++17ではヘッダーファイル~\lstinline!<memory>!~にメモリー管理用のアルゴリズムが追加された。
+\index{<memory>@\texttt{<memory>}}\index{めもりかんりあるごりずむ@メモリー管理アルゴリズム}
+
+%
+% SubSection 9.11.1
+\hypersubsection{section9-11-1}{addressof}
+\index{addressof@\texttt{addressof}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T> constexpr T* addressof(T& r) noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!addressof!はC++17以前からもある。\lstinline!addressof(r)!は\lstinline!r!のポインターを取得する。たとえ、\lstinline!r!の型が\lstinline!operator &!をオーバーロードしていても正しいポインターを取得できる。
+
+\begin{lstlisting}[language=C++]
+struct S
+{
+    S * operator &() const noexcept
+    { return nullptr ; } 
+} ;
+
+int main()
+{
+    S s ;
+
+    // nullptr
+    S * p1 = & s ;
+    // 妥当なポインター
+    S * p2 = std::addressof(s) ;
+
+}
+\end{lstlisting}
+
+%
+% SubSection 9.11.2
+\hypersubsection{section9-11-2}{uninitialized\texttt{\_}default\texttt{\_}construct}
+\index{uninitialized\_default\_construct@\texttt{uninitialized\_default\_construct}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class ForwardIterator>
+void uninitialized_default_construct(
+    ForwardIterator first, ForwardIterator last);
+
+template <class ForwardIterator, class Size>
+ForwardIterator uninitialized_default_construct_n(
+    ForwardIterator first, Size n);
+\end{lstlisting}
+\egroup
+
+\lstinline![first, last)!の範囲、もしくは\lstinline!first!から\lstinline!n!個の範囲の未初期化のメモリーを\lstinline!typename iterator_traits<ForwardIterator>::value_type!でデフォルト初期化する。2つ目のアルゴリズムは\lstinline!first!から\lstinline!n!個をデフォルト初期化する。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::shared_ptr<void> raw_ptr
+    (   ::operator new( sizeof(std::string) * 10 ),
+        [](void * ptr){ ::operator delete(ptr) ; } ) ;
+ 
+    std::string * ptr = static_cast<std::string *>( raw_ptr.get() ) ;
+
+    std::uninitialized_default_construct_n( ptr, 10 ) ;
+    std::destroy_n( ptr, 10 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 9.11.3
+\hypersubsection{section9-11-3}{uninitialized\texttt{\_}value\texttt{\_}construct}
+\index{uninitialized\_value\_construct@\texttt{uninitialized\_value\_construct}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class ForwardIterator>
+void uninitialized_value_construct(
+    ForwardIterator first, ForwardIterator last);
+
+template <class ForwardIterator, class Size>
+ForwardIterator uninitialized_value_construct_n(
+    ForwardIterator first, Size n);
+\end{lstlisting}
+\egroup
+
+使い方は\lstinline!uninitialized_default_construct!と同じ。ただし、こちらはデフォルト初期化ではなく値初期化する。
+
+%
+% SubSection 9.11.4
+\hypersubsection{section9-11-4}{uninitialized\texttt{\_}copy}
+\index{uninitialized\_copy@\texttt{uninitialized\_copy}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class InputIterator, class ForwardIterator>
+ForwardIterator
+uninitialized_copy( InputIterator first, InputIterator last,
+                    ForwardIterator result);
+
+template <class InputIterator, class Size, class ForwardIterator>
+ForwardIterator
+uninitialized_copy_n(   InputIterator first, Size n,
+                        ForwardIterator result);
+\end{lstlisting}
+\egroup
+
+\lstinline![first, last)!の範囲、もしくは\lstinline!first!から\lstinline!n!個の範囲の値を、\lstinline!result!の指す未初期化のメモリーにコピー構築する。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<std::string> input(10, "hello") ;
+
+    std::shared_ptr<void> raw_ptr
+    (   ::operator new( sizeof(std::string) * 10 ),
+        [](void * ptr){ ::operator delete(ptr) ; } ) ;
+ 
+    std::string * ptr = static_cast<std::string *>( raw_ptr.get() ) ;
+
+
+    std::uninitialized_copy_n( std::begin(input), 10, ptr ) ;
+    std::destroy_n( ptr, 10 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 9.11.5
+\hypersubsection{section9-11-5}{uninitialized\texttt{\_}move}
+\index{uninitialized\_move@\texttt{uninitialized\_move}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class InputIterator, class ForwardIterator>
+ForwardIterator
+uninitialized_move( InputIterator first, InputIterator last,
+                    ForwardIterator result);
+
+template <class InputIterator, class Size, class ForwardIterator>
+pair<InputIterator, ForwardIterator>
+uninitialized_move_n(   InputIterator first, Size n,
+                        ForwardIterator result);
+\end{lstlisting}
+\egroup
+
+使い方は\lstinline!uninitialized_copy!と同じ。ただしこちらはコピーではなくムーブする。
+
+%
+% SubSection 9.11.6
+\hypersubsection{section9-11-6}{uninitialized\texttt{\_}fill}
+\index{uninitialized\_fill@\texttt{uninitialized\_fill}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class ForwardIterator, class T>
+void uninitialized_fill(
+    ForwardIterator first, ForwardIterator last,
+    const T& x);
+
+template <class ForwardIterator, class Size, class T>
+ForwardIterator uninitialized_fill_n(
+    ForwardIterator first, Size n,
+    const T& x);
+\end{lstlisting}
+\egroup
+
+\lstinline![first, last)!の範囲、もしくは\lstinline!first!から\lstinline!n!個の範囲の未初期化のメモリーを、コンストラクターに実引数\lstinline!x!を与えて構築する。
+
+%
+% SubSection 9.11.7
+\hypersubsection{section9-11-7}{destory}
+\index{destory@\texttt{destory}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T>
+void destroy_at(T* location);
+\end{lstlisting}
+\egroup
+
+\lstinline!location->~T()!を呼び出す。
+
+\begin{lstlisting}[language=C++]
+template <class ForwardIterator>
+void destroy(ForwardIterator first, ForwardIterator last);
+
+template <class ForwardIterator, class Size>
+ForwardIterator destroy_n(ForwardIterator first, Size n);
+\end{lstlisting}
+
+\lstinline![first, last)!の範囲、もしくは\lstinline!first!から\lstinline!n!個の範囲に\lstinline!destroy_at!を呼び出す。

@@ -1,0 +1,188 @@
+%
+% Section 3.5
+\hypersection{section3-5}{fold式}
+
+C++17には\lstinline!fold!式が入った。\lstinline!fold!は元は数学の概念で畳み込みとも呼ばれている。
+\index{foldしき@\texttt{fold}式}\index{たたみこみ@畳み込み}
+
+C++における\lstinline!fold!式とはパラメーターパックの中身に二項演算子を適用するための式だ。
+\index{ぱらめたぱつく@パラメーターパック}
+
+今、可変長テンプレートを使って受け取った値をすべて加算した合計を返す関数\lstinline!sum!を書きたいとする。
+\index{かへんちようてんぷれと@可変長テンプレート}
+
+\begin{lstlisting}[language=C++]
+template < typename T, typename ... Types >
+auto sum( T x, Types ... args ) ;
+
+int main()
+{
+    int result = sum(1,2,3,4,5,6,7,8,9) ; // 45
+}
+\end{lstlisting}
+
+このような関数テンプレート\lstinline!sum!は以下のように実装することができる。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+auto sum( T x )
+{
+    return x ;
+}
+
+template < typename T, typename ... Types >
+auto sum( T x, Types ... args )
+{
+    return x + sum( args... )  ;
+}
+\end{lstlisting}
+
+\lstinline!sum(x, args)!は1番目の引数を\lstinline!x!で、残りをパラメーターパック\lstinline!args!で受け取る。そして、\lstinline!x + sum( args ... )!を返す。すると、\lstinline!sum( args ... )!はまた\lstinline!sum(x, args)!に渡されて、1番目の引数、つまり最初から見て2番目の引数が\lstinline!x!に入り、また\lstinline!sum!が呼ばれる。このような再帰的な処理を繰り返していく。
+
+そして、引数が1つだけになると、可変長テンプレートではない\lstinline!sum!が呼ばれる。これは重要だ。なぜならば可変長テンプレートは0個の引数を取ることができるので、そのまま可変長テンプレート版の\lstinline!sum!が呼ばれてしまうと、次の\lstinline!sum!の呼び出しができずにエラーとなる。これを回避するために、また再帰の終了条件のために、引数が1つの\lstinline!sum!のオーバーロード関数を書いておく。
+
+可変長テンプレートでは任意個の引数に対応するために、このような再帰的なコードが必須になる。
+
+しかし、ここで実現したいこととは\(N\)個あるパラメーターパック\lstinline!args!の中身に対して、仮に\(N\)番目を\lstinline!args#N!とする表記を使うと、\lstinline!args#0!
++ \lstinline!args#1! + \ldots{} +
+\lstinline!args#N-1!のような展開をしたいだけだ。C++17の\lstinline!fold!式はパラメーターパックに対して二項演算子を適用する展開を行う機能だ。
+
+\lstinline!fold!式を使うと\lstinline!sum!は以下のように書ける。
+
+\begin{lstlisting}[language=C++]
+template < typename ... Types >
+auto sum( Types ... args )
+{
+    return ( ... + args )  ;
+}
+\end{lstlisting}
+
+\lstinline!( ... + args )!は、\lstinline!args#0! + \lstinline!args#1! +
+\ldots{} + \lstinline!args#N-1!のように展開される。
+
+\lstinline!fold!式には、単項\lstinline!fold!式と二項\lstinline!fold!式がある。そして、演算子の結合順序に合わせて左\lstinline!fold!と右\lstinline!fold!がある。
+\index{たんこうfoldしき@単項\texttt{fold}式}\index{にこうfoldしき@二項\texttt{fold}式}\index{foldしき@\texttt{fold}式!たんこうfoldしき@単項〜}\index{foldしき@\texttt{fold}式!にこうfoldしき@二項〜}\index{ひだりfold@左\texttt{fold}}\index{みぎfold@右\texttt{fold}}\index{foldしき@\texttt{fold}式!ひだりfold@左〜}\index{foldしき@\texttt{fold}式!みぎfold@右〜}
+
+\lstinline!fold!式は必ず括弧で囲まなければならない。
+
+\begin{lstlisting}[language=C++]
+template < typename ... Types >
+auto sum( Types ... args )
+{
+    // fold式
+    ( ... + args )  ;
+    // エラー、括弧がない
+    ... + args ;
+}
+\end{lstlisting}
+
+単項\lstinline!fold!式の文法は以下のいずれかになる。
+\index{たんこうfoldしき@単項\texttt{fold}式}\index{foldしき@\texttt{fold}式!たんこうfoldしき@単項〜}
+
+\begin{lstlisting}
+単項右fold
+( cast-expression fold-operator ... )
+単項左fold
+( ... fold-operator cast-expression )
+\end{lstlisting}
+
+\noindent
+\textsf{例}：
+
+\begin{lstlisting}[language=C++]
+template < typename ... Types >
+void f( Types ... args )
+{
+    // 単項左fold
+    ( ... + args )  ;
+    // 単項右fold
+    ( args + ... ) ;
+}
+\end{lstlisting}
+
+\lstinline!cast-expression!には未展開のパラメーターパックが入っていなければならない。
+
+\vskip 1zw
+\noindent
+\textsf{例}：
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+T f( T x ) { return x ; }
+
+template < typename ... Types >
+auto g( Types ... args )
+{
+    // f(args#0) + f(args#1) + ... + f(args#N-1)
+    return ( ... + f(args) )  ;
+}
+\end{lstlisting}
+
+これは\lstinline!f(args)!というパターンが展開される。
+
+\lstinline!fold-operator!には以下のいずれかの二項演算子を使うことができる。
+
+\begin{lstlisting}
++   -   *   /   %   ^   &   |   <<  >>
++=  -=  *=  /=  %=  ^=  &=  |=  <<= >>=
+==  !=  <   >   <=  >=  &&  ||  ,   .*  ->*
+\end{lstlisting}
+
+\lstinline!fold!式には左\lstinline!fold!と右\lstinline!fold!がある。
+\index{ひだりfold@左\texttt{fold}}\index{みぎfold@右\texttt{fold}}\index{foldしき@\texttt{fold}式!ひだりfold@左〜}\index{foldしき@\texttt{fold}式!みぎfold@右〜}
+
+左\lstinline!fold!式の\lstinline!( ... op pack )!では、展開結果は\lstinline[breaklines=true]!((( pack#0 op pack#1 ) op pack#2 ) ... op pack#N-1 )!となる。右\lstinline!fold!式の\lstinline!( pack op ... )!では、展開結果は\lstinline[breaklines=true]!( pack#0 op ( pack#1 op ( pack#2 op ( ... op pack#N-1 ))))!となる。
+
+\begin{lstlisting}[language=C++]
+template < typename ... Types >
+void sum( Types ... args )
+{
+    // 左fold
+    // ((((1+2)+3)+4)+5)
+    auto left = ( ... + args ) ;
+    // 右fold
+    // (1+(2+(3+(4+5))))
+    auto right = ( args + ... ) ;
+}
+
+int main()
+{
+    sum(1,2,3,4,5) ;
+}
+\end{lstlisting}
+
+浮動小数点数のような交換法則を満たさない型に\lstinline!fold!式を適用する際には注意が必要だ。
+
+二項\lstinline!fold!式の文法は以下のいずれかになる。
+\index{にこうfoldしき@二項\texttt{fold}式}\index{foldしき@\texttt{fold}式!にこうfoldしき@二項〜}
+
+\begin{lstlisting}[language=C++]
+( cast-expression fold-operator ... fold-operator cast-expression )
+\end{lstlisting}
+
+左右の\lstinline!cast-expression!のどちらか片方だけに未展開のパラメーターパックが入っていなければならない。2つの\lstinline!fold-operator!は同じ演算子でなければならない。
+
+\lstinline!( e1 op1 ... op2 e2 )!という二項\lstinline!fold!式があったとき、\lstinline!e1!にパラメーターパックがある場合は二項右\lstinline!fold!式、\lstinline!e2!にパラメーターパックがある場合は二項左\lstinline!fold!式になる。
+
+\begin{lstlisting}[language=C++]
+template < typename ... Types >
+void sum( Types ... args )
+{
+    // 左fold
+    // (((((0+1)+2)+3)+4)+5)
+    auto left = ( 0 + ... + args ) ;
+    // 右fold
+    // (0+(1+(2+(3+(4+5)))))
+    auto right = ( args + ... + 0 ) ;
+}
+
+int main()
+{
+    sum(1,2,3,4,5) ;
+}
+\end{lstlisting}
+
+\lstinline!fold!式はパラメーターパックのそれぞれに二項演算子を適用したいときにわざわざ複雑な再帰的テンプレートを書かずにすむ方法を提供してくれる。
+
+機能テストマクロは~\lstinline!__cpp_fold_expressions!, 値は201603。
+\index{\_\_cpp\_fold\_expressions@\texttt{\_\_cpp\_fold\_expressions}}

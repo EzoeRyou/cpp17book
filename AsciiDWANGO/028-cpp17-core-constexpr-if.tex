@@ -1,0 +1,476 @@
+%
+% Section 3.14
+\hypersection{section3-14}{constexpr if文 : コンパイル時条件分岐}
+
+\lstinline!constexpr if!文はコンパイル時の条件分岐ができる機能だ。
+\index{constexpr ifぶん@\texttt{constexpr if}文}\index{こんぱいるじじようけんぶんき@コンパイル時条件分岐}\index{じようけんぶんき@条件分岐!こんぱいるじ@コンパイル時〜}
+
+\lstinline!constexpr if!文は、通常の\lstinline!if!文を\lstinline!if constexpr!で置き換える。
+
+\begin{lstlisting}[language=C++]
+// if文
+if ( expression )
+    statement ;
+
+// constexpr if文
+if constexpr ( expression )
+    statement ;
+\end{lstlisting}
+
+\lstinline!constexpr if!文という名前だが、実際に記述するときは\lstinline!if constexpr!だ。
+\index{if constexpr@\texttt{if constexpr}}
+
+コンパイル時の条件分岐とは何を意味するのか。以下は\lstinline!constexpr if!が\textsf{行わないもの}の一覧だ。
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  最適化
+\item
+  非テンプレートコードにおける挙動の変化
+\end{itemize}
+
+コンパイル時の条件分岐の機能を理解するには、まずC++の既存の条件分岐について理解する必要がある。
+
+%
+% SubSection 3.14.1
+\hypersubsection{section3-14-1}{実行時の条件分岐}
+
+通常の実行時の条件分岐は、実行時の値を取り、実行時に条件分岐を行う。
+\index{じようけんぶんき@条件分岐!じつこうじの@実行時の〜}
+
+\begin{lstlisting}[language=C++]
+void f( bool runtime_value )
+{
+    if ( runtime_value )
+        do_true_thing() ;
+    else
+        do_false_thing() ;
+}
+\end{lstlisting}
+
+この場合、\lstinline!runtime_value!が\lstinline!true!の場合は関数\lstinline!do_true_thing!が呼ばれ、\lstinline!false!の場合は関数\lstinline!do_false_thing!が呼ばれる。
+
+実行時の条件分岐の条件には、コンパイル時定数を指定できる。
+\index{こんぱいるじていすう@コンパイル時定数}\index{ていすう@定数!こんぱいるじ@コンパイル時〜}
+
+\begin{lstlisting}[language=C++]
+if ( true )
+    do_true_thing() ;
+else
+    do_false_thing() ;
+\end{lstlisting}
+
+この場合、賢いコンパイラーは以下のように処理を最適化するかもしれない。
+
+\begin{lstlisting}[language=C++]
+do_true_thing() ;
+\end{lstlisting}
+
+なぜならば、条件は常に\lstinline!true!だからだ。このような最適化は実行時の条件分岐でもコンパイル時に行える。コンパイル時の条件分岐はこのような最適化が目的ではない。
+
+もう一度コード例に戻ろう。今度は完全なコードを見てみよう。
+
+\begin{lstlisting}[language=C++]
+// do_true_thingの宣言
+void do_true_thing() ;
+
+// do_false_thingの宣言は存在しない
+
+void f( bool runtime_value )
+{
+    if ( true )
+        do_true_thing() ;
+    else
+        do_false_thing() ; // エラー
+}
+\end{lstlisting}
+
+このコードはエラーになる。その理由は、\lstinline!do_false_thing!という名前が宣言されていないからだ。C++コンパイラーは、コンパイル時にコードを以下の形に変形することで最適化することはできるが、
+\begin{lstlisting}[language=C++]
+void do_true_thing() ;
+
+void f( bool runtime_value )
+{
+    do_true_thing() ;
+}
+\end{lstlisting}
+最適化の結果失われたものも、依然としてコンパイル時にコードとして検証はされる。コードとして検証されるということは、コードとして誤りがあればエラーとなる。名前\lstinline!do_false_thing!は宣言されていないのでエラーとなる。
+
+%
+% SubSection 3.14.2
+\hypersubsection{section3-14-2}{プリプロセス時の条件分岐}
+
+C++がC言語から受け継いだCプリプロセッサーには、プリプロセス時の条件分岐の機能がある。
+\index{じようけんぶんき@条件分岐!ぷりぷろせすじの@プリプロセス時の〜}
+
+\begin{lstlisting}[language=C++]
+// do_true_thingの宣言
+void do_true_thing() ;
+
+// do_false_thingの宣言は存在しない
+
+void f( bool runtime_value )
+{
+
+#if true
+    do_true_thing() ;
+#else
+    do_false_thing() ;
+#endif
+}
+\end{lstlisting}
+
+このコードは、プリプロセスの結果、以下のように変換される。
+
+\begin{lstlisting}[language=C++]
+void do_true_thing() ;
+
+void f( bool runtime_value )
+{
+    do_true_thing() ;
+}
+\end{lstlisting}
+
+この結果、プリプロセス時の条件分岐では、選択されない分岐はコンパイルされないので、コンパイルエラーになるコードも書くことができる。
+
+プリプロセス時の条件分岐は、条件が整数とか\lstinline!bool!型のリテラルか、リテラルに比較演算子を適用した結果ではうまくいく。しかし、プリプロセス時とはコンパイル時ではないので、コンパイル時計算はできない。
+
+\begin{lstlisting}[language=C++]
+constexpr int f()
+{
+    return 1 ;
+}
+
+void do_true_thing() ;
+
+int main()
+{
+// エラー
+// 名前fはプリプロセッサーマクロではない
+#if f()
+    do_true_thing() ;
+#else
+    do_false_thing() ;
+#endif
+}
+\end{lstlisting}
+
+%
+% SubSection 3.14.3
+\hypersubsection{section3-14-3}{コンパイル時の条件分岐}
+
+コンパイル時の条件分岐とは、分岐の条件にコンパイル時計算の結果を使い、かつ、選択されない分岐にコンパイルエラーが含まれていても、使われないのでコンパイルエラーにはならない条件分岐のことだ。
+\index{こんぱいるじじようけんぶんき@コンパイル時条件分岐}\index{じようけんぶんき@条件分岐!こんぱいるじ@コンパイル時〜}
+
+たとえば、\lstinline!std::distance!という標準ライブラリを実装してみよう。\lstinline!std::distance(first, last)!は、イテレーター\lstinline!first!と\lstinline!last!の距離を返す。
+
+\begin{lstlisting}[language=C++]
+template < typename Iterator >
+constexpr typename std::iterator_traits<Iterator>::difference_type
+distance( Iterator first, Iterator last )
+{
+    return last - first ;
+}
+\end{lstlisting}
+
+残念ながら、この実装は\lstinline!Iterator!がランダムアクセスイテレーターの場合にしか動かない。入力イテレーターに対応させるには、イテレーターを1つずつインクリメントして\lstinline!last!と等しいかどうか比較する実装が必要になる。
+
+\begin{lstlisting}[language=C++]
+template < typename Iterator >
+constexpr typename std::iterator_traits<Iterator>::difference_type
+distance( Iterator first, Iterator last )
+{
+    typename std::iterator_traits<Iterator>::difference_type n = 0 ;
+
+    while ( first != last )
+    {
+        ++n ;
+        ++first ;
+    }
+
+    return n ;
+}
+\end{lstlisting}
+
+残念ながら、この実装は\lstinline!Iterator!にランダムアクセスイテレーターを渡したときに効率が悪い。
+
+ここで必要な実装は、\lstinline!Iterator!がランダムアクセスイテレーターならば\lstinline!last - first!を使い、そうでなければ地道にインクリメントする遅い実装を使うことだ。\lstinline!Iterator!がランダムアクセスイテレーターかどうかは、以下のコードを使えば、\lstinline!is_random_access_iterator<iterator>!~で確認できる。
+
+\begin{lstlisting}[language=C++]
+template < typename Iterator >
+constexpr bool is_random_access_iterator =
+    std::is_same_v<
+        typename std::iterator_traits< 
+            std::decay_t<Iterator> 
+        >::iterator_category,
+        std::random_access_iterator_tag > ;
+\end{lstlisting}
+
+すると、\lstinline!distance!は以下のように書けるのではないか。
+
+\begin{lstlisting}[language=C++]
+// ランダムアクセスイテレーターかどうかを判定するコード
+template < typename Iterator >
+constexpr bool is_random_access_iterator =
+    std::is_same_v<
+        typename std::iterator_traits< 
+            std::decay_t<Iterator>
+        >::iterator_category,
+        std::random_access_iterator_tag > ;
+
+// distance
+template < typename Iterator >
+constexpr typename std::iterator_traits<Iterator>::difference_type
+distance( Iterator first, Iterator last )
+{
+    // ランダムアクセスイテレーターかどうか確認する
+    if ( is_random_access_iterator<Iterator> )
+    {// ランダムアクセスイテレーターなので速い方法を使う
+        return last - first ;
+    }
+    else
+    { // ランダムアクセスイテレーターではないので遅い方法を使う
+        typename std::iterator_traits<Iterator>::difference_type n = 0 ;
+
+        while ( first != last )
+        {
+            ++n ;
+            ++first ;
+        }
+
+        return n ;
+    }
+}
+\end{lstlisting}
+
+残念ながら、このコードは動かない。ランダムアクセスイテレーターではないイテレーターを渡すと、\lstinline!last - first!というコードがコンパイルされるので、コンパイルエラーになる。コンパイラーは、
+\begin{lstlisting}[language=C++]
+if ( is_random_access_iterator<Iterator> )
+\end{lstlisting}
+という部分について、\lstinline!is_random_access_iterator<Iterator>!の値はコンパイル時に計算できるので、最終的なコード生成の結果としては、\lstinline!if (true)!か\lstinline!if (false)!になると判断できる。したがってコンパイラーは選択されない分岐のコード生成を行わないことはできる。しかしコンパイルはするので、コンパイルエラーになる。
+
+\lstinline!constexpr if!を使うと、選択されない部分の分岐はコンパイルエラーであってもコンパイルエラーとはならなくなる。
+
+\begin{lstlisting}[language=C++]
+// distance
+template < typename Iterator >
+constexpr typename std::iterator_traits<Iterator>::difference_type
+distance( Iterator first, Iterator last )
+{
+    // ランダムアクセスイテレーターかどうか確認する
+    if constexpr ( is_random_access_iterator<Iterator> )
+    {// ランダムアクセスイテレーターなので速い方法を使う
+        return last - first ;
+    }
+    else
+    { // ランダムアクセスイテレーターではないので遅い方法を使う
+        typename std::iterator_traits<Iterator>::difference_type n = 0 ;
+
+        while ( first != last )
+        {
+            ++n ;
+            ++first ;
+        }
+
+        return n ;
+    }
+}
+\end{lstlisting}
+
+%
+% SubSection 3.14.4
+\hypersubsection{section3-14-4}{超上級者向け解説}
+
+\lstinline!constexpr if!は、実はコンパイル時条件分岐ではない。テンプレートの実体化時に、選択されないブランチのテンプレートの実体化の抑制を行う機能だ。
+
+\lstinline!constexpr if!によって選択されない文は\lstinline!discarded statement!となる。\lstinline!discarded statement!はテンプレートの実体化の際に実体化されなくなる。
+\index{discarded statement@\texttt{discarded statement}}
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+   int get() { return 0 ; } 
+} ;
+
+template < typename T >
+int f(T x)
+{
+    if constexpr ( std::is_same_v< std::decay_t<T>, X > )
+        return x.get() ;
+    else
+        return x ;
+
+}
+
+int main()
+{
+    X x ;
+    f( x ) ; // return x.get() 
+    f( 0 ) ; // return x
+}
+\end{lstlisting}
+
+\lstinline!f(x)!では、\lstinline!return x!が\lstinline!discarded statement!となるため実体化されない。\lstinline!X!は\lstinline!int!型に暗黙に変換できないが問題がなくなる。\lstinline!f(0)!では\lstinline!return x.get()!が\lstinline!discarded statement!となるため実体化されない。\lstinline!int!型にはメンバー関数\lstinline!get!はないが問題はなくなる。
+
+\lstinline!discarded statement!は実体化されないだけで、もちろんテンプレートのエンティティの一部だ。\lstinline!discarded statement!がテンプレートのコードとして文法的、意味的に正しくない場合は、もちろんコンパイルエラーとなる。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f( T x )
+{
+    // エラー、名前gは宣言されていない
+    if constexpr ( false )
+        g() ; 
+
+    // エラー、文法違反
+    if constexpr ( false )
+        !#$%^&*()_+ ;
+}
+\end{lstlisting}
+
+何度も説明しているように、\lstinline!constexpr if!はテンプレートの実体化を条件付きで抑制するだけだ。条件付きコンパイルではない。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f()
+{
+    if constexpr ( std::is_same_v<T, int> )
+    {
+        // 常にコンパイルエラー
+        static_assert( false ) ;
+    }
+}
+\end{lstlisting}
+
+このコードは常にコンパイルエラーになる。なぜならば、\lstinline!static_assert( false )!はテンプレートに依存しておらず、テンプレートの宣言を解釈するときに、依存名ではないから、そのまま解釈される。
+
+このようなことをしたければ、最初から\lstinline!static_assert!のオペランドに式を書けばよい。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f()
+{
+    static_assert( std::is_same_v<T, int> ) ;
+
+    if constexpr ( std::is_same_v<T, int> )
+    {
+    }
+}
+\end{lstlisting}
+
+もし、どうしても\lstinline!constexpr!文の条件に合うときにだけ\lstinline!static_assert!が使いたい場合もある。これは、\lstinline!constexpr if!をネストしたりしていて、その内容を全部\lstinline!static_assert!に書くのが冗長な場合だ。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f()
+{
+    if constexpr ( E1 )
+        if constexpr ( E2 )
+            if constexpr ( E3 )
+            {
+                // E1 && E2 && E3のときにコンパイルエラーにしたい
+                // 実際には常にコンパイルエラー
+                static_assert( false ) ;
+            }
+}
+\end{lstlisting}
+
+現実には、\lstinline!E1!, \lstinline!E2!,
+\lstinline!E3!は複雑な式なので、\lstinline!static_assert( E1 && E2 && E3 )!と書くのは冗長だ。同じ内容を二度書くのは間違いの元だ。
+
+このような場合、\lstinline!static_assert!のオペランドをテンプレート引数に依存するようにすると、\lstinline!constexpr if!の条件に合うときにだけ発動する\lstinline!static_assert!が書ける。
+
+\begin{lstlisting}[language=C++]
+template  < typename ... >
+bool false_v = false ;
+
+template < typename T >
+void f()
+{
+    if constexpr ( E1 )
+        if constexpr ( E2 )
+            if constexpr ( E3 )
+            {
+                static_assert( false_v<T> ) ;
+            }
+}
+\end{lstlisting}
+
+このように\lstinline!false_v!を使うことで、\lstinline!static_assert!をテンプレート引数\lstinline!T!に依存させる。その結果、\lstinline!static_assert!の発動をテンプレートの実体化まで遅延させることができる。
+
+\lstinline!constexpr if!は非テンプレートコードでも書くことができるが、その場合は普通の\lstinline!if!文と同じだ。
+
+%
+% SubSection 3.14.5
+\hypersubsection{section3-14-5}{constexpr ifでは解決できない問題}
+\index{constexpr ifぶん@\texttt{constexpr if}文!かいけつできないもんだい@解決できない問題}
+
+\lstinline!constexpr if!は条件付きコンパイルではなく、条件付きテンプレート実体化の抑制なので、最初の問題の解決には使えない。たとえば以下のコードはエラーになる。
+
+\begin{lstlisting}[language=C++]
+// do_true_thingの宣言
+void do_true_thing() ;
+
+// do_false_thingの宣言は存在しない
+
+void f( bool runtime_value )
+{
+    if constexpr ( true )
+        do_true_thing() ;
+    else
+        do_false_thing() ; // エラー
+}
+\end{lstlisting}
+
+理由は、名前\lstinline!do_false_thing!は非依存名なのでテンプレートの宣言時に解決されるからだ。
+
+%
+% SubSection 3.14.6
+\hypersubsection{section3-14-6}{constexpr ifで解決できる問題}
+\index{constexpr ifぶん@\texttt{constexpr if}文!かいけつできるもんだい@解決できる問題}
+
+\lstinline!constexpr if!は依存名が関わる場合で、テンプレートの実体化がエラーになる場合に、実体化を抑制させることができる。
+
+たとえば、特定の型に対して特別な操作をしたい場合
+\begin{lstlisting}[language=C++]
+struct X
+{
+    int get_value() ;
+} ;
+
+template < typename T >
+void f(T t)
+{
+    
+    int value{} ;
+
+    // Tの型がXならば特別な処理を行いたい
+    if constexpr ( std::is_same<T, X>{} )
+    {
+        value = t.get_value() ;
+    }
+    else
+    {
+        value = static_cast<int>(t) ;
+    }
+}
+\end{lstlisting}
+もし\lstinline!constexpr if!がなければ、\lstinline!T!の型が\lstinline!X!ではないときも\lstinline!t.get_value()!という式が実体化され、エラーとなる。
+
+再帰的なテンプレートの特殊化をやめさせたいとき
+\begin{lstlisting}[language=C++]
+// factorial<N>はNの階乗を返す
+template < std::size_t I  >
+constexpr std::size_t factorial()
+{
+    if constexpr ( I == 1 )
+    { return 1 ; }
+    else
+    { return I * factorial<I-1>() ; }
+}
+\end{lstlisting}
+もし\lstinline!constexpr if!がなければ、\lstinline!factorial<N-1>!~が永遠に実体化されコンパイル時ループが停止しない。
+
+機能テストマクロは~\lstinline!__cpp_if_constexpr!, 値は201606。
+\index{\_\_cpp\_if\_constexpr@\texttt{\_\_cpp\_if\_constexpr}}

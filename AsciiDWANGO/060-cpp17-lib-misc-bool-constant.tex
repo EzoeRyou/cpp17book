@@ -1,0 +1,17 @@
+%
+% Section 9.14
+\hypersection{section9-14}{bool\texttt{\_}constant}
+
+ヘッダーファイル~\lstinline!<type_traits>!~に\lstinline!bool_constant!が追加された。
+\index{<type\_traits>@\texttt{<type\_traits>}}\index{bool\_constant@\texttt{bool\_constant}}
+
+\begin{lstlisting}[language=C++]
+template <bool B>
+using bool_constant = integral_constant<bool, B>;
+
+using true_type = bool_constant<true>;
+using false_type = bool_constant<false>;
+\end{lstlisting}
+
+今まで\lstinline!integral_constant!を使っていた場面で特に\lstinline!bool!だけが必要な場面では、C++17以降は単に\lstinline!std::true_type!か\lstinline!std::false_type!と書くだけでよくなる。
+\index{integral\_constant@\texttt{integral\_constant}}\index{std::true\_type@\texttt{std::true\_type}}\index{std::false\_type@\texttt{std::false\_type}}

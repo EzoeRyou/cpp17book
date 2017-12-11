@@ -1,0 +1,250 @@
+%
+% Section 2.8
+\hypersection{section2-8}{変数テンプレート}
+
+変数テンプレートとは変数宣言をテンプレート宣言にできる機能だ。
+\index{へんすうてんぷれと@変数テンプレート}\index{てんぷれとせんげん@テンプレート宣言}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+T variable { } ;
+
+int main()
+{
+    variable<int> = 42 ;
+    variable<double> = 1.0 ;
+}
+\end{lstlisting}
+
+これだけではわからないだろうから、順を追って説明する。
+
+C++ではクラスを宣言できる。
+\index{くらすせんげん@クラス宣言}
+
+\begin{lstlisting}[language=C++]
+class X
+{
+    int member ;
+} ;
+\end{lstlisting}
+
+C++ではクラスをテンプレート宣言できる。型テンプレートパラメーターは型として使える。
+\index{てんぷれとせんげん@テンプレート宣言}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+class X
+{
+public :
+    T member ;
+} ;
+
+int main()
+{
+    X<int> i ;
+    i.member = 42 ; // int
+
+    X<double> d ;
+    d.member = 1.0 ; // double
+}
+\end{lstlisting}
+
+C++では関数を宣言できる。
+\index{かんすうせんげん@関数宣言}
+
+\begin{lstlisting}[language=C++]
+int f( int x )
+{ return x ; }
+\end{lstlisting}
+
+C++では関数をテンプレート宣言できる。型テンプレートパラメーターは型として使える。
+\index{てんぷれとせんげん@テンプレート宣言}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+T f( T x )
+{ return x ; }
+
+int main()
+{
+    auto i = f( 42 ) ; // int
+    auto d = f( 1.0 ) ; // double
+}
+\end{lstlisting}
+
+C++11では\lstinline!typedef!名を宣言するためにエイリアス宣言ができる。
+\index{typedefめい@\texttt{typedef名}}\index{えいりあすせんげん@エイリアス宣言}
+
+\begin{lstlisting}[language=C++]
+using type = int ;
+\end{lstlisting}
+
+C++11ではエイリアス宣言をテンプレート宣言できる。型テンプレートパラメーターは型として使える。
+\index{てんぷれとせんげん@テンプレート宣言}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+using type = T ;
+
+int main()
+{
+    type<int> i = 42 ; // int
+    type<double> d = 1.0 ; // double
+}
+\end{lstlisting}
+
+そろそろパターンが見えてきたのではないだろうか。C++では一部の宣言はテンプレート宣言できるということだ。このパターンを踏まえて以下を考えてみよう。
+
+C++では変数を宣言できる。
+\index{へんすうせんげん@変数宣言}
+
+\begin{lstlisting}[language=C++]
+int variable{} ;
+\end{lstlisting}
+
+C++14では変数宣言をテンプレート宣言できる。型テンプレートパラメーターは型として使える。
+index{てんぷれとせんげん@テンプレート宣言}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+T variable { } ;
+
+int main()
+{
+    variable<int> = 42 ;
+    variable<double> = 1.0 ;
+}
+\end{lstlisting}
+
+変数テンプレートは名前どおり変数宣言をテンプレート宣言できる機能だ。変数テンプレートはテンプレート宣言なので、名前空間スコープとクラススコープの中にしか書くことができない。
+
+\begin{lstlisting}[language=C++]
+// これはグローバル名前空間スコープという特別な名前空間スコープ
+
+namespace ns {
+// 名前空間スコープ
+}
+
+class
+{
+// クラススコープ
+} ;
+\end{lstlisting}
+
+変数テンプレートの使い道は主に2つある。
+
+%
+% SubSection 2.8.1
+\hypersubsection{section2-8-1}{意味は同じだが型が違う定数}
+\index{かたがちがうていすう@型が違う定数}\index{ていすう@定数!かたがちがう@型が違う〜}
+
+プログラムでマジックナンバーを変数化しておくのは良い作法であるとされている。たとえば円周率を\lstinline!3.14...!などと書くよりも\lstinline!pi!という変数名で扱ったほうがわかりやすい。変数化すると、円周率の値が後で変わったときにプログラムを変更するのも楽になる。
+\index{まじつくなんば@マジックナンバー}
+
+\begin{lstlisting}[language=C++]
+constexpr double pi = 3.1415926535 ;
+\end{lstlisting}
+
+しかし、円周率を表現する型が複数ある場合どうすればいいのか。よくあるのは名前を分ける方法だ。
+
+\begin{lstlisting}[language=C++]
+constexpr float pi_f = 3.1415 ;
+constexpr double pi_d = 3.1415926535 ;
+constexpr int pi_i = 3 ;
+// 任意の精度の実数を表現できるクラスとする
+const Real pi_r("3. 141592653589793238462643383279") ;
+\end{lstlisting}
+
+しかしこれは、使う側で型によって名前を変えなければならない。
+
+\begin{lstlisting}[language=C++]
+// 円の面積を計算する関数
+template < typename T >
+T calc_area( T r )
+{
+    // Tの型によって使うべき名前が変わる
+    return r * r * ??? ;
+}
+\end{lstlisting}
+
+関数テンプレートを使うという手がある。
+\index{かんすうてんぷれと@関数テンプレート}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+constexpr T pi()
+{
+    return static_cast<T>(3.1415926535) ;
+}
+
+template < >
+Real pi()
+{
+    return Real("3. 141592653589793238462643383279") ;
+}
+
+
+template < typename T >
+T calc_area( T r )
+{
+    return r * r * pi<T>() ;
+}
+\end{lstlisting}
+
+しかし、この場合引数は何もないのに関数呼び出しのための\lstinline!()!が必要だ。
+
+変数テンプレートを使うと以下のように書ける。
+\index{へんすうてんぷれと@変数テンプレート}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+constexpr T pi = static_cast<T>(3.1415926535) ;
+
+template < >
+Real pi<Real>("3. 141592653589793238462643383279") ;
+
+template < typename T >
+T calc_area( T r )
+{
+    return r * r * pi<T> ;
+}
+\end{lstlisting}
+
+
+%
+% SubSection 2.8.2
+\hypersubsection{section2-8-2}{traitsのラッパー}
+
+値を返す\lstinline!traits!で値を得るには~\lstinline!::value!~と書かなければならない。
+\index{traits@\texttt{traits}}\index{::value@\texttt{::value}}
+
+\begin{lstlisting}[language=C++]
+std::is_pointer<int>::value ;
+std::is_same< int, int >::value ;
+\end{lstlisting}
+
+C++14では\lstinline!std::integral_constant!に\lstinline!constexpr operator bool!が追加されたので、以下のようにも書ける。
+\index{std::integral\_constant@\texttt{std::integral\_constant}}
+
+\begin{lstlisting}[language=C++]
+std::is_pointer<int>{} ;
+std::is_same< int, int >{} ;
+\end{lstlisting}
+
+しかしまだ面倒だ。変数テンプレートを使うと\lstinline!traits!の記述が楽になる。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+constexpr bool is_pointer_v = std::is_pointer<T>::value ;
+template < typename T, typename U >
+constexpr bool is_same_v = std::is_same<T, U>::value ;
+
+is_pointer_v<int> ;
+is_same_v< int, int > ;
+\end{lstlisting}
+
+C++の標準ライブラリでは従来の\lstinline!traits!ライブラリを変数テンプレートでラップした~\lstinline!_v!~版を用意している。
+\index{\_vばん@\texttt{\_v}版}
+
+機能テストマクロは~\lstinline!__cpp_variable_templates!, 値は201304。
+\index{\_\_cpp\_variable\_templates@\texttt{\_\_cpp\_variable\_templates}}

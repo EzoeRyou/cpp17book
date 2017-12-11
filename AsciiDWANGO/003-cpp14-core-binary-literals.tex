@@ -1,0 +1,21 @@
+%
+% Section 2.1
+\hypersection{section2-1}{二進数リテラル}
+
+二進数リテラルは整数リテラルを二進数で記述する機能だ。整数リテラルのプレフィクスに\lstinline!0B!もしくは\lstinline!0b!を書くと、二進数リテラルになる。整数を表現する文字は0と1しか使えない。
+\index{にしんすうりてらる@二進数リテラル}\index{\texttt{0B}}\index{\texttt{0b}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int x1 = 0b0 ; // 0
+    int x2 = 0b1 ; // 1
+    int x3 = 0b10 ; // 2
+    int x4 = 0b11001100 ; // 204
+}
+\end{lstlisting}
+
+二進数リテラルは浮動小数点数リテラルには使えない。
+
+機能テストマクロは~\lstinline!__cpp_binary_literals!, 値は201304。
+\index{\_\_cpp\_binary\_literals@\texttt{\_\_cpp\_binary\_literals}}

@@ -1,0 +1,36 @@
+%
+% Section 3.13
+\hypersection{section3-13}{演算子のオペランドの評価順序の固定}
+
+C++17では演算子のオペランドの評価順序が固定された。
+\index{えんざんしのひようかじゆんじよ@演算子の評価順序}
+
+以下の式は、\lstinline!a!, \lstinline!b!の順番に評価されることが規格上保証される。\lstinline!@=!~の~\lstinline!@!~には文法上許される任意の演算子が入る（\lstinline!+=!, \lstinline!-=!~など）。
+
+\begin{lstlisting}[language=C++]
+a.b
+a->b
+a->*b
+a(b1,b2,b3)
+b @= a
+a[b]
+a << b
+a >> b
+\end{lstlisting}
+
+つまり、
+\begin{lstlisting}[language=C++]
+int* f() ;
+int g() ;
+
+int main()
+{
+   f()[g()] ; 
+}
+\end{lstlisting}
+と書いた場合、関数\lstinline!f!がまず先に呼び出されて、次に関数\lstinline!g!が呼び出されることが保証される。
+
+関数呼び出しの実引数のオペランド\lstinline!b1!, \lstinline!b2!,
+\lstinline!b3!の評価順序は未規定のままだ。
+
+これにより、既存の未定義の動作となっていたコードの挙動が定まる。
