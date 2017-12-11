@@ -1,0 +1,31 @@
+%
+% Section 9.21
+\hypersection{section9-21}{clamp}
+\index{clamp@\texttt{clamp}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template<class T>
+constexpr const T&
+clamp(const T& v, const T& lo, const T& hi);
+template<class T, class Compare>
+constexpr const T&
+clamp(const T& v, const T& lo, const T& hi, Compare comp);
+\end{lstlisting}
+\egroup
+
+ヘッダーファイル~\lstinline!<algorithm>!~に追加された\lstinline!clamp(v, lo, hi)!は値\lstinline!v!が\lstinline!lo!より小さい場合は\lstinline!lo!を、\lstinline!hi!より高い場合は\lstinline!hi!を、それ以外の場合は\lstinline!v!を返す。
+\index{<algorithm>@\texttt{<algorithm>}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::clamp( 5, 0, 10 ) ; // 5
+    std::clamp( -5, 0, 10 ) ; // 0
+    std::clamp( 50, 0, 10 ) ; // 10
+}
+\end{lstlisting}
+
+\lstinline!comp!を実引数に取る\lstinline!clamp!は\lstinline!comp!を値の比較に使う
+
+\lstinline!clamp!には浮動小数点数も使えるが、NaNは渡せない。

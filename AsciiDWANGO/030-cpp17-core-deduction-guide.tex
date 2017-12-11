@@ -1,0 +1,115 @@
+%
+% Section 3.16
+\hypersection{section3-16}{クラステンプレートのコンストラクターからの実引数推定}
+
+C++17ではクラステンプレートのコンストラクターの実引数からテンプレート実引数の推定が行えるようになった。
+\index{てんぷれとじつひきすうのすいてい@テンプレート実引数の推定}
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+struct X
+{
+    X( T t ) { }
+} ;
+
+int main()
+{
+    X x1(0) ; // X<int>
+    X x2(0.0) ; // X<double>
+    X x3("hello") ; // X<char const *>
+}
+\end{lstlisting}
+
+これは関数テンプレートが実引数からテンプレート実引数の推定が行えるのと同じだ。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f( T t ) { }
+
+int main()
+{
+    f( 0 ) ; // f<int>
+    f( 0.0 ) ; // f<double>
+    f( "hello" ) ; // f<char const *>
+}
+\end{lstlisting}
+
+%
+% SubSection 3.16.1
+\hypersubsection{section3-16-1}{推定ガイド}
+
+クラステンプレートのコンストラクターからの実引数は便利だが、クラスのコンストラクターはクラステンプレートのテンプレートパラメーターに一致しない場合もある。そのような場合はそのままでは実引数推定ができない。
+\index{すいていがいど@推定ガイド}
+
+\begin{lstlisting}[language=C++]
+// コンテナー風のクラス
+template < typename T >
+class Container
+{
+    std::vector<T> c ;
+public :
+    // 初期化にイテレーターのペアを取る
+    // IteratorはTではない
+    // Tは推定できない
+    template < typename Iterator >
+    Container( Iterator first, Iterator last )
+        : c( first, last )
+    { }
+} ;
+
+
+int main()
+{
+    int a[] = { 1,2,3,4,5 } ;
+
+    // エラー
+    // Tを推定できない
+    Container c( std::begin(a), std::end(a) ) ;
+}
+\end{lstlisting}
+
+このため、C++17には推定ガイドという機能が提供されている。
+
+\begin{lstlisting}[language=C++]
+テンプレート名( 引数リスト ) -> テンプレートid ;
+\end{lstlisting}
+
+これを使うと、以下のように書ける。
+
+\begin{lstlisting}[language=C++]
+template < typename Iterator >
+Container( Iterator, Iterator )
+-> Container< typename std::iterator_traits< Iterator >::value_type > ;
+\end{lstlisting}
+
+C++コンパイラーはこの推定ガイドを使って、\lstinline[breaklines=true]!Container<T>::Container(Iterator, Iterator)!からは、\lstinline!T!を\lstinline!std::iterator_traits<Iterator>::value_type!として推定すればいいのだと判断できる。
+
+たとえば、初期化リストに対応するには以下のように書く。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+class Container
+{
+    std::vector<T> c ;
+public :
+
+    Container( std::initializer_list<T> init )
+        : c( init )
+    { }
+} ;
+
+
+template < typename T >
+Container( std::initializer_list<T> ) -> Container<T> ;
+
+
+int main()
+{
+    Container c = { 1,2,3,4,5 } ;
+}
+\end{lstlisting}
+
+C++コンパイラーはこの推定ガイドから、\lstinline[breaklines=true]!Container<T>::Container( std::initializer_list<T> )!の場合は\lstinline!T!を\lstinline!T!として推定すればよいことがわかる。
+
+機能テストマクロは~\lstinline!__cpp_deduction_guides!, 値は201606。
+\index{\_\_cpp\_deduction\_guides@\texttt{\_\_cpp\_deduction\_guides}}

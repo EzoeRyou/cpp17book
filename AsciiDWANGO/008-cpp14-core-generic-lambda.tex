@@ -1,0 +1,55 @@
+%
+% Section 2.6
+\hypersection{section2-6}{ジェネリックラムダ}
+
+ジェネリックラムダはラムダ式の引数の型を書かなくてもすむようにする機能だ。
+\index{じえねりつくらむだ@ジェネリックラムダ}\index{らむだしき@ラムダ式}
+
+通常のラムダ式は以下のように書く。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    []( int i, double d, std::string s ) { } ;
+}
+\end{lstlisting}
+
+ラムダ式の引数には型が必要だ。しかし、クロージャーオブジェクトの\lstinline!operator ()!に渡す型はコンパイル時にわかる。コンパイル時にわかるということはわざわざ人間が指定する必要はない。ジェネリックラムダを使えば、引数の型を書くべき場所に\lstinline!auto!キーワードを書くだけで型を推定してくれる。
+\index{くろじやおぶじえくと@クロージャーオブジェクト}\index{operator ()@\texttt{operator ()}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    []( auto i, auto d, auto s ) { } ;
+}
+\end{lstlisting}
+
+ジェネリックラムダ式の結果のクロージャー型には呼び出しごとに違う型を渡すことができる。
+\index{くろじやがた@クロージャー型}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    auto f = []( auto x ) { std::cout << x << '\n' ; } ;
+
+    f( 123 ) ; // int
+    f( 12.3 ) ; // double
+    f( "hello" ) ; // char const *
+}
+\end{lstlisting}
+
+仕組みは簡単で、以下のようなメンバーテンプレートの\lstinline!operator ()!を持ったクロージャーオブジェクトが生成されているだけだ。
+
+\begin{lstlisting}[language=C++]
+struct closure_object
+{
+    template < typename T >
+    auto operator () ( T x )
+    {
+        std::cout << x << '\n' ;
+    }
+} ;
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_generic_lambdas!, 値は201304。
+\index{\_\_cpp\_generic\_lambdas@\texttt{\_\_cpp\_generic\_lambdas}}

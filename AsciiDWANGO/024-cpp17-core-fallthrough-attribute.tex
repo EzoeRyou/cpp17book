@@ -1,0 +1,56 @@
+%
+% Section 3.10
+\hypersection{section3-10}{{[}{[}fallthrough{]}{]}属性}
+
+\lstinline![[fallthrough]]!属性は\lstinline!switch!文の中の\lstinline!case!ラベルを突き抜けるというヒントを出すのに使える。
+\index{[[fallthrough]]ぞくせい@\texttt{[[fallthrough]]}属性}
+
+\lstinline!switch!文では対応する\lstinline!case!ラベルに処理が移る。通常、以下のように書く。
+
+\begin{lstlisting}[language=C++]
+void f( int x )
+{
+    switch ( x )
+    {
+    case 0 :
+        // 処理0
+        break ;
+    case 1 :
+        // 処理1
+        break ;
+    case 2 :
+        // 処理2
+        break ;
+    default :
+        // xがいずれでもない場合の処理
+        break ;
+    }
+}
+\end{lstlisting}
+
+この例を以下のように書くと
+\begin{lstlisting}[language=C++]
+case 1 :
+    // 処理1
+case 2 :
+    // 処理2
+    break ;
+\end{lstlisting}
+\lstinline!x!が1のときは処理1を実行した後に、処理2も実行される。\lstinline!switch!文を書くときはこのような誤りを書いてしまうことがある。そのため、賢いC++コンパイラーは\lstinline!switch!文の\lstinline!case!ラベルで\lstinline!break!文や\lstinline!return!文などで処理が終わらず、次の\lstinline!case!ラベルや\lstinline!default!ラベルに処理に突き抜けるコードを発見すると、警告メッセージを出す。
+
+しかし、プログラマーの意図がまさに突き抜けて処理してほしい場合、警告メッセージは誤った警告となってしまう。そのような警告メッセージを抑制するため、またコード中に処理が突き抜けるという意図をわかりやすく記述するために、\lstinline![[fallthrough]]!属性が追加された。
+
+\begin{lstlisting}[language=C++]
+case 1 :
+    // 処理1
+    [[fallthrough]]
+case 2 :
+    // 処理2
+    break ;
+\end{lstlisting}
+
+\lstinline![[fallthrough]]!属性を書くと、C++コンパイラーは処理がその先に突き抜けることがわかるので、誤った警告メッセージを抑制できる。また、他人がコードを読むときに意図が明らかになる。
+
+機能テストマクロは~\lstinline!__has_cpp_attribute(fallthrough)!,
+値は201603。
+\index{\_\_has\_cpp\_attribute(fallthrough)@\texttt{\_\_has\_cpp\_attribute(fallthrough)}}

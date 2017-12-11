@@ -1,0 +1,39 @@
+%
+% Section 3.17
+\hypersection{section3-17}{autoによる非型テンプレートパラメーターの宣言}
+
+C++17では非型テンプレートパラメーターの宣言に\lstinline!auto!を使うことができるようになった。
+\index{ひかたてんぷれとぱらめた@非型テンプレートパラメーター}\index{auto@\texttt{auto}}
+
+\begin{lstlisting}[language=C++]
+template < auto x >
+struct X { } ;
+
+void f() { }
+
+int main()
+{
+    X<0> x1 ;
+    X<0l> x2 ;
+    X<&f> x3 ;
+}
+\end{lstlisting}
+
+これはC++14までであれば、以下のように書かなければならなかった。
+
+\begin{lstlisting}[language=C++]
+template < typename T, T x >
+struct X { } ;
+
+void f() { }
+
+int main()
+{
+    X<int, 0> x1 ;
+    X<long, 0l> x2 ;
+    X<void(*)(), &f> x3 ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_template_auto!, 値は201606。
+\index{\_\_cpp\_template\_auto@\texttt{\_\_cpp\_template\_auto}}

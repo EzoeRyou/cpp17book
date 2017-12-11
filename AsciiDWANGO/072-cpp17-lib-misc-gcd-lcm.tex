@@ -1,0 +1,62 @@
+%
+% Section 9.26
+\hypersection{section9-26}{最大公約数（gcd）と最小公倍数（lcm）}
+
+C++17ではヘッダーファイル~\lstinline!<numeric>!~に最大公約数（\lstinline!gcd!）と最小公倍数（\lstinline!lcm!）が追加された。
+\index{<numeric>@\texttt{<numeric>}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int a, b ;
+
+    while( std::cin >> a >> b )
+    {
+        std::cout
+            << "gcd: " << gcd(a,b)
+            << "\nlcm: " << lcm(a,b) << '\n' ;
+    }
+}
+\end{lstlisting}
+
+%
+% SubSection 9.26.1
+\hypersubsection{section9-26-1}{gcd : 最大公約数}
+\index{gcd@\texttt{gcd}}\index{さいだいこうやくすう@最大公約数}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class M, class N>
+constexpr std::common_type_t<M,N> gcd(M m, N n)
+{
+    if ( n == 0 )
+        return m ;
+    else
+        return gcd( n, std::abs(m) % std::abs(n) ) ; 
+}
+\end{lstlisting}
+\egroup
+
+\lstinline!gcd(m, n)!は\lstinline!m!と\lstinline!n!がともにゼロの場合ゼロを返す。それ以外の場合、\(|m|\)と\(|n|\)の最大公約数（Greatest
+Common Divisor）を返す。
+
+%
+% SubSection 9.26.2
+\hypersubsection{section9-26-2}{lcm : 最小公倍数}
+\index{lcm@\texttt{lcm}}\index{さいしようこうばいすう@最小公倍数}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class M, class N>
+constexpr std::common_type_t<M,N> lcm(M m, N n)
+{
+    if ( m == 0 || n == 0 )
+        return 0 ;
+    else
+        return std::abs(m) / gcd( m, n ) * std::abs(n) ;
+}
+\end{lstlisting}
+\egroup
+
+\lstinline!lcm(m,n)!は、\lstinline!m!と\lstinline!n!のどちらかがゼロの場合ゼロを返す。それ以外の場合、\(|m|\)と\(|n|\)の最小公倍数（Least
+Common Multiple）を返す。

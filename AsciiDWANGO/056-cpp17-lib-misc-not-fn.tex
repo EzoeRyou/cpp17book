@@ -1,0 +1,29 @@
+%
+% Section 9.10
+\hypersection{section9-10}{not\texttt{\_}fn : 戻り値の否定ラッパー}
+
+\lstinline!not_fn!はヘッダーファイル~\lstinline!<functional>!~で定義されている。
+\index{not\_fn@\texttt{not\_fn}}\index{<functional>@\texttt{<functional>}}
+
+\begin{lstlisting}[language=C++]
+template <class F> unspecified not_fn(F&& f);
+\end{lstlisting}
+
+関数オブジェクト\lstinline!f!に対して\lstinline!not_fn(f)!を呼び出すと、戻り値として何らかの関数オブジェクトが返ってくる。その関数オブジェクトを呼び出すと、実引数を\lstinline!f!に渡して\lstinline!f!を関数呼び出しして、戻り値を~\lstinline"operator !"~で否定して返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+
+    auto r1 = std::not_fn( []{ return true ; } ) ;
+
+    r1() ; // false
+
+    auto r2 = std::not_fn( []( bool b ) { return b ; } ) ;
+
+    r2(true) ; // false
+}
+\end{lstlisting}
+
+すでに廃止予定になった\lstinline!not1!, \lstinline!not2!の代替品。
+\index{not1@\texttt{not1}}\index{not2@\texttt{not2}}

@@ -1,0 +1,49 @@
+%
+% Section 9.9
+\hypersection{section9-9}{invoke : 指定した関数を指定した実引数で呼び出す}
+
+\lstinline!invoke!はヘッダーファイル~\lstinline!<functional>!~で定義されている。
+\index{invoke@\texttt{invoke}}\index{<functional>@\texttt{<functional>}}
+
+\begin{lstlisting}[language=C++]
+template <class F, class... Args>
+invoke_result_t<F, Args...> invoke(F&& f, Args&&... args)
+noexcept(is_nothrow_invocable_v<F, Args...>);
+\end{lstlisting}
+
+\lstinline!invoke( f, t1, t2, ... , tN )!は、関数\lstinline!f!を\lstinline!f( a1, a2, ... , aN )!のように呼び出す。
+
+より正確には、C++標準規格の\lstinline!INVOKE(f, t1, t2, ... , tN)!と同じ規則で呼び出す。これにはさまざまな規則があり、たとえばメンバー関数へのポインターやデータメンバーへのポインター、またその場合に与えるクラスへのオブジェクトがリファレンスかポインターか\lstinline!reference_wrapper!かによっても異なる。その詳細はここでは解説しない。
+\index{INVOKE@\texttt{INVOKE}}
+
+\lstinline!INVOKE!は\lstinline!std::function!や\lstinline!std::bind!でも使われている規則なので、標準ライブラリと同じ挙動ができるようになると覚えておけばよい。
+
+\vskip 1zw
+\noindent
+\textsf{例}：
+
+\begin{lstlisting}[language=C++]
+void f( int ) { }
+
+struct S
+{
+    void f( int ) ;
+    int data ;
+} ;
+
+int main()
+{
+    // f( 1 ) 
+    std::invoke( f, 1 ) ;
+
+    S s ;
+
+    // (s.*&S::f)(1)
+    std::invoke( &S::f, s, 1 ) ;
+    // ((*&s).*&S::f)(1)
+    std::invoke( &S::f, &s, 1 ) ;
+    // s.*&S::data 
+    std::invoke( &S::data, s ) ;
+}
+\end{lstlisting}
+

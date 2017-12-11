@@ -1,0 +1,127 @@
+%
+% Section 3.23
+\hypersection{section3-23}{std::byte : バイトを表現する型}
+\index{std::byte@\texttt{std::byte}}\index{ばいと@バイト}\index{かた@型!ばいと@バイト}\index{かた@型!std::byte@\texttt{std::byte}}
+
+C++17では、バイトを表現する型が入った。ライブラリでもあるのだがコア言語で特別な型として扱われている。
+
+バイトとはC++のメモリーモデルにおけるストレージの単位で、C++においてユニークなアドレスが付与される最小単位だ。C++の規格はいまだに1バイトが具体的に何ビットであるのかを規定していない。これは過去にバイトのサイズが8ビットではないアーキテクチャーが存在したためだ。
+
+バイトのビット数は~\lstinline!<climits>!~で定義されているプリプロセッサーマクロ、\lstinline!CHAR_BIT!で知ることができる。
+\index{ばいと@バイト!びつとすう@ビット数}\index{CHAR\_BIT@\texttt{CHAR\_BIT}}
+
+C++17では、1バイトはUTF-8の8ビットの1コード単位をすべて表現できると規定している。
+
+\lstinline!std::byte!型は、生のバイト列を表すための型として使うことができる。生の1バイトを表すには\lstinline!unsigned char!型が慣習的に使われてきたが、\lstinline!std::byte!型は生の1バイトを表現する型として、新たにC++17で追加された。複数バイトが連続するストレージは、\lstinline!unsigned char!の配列型、もしくは\lstinline!std::byte!の配列型として表現できる。
+\index{unsigned char@\texttt{unsigned char}}
+
+\lstinline!std::byte!型は、\lstinline!<cstddef>!~で以下のように定義されている。
+\index{<cstddef>@\texttt{<cstddef>}}
+
+\begin{lstlisting}[language=C++]
+namespace std
+{
+    enum class byte : unsigned char { } ;
+}
+\end{lstlisting}
+
+\lstinline!std::byte!はライブラリとして\lstinline!scoped enum!型で定義されている。これにより、他の整数型からの暗黙の型変換が行えない。
+\index{scoped enum@\texttt{scoped enum}}\index{かた@型!scoped enum@\texttt{scoped enum}}
+
+値\lstinline!0x12!の\lstinline!std::byte!型の変数は以下のように定義できる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::byte b{0x12} ;
+}
+\end{lstlisting}
+
+\lstinline!std::byte!型の値がほしい場合は、以下のように書くことができる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::byte b{} ;
+
+    b = std::byte( 1 ) ;
+    b = std::byte{ 1 } ;
+    b = static_cast< std::byte >( 1 ) ;
+    b = static_cast< std::byte >( 0b11110000 ) ;
+}
+\end{lstlisting}
+
+\lstinline!std::byte!型は他の数値型からは暗黙に型変換できない。これによりうっかりと型を取り違えてバイト型と他の型を演算してしまうことを防ぐことができる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // エラー、()による初期化はint型からの暗黙の変換が入る
+    std::byte b1(1) ;
+
+    // エラー、=による初期化はint型からの暗黙の変換が入る
+    std::byte b2 = 1 ;
+
+    std::byte b{} ;
+
+    // エラー、operator =によるint型の代入は暗黙の変換が入る
+    b = 1 ;
+    // エラー、operator =によるdouble型の代入は暗黙の変換が入る
+    b = 1.0 ;
+}
+\end{lstlisting}
+
+\lstinline!std::byte!型は~\lstinline!{}!~によって初期化するが、縮小変換を禁止するルールにより、\lstinline!std::byte!型が表現できる値の範囲でなければエラーとなる。
+
+たとえば、今\lstinline!std::byte!が8ビットで、最小値が0、最大値が255の環境だとする。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // エラー、表現できる値の範囲ではない
+    std::byte b1{-1} ;
+    // エラー、表現できる値の範囲ではない
+    std::byte b2{256} ;
+}
+\end{lstlisting}
+
+\lstinline!std::byte!は内部のストレージをバイト単位でアクセスできるようにするため、規格上\lstinline!char!と同じような配慮が行われている。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int x = 42 ;
+
+    std::byte * rep = reinterpret_cast< std::byte * >(&x) ;
+}
+\end{lstlisting}
+
+\lstinline!std::byte!は一部の演算子がオーバーロードされているので、通常の整数型のように使うことができる。ただし、バイトをビット列演算するのに使う一部の演算子だけだ。
+
+具体的には、以下に示すシフト、ビットOR, ビット列AND, ビット列XOR,
+ビット列NOTだ。
+
+\begin{lstlisting}
+<<= << 
+>>= >>
+|=  |
+&=  &
+^=  ^
+~
+\end{lstlisting}
+
+四則演算などの演算子はサポートしていない。
+
+\lstinline!std::byteはstd::to_intenger<IntType>(std::byte)!により、\lstinline!IntType!型の整数型に変換できる。
+\index{IntType@\texttt{IntType}}\index{かた@型!IntType@\texttt{IntType}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::byte b{42} ;
+
+    // int型の値は42
+    auto i = std::to_integer<int>(b) ;
+}
+\end{lstlisting}
+

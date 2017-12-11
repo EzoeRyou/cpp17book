@@ -1,0 +1,218 @@
+%
+% Section 3.21
+\hypersection{section3-21}{inline変数}
+
+C++17では変数に\lstinline!inline!キーワードを指定できるようになった。
+\index{inlineへんすう@\texttt{inline}変数}
+
+\begin{lstlisting}[language=C++]
+inline int variable ;
+\end{lstlisting}
+
+このような変数を\lstinline!inline!変数と呼ぶ。その意味は\lstinline!inline!関数と同じだ。
+\index{inlineかんすう@\texttt{inline}関数}
+
+%
+% SubSection 3.21.1
+\hypersubsection{section3-21-1}{inlineの歴史的な意味}
+\index{inlineきわど@\texttt{inline}キーワード}
+
+今は昔、本書執筆から30年以上は昔に、\lstinline!inline!キーワードがC++に追加された。
+
+\lstinline!inline!の現在の意味は誤解されている。
+
+\lstinline!inline!関数の意味は、「関数を強制的にインライン展開させるための機能」\textsf{ではない}。
+\index{inlineてんかい@\texttt{inline}展開}
+
+大事なことなのでもう一度書くが、\lstinline!inline!関数の意味は、「関数を強制的にインライン展開させるための機能」\textbf{ではない}。
+
+確かに、かつて\lstinline!inline!関数の意味は、関数を強制的にインライン展開させるための機能だった。
+
+関数のインライン展開とは、たとえば以下のようなコードがあったとき、
+\begin{lstlisting}[language=C++]
+int min( int a, int b )
+{ return a < b ? a : b ; }
+
+int main()
+{
+    int a, b ;
+    std::cin >> a >> b ;
+
+    // aとbのうち小さい方を選ぶ
+    int value = min( a, b ) ;
+}
+\end{lstlisting}
+この関数\lstinline!min!は十分に小さく、関数呼び出しのコストは無視できないオーバーヘッドになるため、以下のような最適化が考えられる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int a, b ;
+    std::cin >> a >> b ;
+
+    int value = a < b ? a : b ;
+}
+\end{lstlisting}
+
+このように関数の中身を展開することを、関数のインライン展開という。
+
+人間が関数のインライン展開を手で行うのは面倒だ。それにコードが読みにくい。``\lstinline!min(a,b)!''と``\lstinline!a<b?a:b!''のどちらが読みやすいだろうか。
+
+幸い、C++コンパイラーはインライン展開を自動的に行えるので人間が苦労する必要はない。
+
+インライン展開は万能の最適化ではない。インライン展開をすると逆に遅くなる場合もある。
+
+たとえば、ある関数をコンパイルした結果のコードサイズが1Kバイトあったとして、その関数を呼んでいる箇所がプログラム中に1000件ある場合、プログラム全体のサイズは1Mバイト増える。コードサイズが増えるということは、CPUのキャッシュを圧迫する。
+
+たとえば、ある関数の実行時間が関数呼び出しの実行時間に比べて桁違いに長いとき、関数呼び出しのコストを削減するのは意味がない。
+
+したがって関数のインライン展開という最適化を適用すべきかどうかを決定するには、関数のコードサイズが十分に小さいとき、関数の実行時間が十分に短いとき、タイトなループの中など、さまざまな条件を考慮しなければならない。
+
+昔のコンパイラー技術が未熟だった時代のC++コンパイラーは関数をインライン展開するべきかどうかの判断ができなかった。そのため\lstinline!inline!キーワードが追加された。インライン展開してほしい関数を\lstinline!inline!関数にすることで、コンパイラーはその関数がインライン展開するべき関数だと認識する。
+
+%
+% SubSection 3.21.2
+\hypersubsection{section3-21-2}{現代のinlineの意味}
+
+現代では、コンパイラー技術の発展によりC++コンパイラーは十分に賢くなったので、関数をインライン展開させる目的で\lstinline!inline!キーワードを使う必要はない。実際、現代のC++コンパイラーでは\lstinline!inline!キーワードはインライン展開を強制しない。関数をインライン展開すべきかどうかはコンパイラーが判断できる。
+
+\lstinline!inline!キーワードにはインライン展開以外に、もう1つの意味がある。ODR（One
+Definition Rule、定義は1つの原則）の回避だ。
+\index{ODR（One Definition Rule）}\index{ていぎは1つのげんそく@定義は1つの原則}
+
+C++では、定義はプログラム中に1つしか書くことができない。
+
+\begin{lstlisting}[language=C++]
+void f() ; // OK、宣言
+void f() ; // OK、再宣言
+
+void f() { } // OK、定義
+
+void f() { } // エラー、再定義
+\end{lstlisting}
+
+通常は、関数を使う場合には宣言だけを書いて使う。定義はどこか1つの翻訳単位に書いておけばよい。
+
+\begin{lstlisting}[language=C++]
+// f.h
+
+void f() ;
+
+// f.cpp
+
+void f() { }
+
+// main.cpp
+
+#include "f.h"
+
+int main()
+{
+    f() ;
+}
+\end{lstlisting}
+
+しかし、関数のインライン展開をするには、コンパイラーの実装上の都合で、関数の定義が同じ翻訳単位になければならない。
+
+\begin{lstlisting}[language=C++]
+inline void f() ;
+
+int main()
+{
+    // エラー、定義がない
+    f() ; 
+}
+\end{lstlisting}
+
+しかし、翻訳単位ごとに定義すると、定義が重複してODRに違反する。
+
+C++ではこの問題を解決するために、\lstinline!inline!関数は定義が同一であれば、複数の翻訳単位で定義されてもよいことにしている。つまりODRに違反しない。
+
+\begin{lstlisting}[language=C++]
+// a.cpp
+
+inline void f() { }
+
+void a()
+{
+    f() ;
+}
+
+// b.cpp
+
+// OK、inline関数
+inline void f() { }
+
+void b()
+{
+    f() ;
+}
+\end{lstlisting}
+
+これは例のために同一の\lstinline!inline!関数を直接記述しているが、\lstinline!inline!関数は定義を同一性を保証させるため、通常はヘッダーファイルに書いて~\lstinline!#include!~して使う。
+
+%
+% SubSection 3.21.3
+\hypersubsection{section3-21-3}{inline変数の意味}
+
+\lstinline!inline!変数は、ODRに違反せず変数の定義の重複を認める。同じ名前の\lstinline!inline!変数は同じ変数を指す。
+\index{inlineへんすう@\texttt{inline}変数}
+
+\begin{lstlisting}[language=C++]
+// a.cpp
+
+inline int data ;
+
+void a() { ++data ; }
+
+// b.cpp
+
+inline int data ;
+
+void b() { ++data ; }
+
+// main.cpp
+
+inline int data ;
+
+int main()
+{
+    a() ;
+    b() ;
+
+    data ; // 2
+}
+\end{lstlisting}
+
+この例で関数\lstinline!a!,
+\lstinline!b!の中の変数\lstinline!data!は同じ変数を指している。変数\lstinline!data!は\lstinline!static!ストレージ上に構築された変数なのでプログラムの開始時にゼロで初期化される。2回インクリメントされるので値は2となる。
+
+これにより、クラスの非\lstinline!static!データメンバーの定義を書かなくてすむようになる。
+
+C++17以前のC++では、以下のように書かなければならなかったが、
+\begin{lstlisting}[language=C++]
+// S.h
+
+struct S
+{
+    static int data ;
+} ;
+
+// S.cpp
+
+int S::data ;
+\end{lstlisting}
+C++17では、以下のように書けばよい。
+\begin{lstlisting}[language=C++]
+// S.h
+
+struct S
+{
+    inline static int data ;
+} ;
+\end{lstlisting}
+
+\lstinline!S.cpp!に変数\lstinline!S::data!の定義を書く必要はない。
+
+機能テストマクロは~\lstinline!__cpp_inline_variables!, 値は201606。
+\index{\_\_cpp\_inline\_variables@\texttt{\_\_cpp\_inline\_variables}}

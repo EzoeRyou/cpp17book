@@ -1,0 +1,51 @@
+%
+% Section 2.10
+\hypersection{section2-10}{メンバー初期化子とアグリゲート初期化の組み合わせ}
+
+C++14ではメンバー初期化子とアグリゲート初期化が組み合わせられるようになった。
+\index{めんばしよきかし@メンバー初期化子}\index{あぐりげとしよきかし@アグリゲート初期化}
+
+メンバー初期化子とはクラスの非\lstinline!static!データメンバーを~\lstinline!=!~で初期化できるC++11の機能だ。
+\index{ひstaticでためんば@非\texttt{static}データメンバー}
+
+\begin{lstlisting}[language=C++]
+struct S
+{
+    // メンバー初期化子
+    int data = 123 ;
+} ;
+\end{lstlisting}
+
+アグリゲート初期化とはアグリゲートの条件を満たす型をリスト初期化で初期化できるC++11の機能だ。
+
+\begin{lstlisting}[language=C++]
+struct S
+{
+    int x, y, z ;
+} ;
+
+S s = { 1,2,3 } ;
+// s.x == 1, s.y == 2, s.z == 3
+\end{lstlisting}
+
+C++11ではメンバー初期化子を持つクラスはアグリゲート型の条件を満たさないのでアグリゲート初期化ができない。
+
+C++14では、この制限が緩和された。
+
+\begin{lstlisting}[language=C++]
+struct S
+{
+    int x, y=1, z ;
+} ;
+
+S s1 = { 1 } ;
+// s1.x == 1, s1.y == 1, s1.z == 0
+
+S s2{ 1,2,3 } ;
+// s2.x == 1, s2.y == 2, s2.z == 3
+\end{lstlisting}
+
+アグリゲート初期化で、メンバー初期化子を持つ非\lstinline!static!データメンバーに対応する値がある場合はアグリゲート初期化が優先される。省略された場合はメンバー初期化子で初期化される。アグリゲート初期化でもメンバー初期化子でも明示的に初期化されていない非\lstinline!static!データメンバーは空の初期化リストで初期化された場合と同じになる。
+
+機能テストマクロは~\lstinline!__cpp_aggregate_nsdmi!, 値は201304。
+\index{\_\_cpp\_aggregate\_nsdmi@\texttt{\_\_cpp\_aggregate\_nsdmi}}

@@ -1,0 +1,278 @@
+%
+% cpp17book
+%
+\newif\ifColor
+\Colortrue
+%\Colorfalse
+%
+% A5判
+\documentclass[9pt,papersize,uplatex,a5paper,openany,tombow]{asciibook}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[utf8]{inputenc}
+\usepackage[uplatex,expert,deluxe,jis2004]{otf}
+\usepackage[dvipdfmx]{hyperref,graphicx}
+\usepackage{pxjahyper}
+\ifColor
+\hypersetup{%
+ bookmarksnumbered=true,%
+ colorlinks=true,%
+ linkcolor=blue,%
+ setpagesize=false,%
+ pdfkeywords={TeX; dvipdfmx; hyperref; color;}
+}
+\else
+\hypersetup{%
+ bookmarksnumbered=true,%
+ colorlinks=false,%
+% linkcolor=blue,%
+ setpagesize=false,%
+ pdfkeywords={TeX; dvipdfmx; hyperref; color;}
+}
+\fi
+%
+\usepackage{subscript}
+\usepackage{layout}
+\usepackage{fancyvrb}
+\usepackage{listings,jlisting}
+\lstset{
+%  language=C++,
+  basicstyle=\ttfamily\small,
+  commentstyle=\ttfamily\small,
+  columns={flexible},
+  xleftmargin=2.0zw,
+  keepspaces=true,
+  showstringspaces=false,
+  aboveskip=1.0zw,
+  belowskip=1.0zw,
+%  breaklines=true
+}
+\usepackage{okumacro}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{longtable}
+%
+\usepackage{comment}
+\usepackage{layout}
+\usepackage{multicol}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+%
+% 図のパス
+\graphicspath{{./pictures/}{./fig/}}
+
+%
+% 見出し
+%
+% 小々節（subsubsection）の数字を出力する
+%\setcounter{secnumdepth}{3}
+%
+% 小々節（subsubsection）まで目次に反映する
+\setcounter{tocdepth}{3}
+%
+% 部
+\newcommand{\hyperpart}[2]{
+  \hyperdef{}{#1}{
+    \part{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+%  \thispagestyle{frontheadings}
+}
+%
+% 章
+\newcommand{\hyperchapter}[3]{
+  \hyperdef{}{#1}{
+    \chapter[#2]{\texorpdfstring{\hyperref[#1]{#3}}{#3}
+    }\label{#1}
+  }
+%  \thispagestyle{frontheadings}
+}
+\newcommand{\hyperchaptera}[2]{
+  \hyperdef{}{#1}{
+    {
+        \vbox to 0mm{
+        \hbox to 0mm{\includegraphics{title.eps}\hss}
+        \vss
+        }
+        \vbox{
+            \vskip 18mm
+            \hskip 4mm
+            \huge\headfont \texorpdfstring{\hyperref[#1]{#2}}{#2}
+            \vskip 20mm
+        }
+    }\label{#1}
+    \addcontentsline{toc}{chapter}{#2}
+  }
+  \thispagestyle{frontheadings}
+}
+\newcommand{\hyperchaptern}[2]{
+  \hyperdef{}{#1}{
+    {
+        \vbox{
+            \vskip 10mm
+            \noindent
+            \Large\headfont \texorpdfstring{\hyperref[#1]{#2}}{#2}
+            \vskip 30mm
+        }
+    }\label{#1}
+    \addcontentsline{toc}{chapter}{#2}
+  }
+  \thispagestyle{frontheadings}
+}
+%
+% 節
+\newcommand{\hypersection}[2]{
+  \hyperdef{}{#1}{
+    \section{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+}
+\newcommand{\hypersectionn}[2]{
+  \hyperdef{}{#1}{
+    \section*{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+}
+%
+% 小節
+\newcommand{\hypersubsection}[2]{
+  \hyperdef{}{#1}{
+    \subsection{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+}
+\newcommand{\hypersubsectionn}[2]{
+  \hyperdef{}{#1}{
+    \subsection*{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+}
+%
+% 小々節
+\newcommand{\hypersubsubsection}[2]{
+  \hyperdef{}{#1}{
+    \subsubsection{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+}
+\newcommand{\hypersubsubsectionn}[2]{
+  \hyperdef{}{#1}{
+    \subsubsection*{\texorpdfstring{\hyperref[#1]{#2}}{#2}
+    }\label{#1}
+  }
+}
+
+\usepackage[dvipdfmx]{graphicx,xcolor}
+%
+% 索引
+\usepackage{makeidx}
+\makeindex
+
+\pagestyle{asciiheadings}
+\begin{document}
+
+\frontmatter
+\include{000-front}
+% 第0章
+\input{000-preface}
+{\pagestyle{frontheadings}
+\tableofcontents}
+\mainmatter
+% 第1章
+\input{001-sd-6-feature-testing-recommendations}
+% 第2章
+\cleardoublepage
+\input{002-cpp14-core}
+\input{003-cpp14-core-binary-literals}
+\input{004-cpp14-core-digit-separator}
+\input{005-cpp14-core-deprecated-attribute}
+\input{006-cpp14-core-return-type-deduction-for-normal-function}
+\input{007-cpp14-core-decltype-auto}
+\input{008-cpp14-core-generic-lambda}
+\input{009-cpp14-core-init-lambda-capture}
+\input{010-cpp14-core-variable-template}
+\input{011-cpp14-core-constexpr}
+\input{012-cpp14-core-member-initializer-list-init}
+\input{013-cpp14-core-sized-deallocation}
+% 第3章
+\cleardoublepage
+\input{014-cpp17-core}
+\input{015-cpp17-core-remove-trigraph}
+\input{016-cpp17-core-hex-float}
+\input{017-cpp17-core-u8-character-literals}
+\input{018-cpp17-core-noexcept-function-type}
+\input{019-cpp17-core-fold-expressions}
+\input{020-cpp17-core-capture-this-by-value}
+\input{021-cpp17-core-constexpr-lambda}
+\input{022-cpp17-core-static-assert}
+\input{023-cpp17-core-nested-namespace-definition}
+\input{024-cpp17-core-fallthrough-attribute}
+\input{025-cpp17-core-nodiscard-attribute}
+\input{026-cpp17-core-maybe_unused-attribute}
+\input{027-cpp17-core-evaluation-order}
+\input{028-cpp17-core-constexpr-if}
+\input{029-cpp17-core-selection-statement-with-initializer}
+\input{030-cpp17-core-deduction-guide}
+\input{031-cpp17-core-template-auto}
+\input{032-cpp17-core-using-attribute-namespace}
+\input{033-cpp17-core-ignore-non-standard-attributes}
+\input{034-cpp17-core-structured-bindings}
+\input{035-cpp17-core-inline-variables}
+\input{036-cpp17-core-using-declaration-pack-expansion}
+\input{037-cpp17-core-std-byte}
+% 第4章
+\cleardoublepage
+\input{038-cpp17-lib}
+\input{039-cpp17-lib-variant}
+\input{040-cpp17-lib-any}
+\input{041-cpp17-lib-optional}
+% 第5章
+\cleardoublepage
+\input{042-cpp17-lib-string-view}
+% 第6章
+\cleardoublepage
+\input{043-cpp17-lib-memory-resource}
+% 第7章
+\cleardoublepage
+\input{044-cpp17-lib-parallel-algorithm}
+% 第8章
+\cleardoublepage
+\input{045-cpp17-lib-mathematical-special-functions}
+% 第9章
+\cleardoublepage
+\input{046-cpp17-lib-misc}
+\input{047-cpp17-lib-misc-hardware-interference-size}
+\input{048-cpp17-misc-uncaught_exceptions}
+\input{049-cpp17-lib-misc-apply}
+\input{050-cpp17-lib-misc-searchers}
+\input{051-cpp17-lib-misc-sample}
+\input{052-cpp17-lib-misc-shared-ptr-for-array}
+\input{053-cpp17-lib-misc-as-const}
+\input{054-cpp17-lib-misc-make-from-tuple}
+\input{055-cpp17-lib-misc-invoke}
+\input{056-cpp17-lib-misc-not-fn}
+\input{057-cpp17-lib-misc-memory}
+\input{058-cpp17-lib-misc-weak-ptr}
+\input{059-cpp17-lib-misc-void-t}
+\input{060-cpp17-lib-misc-bool-constant}
+\input{061-cpp17-lib-misc-traits}
+\input{062-cpp17-lib-misc-minimal-incomplete-type-support-for-containers}
+\input{063-cpp17-lib-misc-emplace}
+\input{064-cpp17-lib-misc-map}
+\input{065-cpp17-lib-misc-node-handle}
+\input{066-cpp17-lib-misc-size}
+\input{067-cpp17-lib-misc-clamp}
+\input{068-cpp17-lib-misc-hypot}
+\input{069-cpp17-lib-misc-atomic-is-always-lock-free}
+\input{070-cpp17-misc-scoped-lock}
+\input{071-cpp17-misc-byte}
+\input{072-cpp17-lib-misc-gcd-lcm}
+% 第10章
+\cleardoublepage
+\input{073-cpp17-lib-filesystem}
+\backmatter
+\printindex
+\include{okuduke}
+
+\end{document}

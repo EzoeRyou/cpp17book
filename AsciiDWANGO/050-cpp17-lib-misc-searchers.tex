@@ -1,0 +1,176 @@
+%
+% Section 9.4
+\hypersection{section9-4}{Searcher : 検索}
+
+C++17では~\lstinline!<functional>!~に\lstinline!searcher!というライブラリが追加された。これは順序のあるオブジェクトの集合に、ある部分集合（パターン）が含まれているかどうかを検索するためのライブラリだ。その最も一般的な応用例は文字列検索となる。
+\index{<functional>@\texttt{<functional>}}\index{searcher@\texttt{searcher}}
+
+\lstinline!searcher!の基本的な設計としては、クラスのオブジェクトを構築して、コンストラクターで検索したい部分集合（パターン）を与え、\lstinline!operator ()!で部分集合が含まれているかを検索したい集合を与える。
+
+この設計のライブラリが追加された理由は、パターンの検索のために何らかの事前の準備を状態として保持しておきたい検索アルゴリズムを実装するためだ。
+
+%
+% SubSection 9.4.1
+\hypersubsection{section9-4-1}{default\texttt{\_}searcher}
+\index{std::default\_searcher@\texttt{std::default\_searcher}}
+
+クラス\lstinline!std::default_searcher!は以下のように宣言されている。
+
+\begin{lstlisting}[language=C++]
+template <  class ForwardIterator1,
+            class BinaryPredicate = equal_to<> >
+class default_searcher {
+public:
+    // コンストラクター
+    default_searcher( 
+        ForwardIterator1 pat_first, ForwardIterator1 pat_last
+        , BinaryPredicate pred = BinaryPredicate() ) ;
+
+    // operator ()
+    template <class ForwardIterator2>
+    pair<ForwardIterator2, ForwardIterator2>
+    operator()(ForwardIterator2 first, ForwardIterator2 last) const ;
+} ;
+\end{lstlisting}
+
+コンストラクターで部分集合を受け取る。\lstinline!operator ()!で集合を受け取り、部分集合（パターン）と一致した場所をイテレーターのペアで返す。見つからない場合、イテレーターのペアは\lstinline![last, last)!になっている。
+
+以下のように使う。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string pattern("fox") ;
+    std::default_searcher
+        fox_searcher( std::begin(pattern), std::end(pattern) ) ;
+
+    std::string corpus = "The quick brown fox jumps over the lazy dog" ;
+
+    auto[first, last] = fox_searcher( std::begin(corpus),
+                                      std::end(corpus) ) ;
+    std::string fox( first, last ) ;
+}
+\end{lstlisting}
+
+\lstinline!default_searcher!の検索は、内部的に\lstinline!std::search!が使われる。
+
+%
+% SubSection 9.4.2
+\hypersubsection{section9-4-2}{boyer\texttt{\_}moore\texttt{\_}searcher}
+\index{std::boyer\_moore\_searcher@\texttt{std::boyer\_moore\_searcher}}\index{Boyer-Mooreもじれつけんさくあるごりずむ@Boyer--Moore文字列検索アルゴリズム}
+
+\lstinline!std::boyer_moore_searcher!はBoyer--Moore文字列検索アルゴリズムを使って部分集合の検索を行う。
+
+Boyer--Moore文字列検索アルゴリズムは極めて効率的な文字列検索のアルゴリズムだ。Boyer--MooreアルゴリズムはBob
+BoyerとStrother Mooreによって発明され、1977年のCommunications of the
+ACMで発表された。その内容は以下のURLで読むことができる。
+\vskip 0.5zw
+\hspace*{1em}\url{http://www.cs.utexas.edu/~moore/publications/fstrpos.pdf}
+\vskip 0.5zw
+愚直に実装した文字列検索アルゴリズムは検索すべき部分文字列（パターン）を検索対象の文字列（コーパス）から探す際、パターンの先頭の文字をコーパスの先頭から順に探していき、見つかれば2文字目以降も一致するかどうかを調べる。
+
+Boyer--Mooreアルゴリズムはパターンの末尾の文字から調べる。文字が一致しなければ、パターンから絶対に不一致であるとわかっている長さだけの文字を比較せずに読み飛ばす。これによって効率的な文字列検索を実現している。
+
+Boyer--Mooreアルゴリズムは事前にパターンのどの文字が不一致ならば何文字比較せずに読み飛ばせるかという情報を計算した2つのテーブルを生成する必要がある。このため、Boyer--Mooreアルゴリズムはメモリー使用量と検索前の準備時間というコストがかかる。そのコストは、より効率的な検索により相殺できる。特に、パターンが長い場合は効果的だ。
+
+C++17に入るBoyer--Mooreアルゴリズムに基づく検索は、テンプレートを使った汎用的な\lstinline!char!型のような状態数の少ない型に対しての実装だけではなく、ハッシュを使ったハッシュマップのようなデータ構造を使うことにより、任意の型に対応できる汎用的な設計になっている。
+
+クラス\lstinline!boyer_moore_searcher!は以下のように宣言されている。
+
+\begin{lstlisting}[language=C++]
+template <
+    class RandomAccessIterator1,
+    class Hash = hash<
+        typename iterator_traits<RandomAccessIterator1>::value_type>,
+    class BinaryPredicate = equal_to<> >
+class boyer_moore_searcher {
+public:
+    // コンストラクター
+    boyer_moore_searcher(
+        RandomAccessIterator1 pat_first,
+        RandomAccessIterator1 pat_last,
+        Hash hf = Hash(),
+        BinaryPredicate pred = BinaryPredicate() ) ;
+
+    // operator ()
+    template <class RandomAccessIterator2>
+    pair<RandomAccessIterator2, RandomAccessIterator2>
+    operator()( RandomAccessIterator2 first,
+                RandomAccessIterator2 last) const;
+} ;
+\end{lstlisting}
+
+\lstinline!boyer_moore_searcher!は、文字列以外にも適用できる汎用的な設計のため、ハッシュ関数を取る。\lstinline!char!型のような取りうる状態数の少ない型以外が渡された場合は、\lstinline!std::unordered_map!のようなメモリー使用量を削減できる何らかのデータ構造を使ってテーブルを構築する。
+
+使い方は\lstinline!default_searcher!とほとんど変わらない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string pattern("fox") ;
+    std::boyer_moore_searcher
+        fox_searcher( std::begin(pattern), std::end(pattern) ) ;
+
+    std::string corpus = "The quick brown fox jumps over the lazy dog" ;
+
+    auto[first, last] = fox_searcher( std::begin(corpus),
+        std::end(corpus) ) ;
+    std::string fox( first, last ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 9.4.3
+\hypersubsection{section9-4-3}{boyer\texttt{\_}moore\texttt{\_}horspool\texttt{\_}searcher}
+\index{std::boyer\_moore\_horspool\_searcher@\texttt{std::boyer\_moore\_horspool\_searcher}}\index{Boyer-Moore-Horspoolけんさくあるごりずむ@Boyer--Moore--Horspool検索アルゴリズム}
+
+\lstinline!std::boyer_moore_horspool_searcher!はBoyer--Moore--Horspool検索アルゴリズムを使って部分集合の検索を行う。Boyer--Moore--HorspoolアルゴリズムはNigel
+Horspoolによって1980年に発表された。
+\vskip 0.5zw
+\noindent
+\textsf{参考}：``Practical fast searching in strings'' 1980
+\vskip 0.5zw
+Boyer--Moore--Horspoolアルゴリズムは内部テーブルに使うメモリー使用量を削減しているが、最悪計算量の点でオリジナルのBoyer--Mooreアルゴリズムには劣っている。つまり、実行時間の増大を犠牲にしてメモリー使用量を削減したトレードオフなアルゴリズムと言える。
+
+クラス\lstinline!boyer_moore_horspool_searcher!の宣言は以下のとおり。
+
+\begin{lstlisting}[language=C++]
+template <
+    class RandomAccessIterator1,
+    class Hash = hash<
+        typename iterator_traits<RandomAccessIterator1>::value_type>,
+    class BinaryPredicate = equal_to<> >
+class boyer_moore_horspool_searcher {
+public:
+    // コンストラクター
+    boyer_moore_horspool_searcher(
+        RandomAccessIterator1 pat_first,
+        RandomAccessIterator1 pat_last,
+        Hash hf = Hash(),
+        BinaryPredicate pred = BinaryPredicate() );
+
+    // operator () 
+    template <class RandomAccessIterator2>
+    pair<RandomAccessIterator2, RandomAccessIterator2>
+    operator()( RandomAccessIterator2 first,
+                RandomAccessIterator2 last) const;
+} ;
+\end{lstlisting}
+
+使い方は\lstinline!boyer_moore_horspool_searcher!と変わらない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string pattern("fox") ;
+    std::boyer_moore_horspool_searcher
+        fox_searcher( std::begin(pattern), std::end(pattern) ) ;
+
+    std::string corpus = "The quick brown fox jumps over the lazy dog" ;
+
+    auto[first, last] = fox_searcher(   std::begin(corpus),
+                                        std::end(corpus) ) ;
+    std::string fox( first, last ) ;
+}
+\end{lstlisting}
+

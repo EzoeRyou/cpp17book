@@ -1,0 +1,30 @@
+%
+% Section 3.9
+\hypersection{section3-9}{ネストされた名前空間定義}
+
+C++17ではネストされた名前空間の定義を楽に書ける。
+\index{ねすとされたなまえくうかん@ネストされた名前空間}\index{なまえくうかん@名前空間!ねすとされた@ネストされた〜}
+
+ネストされた名前空間とは、\lstinline!A::B::C!のように名前空間の中に名前空間が入っている名前空間のことだ。
+
+\begin{lstlisting}[language=C++]
+namespace A {
+    namespace B {
+        namespace C {
+        // ...
+        }
+    }
+} 
+\end{lstlisting}
+
+C++17では、上記のコードと同じことを以下のように書ける。
+
+\begin{lstlisting}[language=C++]
+namespace A::B::C {
+// ...
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_nested_namespace_definitions!,
+値は201411。
+\index{\_\_cpp\_nested\_namespace\_definitions@\texttt{\_\_cpp\_nested\_namespace\_definitions}}

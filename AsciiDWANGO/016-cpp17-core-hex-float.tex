@@ -1,0 +1,63 @@
+%
+% Section 3.2
+\hypersection{section3-2}{16進数浮動小数点数リテラル}
+
+C++17では浮動小数点数リテラルに16進数を使うことができるようになった。
+\index{ふどうしようすうてんすうりてらる@浮動小数点数リテラル}\index{16しんすうふどうしようすうてんすうりてらる@16進数浮動小数点数リテラル}
+
+16進数浮動小数点数リテラルは、プレフィクス\lstinline!0x!に続いて仮数部を16進数（\lstinline!0123456789abcdefABCDEF!）で書き、\lstinline!p!もしくは\lstinline!P!に続けて指数部を10進数で書く。
+\index{0x@\texttt{0x}}
+
+\begin{lstlisting}[language=C++]
+double d1 = 0x1p0 ; // 1
+double d2 = 0x1.0p0 ; // 1
+double d3 = 0x10p0 ; // 16
+double d4 = 0xabcp0 ; // 2748
+\end{lstlisting}
+
+指数部は\lstinline!e!ではなく\lstinline!p!か\lstinline!P!を使う。
+
+\begin{lstlisting}[language=C++]
+double d1 = 0x1p0 ;
+double d2 = 0x1P0 ;
+\end{lstlisting}
+
+16進数浮動小数点数リテラルでは、指数部を省略できない。
+
+\begin{lstlisting}[language=C++]
+int a = 0x1 ; // 整数リテラル
+0x1.0 ; // エラー、指数部がない
+\end{lstlisting}
+
+指数部は10進数で記述する。16進数浮動小数点数リテラルは仮数部に2の指数部乗を掛けた値になる。つまり、
+\begin{lstlisting}[language=C++]
+0xNpM
+\end{lstlisting}
+という浮動小数点数リテラルの値は
+\[
+    N \times 2^M
+\]
+となる。
+
+\begin{lstlisting}[language=C++]
+0x1p0 ; // 1
+0x1p1 ; // 2
+0x1p2 ; // 4
+0x10p0 ; // 16
+0x10p1 ; // 32
+0x1p-1 ; // 0.5
+0x1p-2 ; // 0.25
+\end{lstlisting}
+
+16進数浮動小数点数リテラルには浮動小数点数サフィックスを記述できる。
+\index{ふどうしようすうてんすうさふいつくす@浮動小数点数サフィックス}
+
+\begin{lstlisting}[language=C++]
+auto a = 0x1p0f ; // float
+auto b = 0x1p0l ; // long double
+\end{lstlisting}
+
+16進数浮動小数点数リテラルは、浮動小数点数が表現方法の詳細を知っている環境（たとえばIEEE--754）で、正確な浮動小数点数の表現が記述できるようになる。
+
+機能テストマクロは~\lstinline!__cpp_hex_float!, 値は201603。
+\index{\_\_cpp\_hex\_float@\texttt{\_\_cpp\_hex\_float}}

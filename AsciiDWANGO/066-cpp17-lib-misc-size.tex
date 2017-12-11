@@ -1,0 +1,34 @@
+%
+% Section 9.20
+\hypersection{section9-20}{コンテナーアクセス関数}
+
+ヘッダーファイル~\lstinline!<iterator>!~に、コンテナーアクセス関数として、フリー関数版の\lstinline!size!,
+\lstinline!empty!,
+\lstinline!data!が追加された。それぞれ、メンバー関数の\lstinline!size!,
+\lstinline!empty!, \lstinline!data!を呼び出す。
+\index{<iterator>@\texttt{<iterator>}}\index{こんてなあくせすかんすう@コンテナーアクセス関数}\index{size@\texttt{size}}\index{こんてなあくせすかんすう@コンテナーアクセス関数!size@\texttt{size}}\index{empty@\texttt{empty}}\index{こんてなあくせすかんすう@コンテナーアクセス関数!empty@\texttt{empty}}\index{data@\texttt{data}}\index{こんてなあくせすかんすう@コンテナーアクセス関数!data@\texttt{data}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> v ;
+
+    std::size(v) ; // v.size()
+    std::empty(v) ; // v.empty()
+    std::data(v) ; // v.data() 
+}
+\end{lstlisting}
+
+このフリー関数は配列や~\lstinline!std::initializer_list<T>!~にも使える。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int a[10] ;
+
+    std::size(a) ; // 10
+    std::empty(a) ; // 常にfalse
+    std::data(a) ; // a
+}
+\end{lstlisting}
+

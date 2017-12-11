@@ -1,0 +1,480 @@
+%
+% Chapter 5
+\hyperchapter{chapter5}{string\texttt{\_}view : 文字列ラッパー}{string\texttt{\_}view : 文字列ラッパー}
+
+\lstinline!string_view!は、文字型（\lstinline!char!,
+\lstinline!wchar_t!, \lstinline!char16_t!,
+\lstinline!char32_t!）の連続した配列で表現された文字列に対する共通の文字列ビューを提供する。文字列は所有しない。
+\index{string\_view@\texttt{string\_view}}\index{もじれつらつぱ@文字列ラッパー}\index{もじがた@文字型}\index{char@\texttt{char}}\index{wchar\_t@\texttt{wchar\_t}}\index{char16\_t@\texttt{char16\_t}}\index{char32\_t@\texttt{char32\_t}}\index{もじれつびゆ@文字列ビュー}
+
+%
+% Section 5.1
+\hypersection{section5-1}{使い方}
+
+連続した文字型の配列を使った文字列の表現方法にはさまざまある。C++では最も基本的な文字列の表現方法として、\lstinline!null!終端された文字型の配列がある。
+\index{nullしゆうたん@\texttt{null}終端}\index{もじがたのはいれつ@文字型の配列}
+
+\begin{lstlisting}[language=C++]
+char str[6] = { 'h', 'e', 'l', 'l', 'o', '\0' } ;
+\end{lstlisting}
+
+あるいは、文字型の配列と文字数で表現することもある。
+
+\begin{lstlisting}[language=C++]
+// sizeは文字数
+std::size_t size
+char * ptr ;
+\end{lstlisting}
+
+このような表現をいちいち管理するのは面倒なので、クラスで包むこともある。
+
+\begin{lstlisting}[language=C++]
+class string_type
+{
+    std::size_t size ;
+    char *ptr
+} ;
+\end{lstlisting}
+
+このように文字列を表現する方法はさまざまある。これらのすべてに対応していると、表現の数だけ関数のオーバーロードが追加されていくことになる。
+
+\begin{lstlisting}[language=C++]
+// null終端文字列用
+void process_string( char * ptr ) ;
+// 配列へのポインターと文字数
+void process_string( char * ptr, std::size_t size ) ;
+// std::stringクラス
+void process_string( std::string s ) ;
+// 自作のstring_typeクラス
+void process_string( string_type s ) ;
+// 自作のmy_string_typeクラス
+void process_string( my_string_type s ) ;
+\end{lstlisting}
+
+\lstinline!string_view!はさまざまな表現の文字列に対して共通の\lstinline!view!を提供することで、この問題を解決できる。もう関数のオーバーロードを大量に追加する必要はない。
+
+\begin{lstlisting}[language=C++]
+// 自作のstring_type
+struct string_type
+{
+    std::size_t size ;
+    char * ptr ;
+
+    // string_viewに対応する変換関数
+    operator std::string_view() const noexcept
+    {
+        return std::string_view( ptr, size ) ;
+    }
+}
+
+// これ1つだけでよい
+void process_string( std::string_view s ) ;
+
+int main()
+{
+    // OK
+    process_string( "hello" ) ;
+    // OK
+    process_string( { "hello", 5 } ) ;
+
+    std::string str( "hello" ) ;
+    process_string( str ) ;
+
+    string_type st{5, "hello"} ;
+
+    process_string( st ) ;
+}
+\end{lstlisting}
+
+%
+% Section 5.2
+\hypersection{section5-2}{basic\texttt{\_}string\texttt{\_}view}
+
+\lstinline!std::string!が~\lstinline!std::basic_string< CharT, Traits >!~に対する~\lstinline[breaklines=true]!std::basic_string<char>!~であるように、\lstinline!std::string_view!も、その実態は\lstinline[breaklines=true]!std::basic_string_view!の特殊化への\lstinline!typedef!名だ。
+\index{std::string@\texttt{std::string}}\index{std::basic\_string@\texttt{std::basic\_string}}\index{std::string\_view@\texttt{std::string\_view}}\index{std::basic\_string\_view@\texttt{std::basic\_string\_view}}\index{basic\_string\_view@\texttt{basic\_string\_view}}
+
+\begin{lstlisting}[language=C++]
+// 本体
+template<class charT, class traits = char_traits<charT>>
+class basic_string_view ;
+
+// それぞれの文字型のtypedef名
+using string_view = basic_string_view<char>;
+using u16string_view = basic_string_view<char16_t>;
+using u32string_view = basic_string_view<char32_t>;
+using wstring_view = basic_string_view<wchar_t>;
+\end{lstlisting}
+
+なので、通常は\lstinline!basic_string_view!ではなく、\lstinline!string_view!とか\lstinline!u16string_view!などの\lstinline!typedef!名を使うことになる。本書では\lstinline!string_view!だけを解説するが、その他の\lstinline!typedef!名も文字型が違うだけで同じだ。
+\index{u16string\_view@\texttt{u16string\_view}}
+
+%
+% Section 5.3
+\hypersection{section5-3}{文字列の所有、非所有}
+
+\lstinline!string_view!は文字列を所有しない。所有というのは、文字列を表現するストレージの確保と破棄に責任を持つということだ。所有しないことの意味を説明するために、まず文字列を所有するライブラリについて説明する。
+
+\lstinline!std::string!は文字列を所有する。\lstinline!std::string!風のクラスの実装は、たとえば以下のようになる。
+
+\begin{lstlisting}[language=C++]
+class string
+{
+    std::size_t size ;
+    char * ptr ;
+
+public :
+    // 文字列を表現するストレージの動的確保
+    string ( char const * str )
+    {
+        size = std::strlen( str ) ;
+        ptr = new char[size+1] ;
+        std::strcpy( ptr, str ) ;
+    }
+
+    // コピー
+    // 別のストレージを動的確保
+    string ( string const & r )
+        : size( r.size ), ptr ( new char[size+1] )
+    {
+        std::strcpy( ptr, r.ptr ) ;
+    }
+
+    // ムーブ
+    // 所有権の移動
+    string ( string && r )
+        : size( r.size ), ptr( r.ptr )
+    {
+        r.size = 0 ;
+        r.ptr = nullptr ;
+    }
+
+    // 破棄
+    // 動的確保したストレージを解放
+    ~string()
+    {
+        delete[] ptr ;
+    }
+    
+} ;
+\end{lstlisting}
+
+\lstinline!std::string!は文字列を表現するストレージを動的に確保し、所有する。コピーは別のストレージを確保する。ムーブするときはストレージの所有権を移す。デストラクターは所有しているストレージを破棄する。
+
+\lstinline!std::string_view!は文字列を所有しない。\lstinline!std::string_view!風のクラスの実装は、たとえば以下のようになる。
+
+\begin{lstlisting}[language=C++]
+class string_view
+{
+    std::size_t size ;
+    char const * ptr ;
+
+public :
+
+    // 所有しない
+    // strの参照先の寿命は呼び出し側が責任を持つ
+    string_view( char const * str ) noexcept
+        : size( std::strlen(str) ), ptr( str )
+    { }
+
+    // コピー
+    // メンバーごとのコピーだけでよいのでdefault化するだけでよい
+    string_view( string_view const & r ) noexcept = default ;
+
+    // ムーブはコピーと同じ
+    // 所有しないので所有権の移動もない
+
+    // 破棄
+    // 何も解放するストレージはない
+    // デストラクターもトリビアルでよい
+} ;
+\end{lstlisting}
+
+\lstinline!string_view!に渡した連続した文字型の配列へのポインターの寿命は、渡した側が責任を持つ。つまり、以下のようなコードは間違っている。
+
+\begin{lstlisting}[language=C++]
+std::string_view get_string()
+{
+    char str[] = "hello" ;
+
+    // エラー
+    // strの寿命は関数の呼び出し元に戻った時点で尽きている
+    return str ;
+}
+\end{lstlisting}
+
+%
+% Section 5.4
+\hypersection{section5-4}{string\texttt{\_}viewの構築}
+
+\lstinline!string_view!の構築には4種類ある。
+\index{string\_view@\texttt{string\_view}!こうちく@構築}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  デフォルト構築
+\item
+  \lstinline!null!終端された文字型の配列へのポインター
+\item
+  文字型の配列へのポインターと文字数
+\item
+  文字列クラスからの変換関数
+\end{itemize}
+
+%
+% SubSection 5.4.1
+\hypersubsection{section5-4-1}{デフォルト構築}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr basic_string_view() noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!string_view!のデフォルト構築は、空の\lstinline!string_view!を作る。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 空のstring_view
+    std::string_view s ;
+}
+\end{lstlisting}
+
+%
+% SubSection 5.4.2
+\hypersubsection{section5-4-2}{null終端された文字型の配列へのポインター}
+\index{nullしゆうたん@\texttt{null}終端}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr basic_string_view(const charT* str);
+\end{lstlisting}
+\egroup
+
+この\lstinline!string_view!のコンストラクターは、\lstinline!null!終端された文字型へのポインターを受け取る。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string_view s( "hello" ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 5.4.3
+\hypersubsection{section5-4-3}{文字型へのポインターと文字数}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr basic_string_view(const charT* str, size_type len);
+\end{lstlisting}
+\egroup
+
+この\lstinline!string_view!のコンストラクターは、文字型の配列へのポインターと文字数を受け取る。ポインターは\lstinline!null!終端されていなくてもよい。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    char str[] = {'h', 'e', 'l', 'l', 'o'} ;
+
+    std::string_view s( str, 5 ) ;
+}
+\end{lstlisting}
+
+%
+% Section 5.5
+\hypersection{section5-5}{文字列クラスからの変換関数}
+\index{string\_view@\texttt{string\_view}!へんかんかんすう@変換関数}
+
+他の文字列クラスから\lstinline!string_view!を作るには、変換関数を使う。\lstinline!string_view!のコンストラクターは使わない。
+
+\lstinline!std::string!は\lstinline!string_view!への変換関数をサポートしている。独自の文字列クラスを\lstinline!string_view!に対応させるにも変換関数を使う。たとえば以下のように実装する。
+
+\begin{lstlisting}[language=C++]
+class string
+{
+    std::size_t size ;
+    char * ptr ;
+public :
+    operator std::string_view() const noexcept
+    {
+        return std::string_view( ptr, size ) ;
+    }
+} ;
+\end{lstlisting}
+
+これにより、\lstinline!std::string!から\lstinline!string_view!への変換が可能になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string s = "hello" ;
+    std::string_view sv = s ;
+}
+\end{lstlisting}
+
+コレと同じ方法を使えば、独自の文字列クラスも\lstinline!string_view!に対応させることができる。
+
+\lstinline!std::string!は\lstinline!string_view!を受け取るコンストラクターを持っているので、\lstinline!string_view!から\lstinline!string!への変換もできる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string_view sv = "hello" ;
+
+    // コピーされる
+    std::string s = sv ;
+}
+\end{lstlisting}
+
+%
+% Section 5.6
+\hypersection{section5-6}{string\texttt{\_}viewの操作}
+\index{string\_view@\texttt{string\_view}!そうさ@操作}
+
+\lstinline!string_view!は既存の標準ライブラリの\lstinline!string!とほぼ同じ操作性を提供している。たとえばイテレーターを取ることができるし、\lstinline!operator []!で要素にアクセスできるし、\lstinline!size()!で要素数が返るし、\lstinline!find()!で検索もできる。
+
+\begin{lstlisting}[language=C++]
+template < typename T >
+void f( T  t )
+{
+    for ( auto c : t )
+    {
+        std::cout << c ;
+    }
+
+    if ( t.size() > 3 )
+    {
+        auto c = t[3] ;
+    }
+
+    auto pos = t.find( "fox" ) ;
+}
+
+int main()
+{
+    std::string s("quick brown fox jumps over the lazy dog.") ;
+
+    f( s ) ;
+
+    std::string_view sv = s ;
+
+    f( sv ) ;
+}
+\end{lstlisting}
+
+\lstinline!string_view!は文字列を所有しないので、文字列を書き換える方法を提供していない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string s = "hello" ;
+
+    s[0] = 'H' ;
+    s += ",world" ;
+
+    std::string_view sv = s ;
+
+    // エラー
+    // string_viewは書き換えられない
+    sv[0] = 'h' ;
+    s += ".\n" ;
+}
+\end{lstlisting}
+
+\lstinline!string_view!は文字列を所有せず、ただ参照しているだけだからだ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string s = "hello" ;
+    std::string_view sv = s ;
+
+    // "hello"
+    std::cout << sv ;
+
+    s = "world" ;
+
+    // "world"
+    // string_viewは参照しているだけ
+    std::cout << sv ;
+}
+\end{lstlisting}
+
+\lstinline!string_view!は\lstinline!string!とほぼ互換性のあるメンバーを持っているが、一部の文字列を変更するメンバーは削除されている。
+
+%
+% SubSection 5.6.1
+\hypersubsection{section5-6-1}{remove\texttt{\_}prefix/remove\texttt{\_}suffix : 先頭、末尾の要素の削除}
+\index{remove\_prefix@\texttt{remove\_prefix}}\index{string\_view@\texttt{string\_view}!remove\_prefix@\texttt{remove\_prefix}}\index{remove\_suffix@\texttt{remove\_suffix}}\index{string\_view@\texttt{string\_view}!remove\_suffix@\texttt{remove\_suffix}}
+
+\lstinline!string_view!は先頭と末尾から\lstinline!n!個の要素を削除するメンバー関数を提供している。
+
+\begin{lstlisting}[language=C++]
+constexpr void remove_prefix(size_type n);
+constexpr void remove_suffix(size_type n);
+\end{lstlisting}
+
+\lstinline!string_view!にとって、先頭と末尾から\lstinline!n!個の要素を削除するのは、ポインターを\lstinline!n!個ずらすだけなので、これは文字列を所有しない\lstinline!string_view!でも行える操作だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::string s = "hello" ;
+
+    std::string_view s1 = s ;
+
+    // "lo"
+    s1.remove_prefix(3) ;
+
+    std::string_view s2 = s ;
+
+    // "he"
+    s2.remove_suffix(3) ;
+}
+\end{lstlisting}
+
+このメンバー関数は既存の\lstinline!std::string!にも追加されている。
+
+%
+% Section 5.7
+\hypersection{section5-7}{ユーザー定義リテラル}
+
+\lstinline!std::string!と\lstinline!std::string_view!にはユーザー定義リテラルが追加されている。
+\index{ゆざていぎりてらる@ユーザー定義リテラル}\index{std::string@\texttt{std::string}!ゆざていぎりてらる@\texttt{ユーザー定義リテラル}}\index{std::string\_view@\texttt{std::string\_view}!ゆざていぎりてらる@\texttt{ユーザー定義リテラル}}
+
+\begin{lstlisting}[language=C++]
+string operator""s(const char* str, size_t len);
+u16string operator""s(const char16_t* str, size_t len);
+u32string operator""s(const char32_t* str, size_t len);
+wstring operator""s(const wchar_t* str, size_t len);
+
+constexpr string_view
+operator""sv(const char* str, size_t len) noexcept;
+
+constexpr u16string_view
+operator""sv(const char16_t* str, size_t len) noexcept;
+
+constexpr u32string_view
+operator""sv(const char32_t* str, size_t len) noexcept;
+
+constexpr wstring_view
+operator""sv(const wchar_t* str, size_t len) noexcept;
+\end{lstlisting}
+
+以下のように使う。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using namespace std::literals ;
+
+    // std::string
+    auto s = "hello"s ;
+
+    // std::string_view
+    auto sv = "hello"sv ;
+}
+\end{lstlisting}
+

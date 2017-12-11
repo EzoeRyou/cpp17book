@@ -1,0 +1,961 @@
+%
+% Section 4.1
+\hypersection{section4-1}{variant : 型安全なunion}
+\index{variant@\texttt{variant}}\index{union@\texttt{union}}\index{かたあんぜんな@型安全な!union@\texttt{union}}\index{union@\texttt{union}!かたあんぜん@型安全}
+
+%
+% SubSection 4.1.1
+\hypersubsection{section4-1-1}{使い方}
+
+ヘッダーファイル~\lstinline!<variant>!~で定義されている\lstinline!variant!は、型安全な\lstinline!union!として使うことができる。
+\index{<variant>@\texttt{<variant>}}
+
+\begin{lstlisting}[language=C++]
+#include <variant>
+
+int main()
+{
+    using namespace std::literals ;
+
+    // int, double, std::stringのいずれかを格納するvariant
+    // コンストラクターは最初の型をデフォルト構築
+    std::variant< int, double, std::string > x ;
+
+    x = 0 ;         // intを代入
+    x = 0.0 ;       // doubleを代入
+    x = "hello"s ;  // std::stringを代入
+
+    // intが入っているか確認
+    // falseを返す
+    bool has_int = std::holds_alternative<int>( x ) ;
+    // std::stringが入っているか確認
+    // trueを返す
+    bool has_string = std::holds_alternative<std::string> ( x ) ;
+
+    // 入っている値を得る
+    // "hello"
+    std::string str = std::get<std::string>(x) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.2
+\hypersubsection{section4-1-2}{型非安全な古典的union}
+
+C++が従来から持っている古典的な\lstinline!union!は、複数の型のいずれか1つだけの値を格納する型だ。\lstinline!union!のサイズはデータメンバーのいずれかの型を1つ表現できるだけのサイズとなる。
+\index{かたひあんぜん@型非安全}\index{union@\texttt{union}}\index{union@\texttt{union}!かたひあんぜん@型非安全}\index{こてんてきなunion@古典的な\texttt{union}}
+
+\begin{lstlisting}[language=C++]
+union U
+{
+    int i ;
+    double d ;
+    std::string s ;
+} ;
+
+struct S
+{
+    int i ;
+    double d ;
+    std::string s ;
+}
+\end{lstlisting}
+
+この場合、\lstinline!sizeof(U)!は
+\small
+\begin{align*}
+    \texttt{sizeof(U)} = &~ \max \{ \texttt{sizeof(int)}, \texttt{sizeof(double)}, \texttt{sizeof(std::string)} \} \\
+    &+ \texttt{パディングなど}
+\end{align*}
+\normalsize
+になる。\lstinline!sizeof(S)!は、
+\small
+\begin{align*}
+    \texttt{sizeof(S)} = &~ \texttt{sizeof(int)} + \texttt{sizeof(double)} + \texttt{sizeof(std::string)} \\
+    &+ \texttt{パディングなど}
+\end{align*}
+\normalsize
+になる。
+
+\lstinline!union!はメモリー効率がよい。\lstinline!union!は\lstinline!variant!と違い型非安全だ。どの型の値を保持しているかという情報は保持しないので、ユーザーが適切に管理しなければならない。
+
+試しに、冒頭のコードを\lstinline!union!で書くと、以下のようになる。
+
+\begin{lstlisting}[language=C++]
+union U
+{
+    int i ;
+    double d ;
+    std::string s ;
+
+    // コンストラクター
+    // int型をデフォルト初期化する
+    U() : i{} { }
+    // デストラクター
+    // 何もしない。オブジェクトの破棄はユーザーの責任に任せる
+    ~U() { }
+} ;
+
+// デストラクター呼び出し
+template < typename T >
+void destruct ( T & x )
+{
+    x.~T() ;
+}
+
+int main()
+{
+    U u ;
+
+    // 基本型はそのまま代入できる
+    // 破棄も考えなくてよい
+    u.i = 0 ;
+    u.d = 0.0 ;
+
+    // 非トリビアルなコンストラクターを持つ型
+    // placement newが必要
+    new(&u.s) std::string("hello") ;
+
+    // ユーザーはどの型を入れたか別に管理しておく必要がある
+    bool has_int = false ;
+    bool has_string = true ;
+
+    std::cout << u.s << '\n' ;
+
+    // 非トリビアルなデストラクターを持つ型
+    // 破棄が必要
+    destruct( u.s ) ;
+}
+\end{lstlisting}
+
+このようなコードは書きたくない。\lstinline!variant!を使えば、このような面倒で冗長なコードを書かずに、型安全に\lstinline!union!と同等機能を実現できる。
+
+%
+% SubSection 4.1.3
+\hypersubsection{section4-1-3}{variantの宣言}
+
+\lstinline!variant!はテンプレート実引数で保持したい型を与える。
+\index{variant@\texttt{variant}!せんげん@宣言}
+
+\begin{lstlisting}[language=C++]
+std::variant< char, short, int, long > v1 ;
+std::variant< int, double, std::string > v2 ;
+std::variant< std::vector<int>, std::list<int> > v3 ;
+\end{lstlisting}
+
+%
+% SubSection 4.1.4
+\hypersubsection{section4-1-4}{variantの初期化}
+\index{variant@\texttt{variant}!しよきか@初期化}
+
+%
+% SubsubSection 4.1.4.1
+\hypersubsubsection{section4-1-4-1}{デフォルト初期化}
+
+\lstinline!variant!はデフォルト構築すると、最初に与えた型の値をデフォルト構築して保持する。
+\index{variant@\texttt{variant}!でふおるとしよきか@デフォルト初期化}
+
+\begin{lstlisting}[language=C++]
+// int
+std::variant< int, double > v1 ;
+// double
+std::variant< double, int > v2 ;
+\end{lstlisting}
+
+\lstinline!variant!にデフォルト構築できない型を最初に与えると、\lstinline!variant!もデフォルト構築できない。
+
+\begin{lstlisting}[language=C++]
+// デフォルト構築できない型
+struct non_default_constructible
+{
+    non_default_constructible() = delete ;
+} ;
+
+// エラー
+// デフォルト構築できない
+std::variant< non_default_constructible > v ;
+\end{lstlisting}
+
+デフォルト構築できない型だけを保持する\lstinline!variant!をデフォルト構築するためには、最初の型をデフォルト構築可能な型にすればよい。
+
+\begin{lstlisting}[language=C++]
+struct A { A() = delete ; } ;
+struct B { B() = delete ; } ;
+struct C { C() = delete ; } ;
+
+struct Empty { } ;
+
+
+int main()
+{
+    // OK、Emptyを保持
+    std::variant< Empty, A, B, C > v ;
+}
+\end{lstlisting}
+
+このような場合に、\lstinline!Empty!のようなクラスをわざわざ独自に定義するのは面倒なので、標準ライブラリには\lstinline!std::monostate!クラスが以下のように定義されている。
+\index{std::monostate@\texttt{std::monostate}}
+
+\begin{lstlisting}[language=C++]
+namespace std {
+    struct monostate { } ;
+}
+\end{lstlisting}
+
+したがって、上の例は以下のように書ける。
+
+\begin{lstlisting}[language=C++]
+// OK、std::monostateを保持
+std::variant< std::monostate, A, B, C > v ;
+\end{lstlisting}
+
+\lstinline!std::monostate!は\lstinline!variant!の最初のテンプレート実引数として使うことで\lstinline!variant!をデフォルト構築可能にするための型だ。それ以上の意味はない。
+
+%
+% SubsubSection 4.1.4.2
+\vskip 1zw
+\hypersubsubsection{section4-1-4-2}{コピー初期化}
+\index{variant@\texttt{variant}!こぴしよきか@コピー初期化}
+
+\lstinline!variant!に同じ型の\lstinline!variant!を渡すと、コピー/ムーブする。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant<int> a ;
+    // コピー
+    std::variant<int> b ( a ) ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.1.4.3
+\vskip 1zw
+\hypersubsubsection{section4-1-4-3}{variantのコンストラクターに値を渡した場合}
+
+\lstinline!variant!のコンストラクターに上記以外の値を渡した場合、\lstinline!variant!のテンプレート実引数に指定した型の中から、オーバーロード解決により最適な型が選ばれ、その型の値に変換され、値を保持する。
+
+\begin{lstlisting}[language=C++]
+using val = std::variant< int, double, std::string > ;
+
+int main()
+{
+    // int
+    val a(42) ;
+    // double
+    val b( 0.0 ) ; 
+
+    // std::string
+    // char const *型はstd::string型に変換される
+    val c("hello") ;
+
+    // int
+    // char型はIntegral promotionによりint型に優先的に変換される
+    val d( 'a' ) ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.1.4.4
+\vskip 1zw
+\hypersubsubsection{section4-1-4-4}{in\texttt{\_}place\texttt{\_}typeによるemplace構築}
+\index{std::in\_place\_type<T>@\texttt{std::in\_place\_type<T>}}\index{emplace@\texttt{emplace}}\index{variant@\texttt{variant}!emplace@\texttt{emplace}}
+
+\lstinline!variant!のコンストラクターの第一引数に~\lstinline!std::in_place_type<T>!~を渡すことにより、\lstinline!T!型の要素を構築するために\lstinline!T!型のコンストラクターに渡す実引数を指定できる。
+
+ほとんどの型はコピーかムーブができる。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int, int ) { }
+} ;
+
+int main()
+{
+    // Xを構築
+    X x( a, b, c ) ;
+    // xをコピー
+    std::variant<X> v( x ) ;
+}
+\end{lstlisting}
+
+しかし、もし型\lstinline!X!がコピーもムーブもできない型だったとしたら、上記のコードは動かない。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int, int ) { }
+    X( X const & ) = delete ;
+    X( X && ) = delete ; 
+} ;
+
+int main()
+{
+    // Xを構築
+    X x( 1, 2, 3 ) ;
+    // エラー、Xはコピーできない
+    std::variant<X> v( x ) ;
+}
+\end{lstlisting}
+
+このような場合、\lstinline!variant!が内部で\lstinline!X!を構築する際に、構築に必要なコンストラクターの実引数を渡して、\lstinline!variant!に\lstinline!X!を構築させる必要がある。そのために~\lstinline!std::in_place_type<T>!~が使える。\lstinline!T!に構築したい型を指定して第一引数とし、第二引数以降を\lstinline!T!のコンストラクターに渡す値にする。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int, int ) { }
+    X( X const & ) = delete ;
+    X( X && ) = delete ; 
+} ;
+
+int main()
+{
+    // Xの値を構築して保持
+    std::variant<X> v( std::in_place_type<X>, 1, 2, 3 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.5
+\hypersubsection{section4-1-5}{variantの破棄}
+\index{variant@\texttt{variant}!はき@破棄}
+
+\lstinline!variant!のデストラクターは、そのときに保持している値を適切に破棄してくれる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::vector<int> v ;
+    std::list<int> l ;
+    std::deque<int> d ;
+    std::variant< 
+        std::vector<int>, 
+        std::list<int>,
+        std::deque<int>
+    > val ;
+
+    val = v ;
+    val = l ;
+    val = d ;
+
+    // variantのデストラクターはdeque<int>を破棄する
+}
+\end{lstlisting}
+
+\lstinline!variant!のユーザーは何もする必要がない。
+
+%
+% SubSection 4.1.6
+\hypersubsection{section4-1-6}{variantの代入}
+\index{variant@\texttt{variant}!だいにゆう@代入}
+
+\lstinline!variant!の代入はとても自然だ。\lstinline!variant!を渡せばコピーするし、値を渡せばオーバーロード解決に従って適切な型の値を保持する。
+
+%
+% SubSection 4.1.7
+\hypersubsection{section4-1-7}{variantのemplace}
+\index{emplace@\texttt{emplace}}\index{variant@\texttt{variant}!emplace@\texttt{emplace}}
+
+\lstinline!variant!は\lstinline!emplace!をサポートしている。\lstinline!variant!の場合、構築すべき型を知らせる必要があるので、\lstinline!emplace<T>!~の\lstinline!T!で構築すべき型を指定する。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int, int ) { }
+    X( X const & ) = delete ;
+    X( X && ) = delete ; 
+} ;
+
+int main()
+{
+    std::variant<std::monostate, X, std::string> v ;
+
+    // Xを構築
+    v.emplace<X>( 1, 2, 3 ) ;
+    // std::stringを構築
+    v.emplace< std::string >( "hello" ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.8
+\hypersubsection{section4-1-8}{variantに値が入っているかどうかの確認}
+
+%
+% SubsubSection 4.1.8.1
+\hypersubsubsection{section4-1-8-1}{valueless\texttt{\_}by\texttt{\_}exceptionメンバー関数}
+\index{valueless\_by\_exception@\texttt{valueless\_by\_exception}}\index{variant@\texttt{variant}!valueless\_by\_exception@\texttt{valueless\_by\_exception}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr bool valueless_by_exception() const noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!valueless_by_exception!メンバー関数は、\lstinline!variant!が値を保持している場合、\lstinline!false!を返す。
+
+\begin{lstlisting}[language=C++]
+void f( std::variant<int> & v )
+{
+
+    if ( v.valueless_by_exception() ) 
+    { // true
+        // vは値を保持していない
+    }
+    else
+    { // false
+        // vは値を保持している
+    }
+}
+\end{lstlisting}
+
+\lstinline!variant!はどの値も保持しない状態になることがある。たとえば、\lstinline!std::string!はコピーにあたって動的なメモリー確保を行うかもしれない。\lstinline!variant!が\lstinline!std::string!をコピーする際に、動的メモリー確保に失敗した場合、コピーは失敗する。なぜならば、\lstinline!variant!は別の型の値を構築する前に、以前の値を破棄しなければならないからだ。\lstinline!variant!は値を持たない状態になりうる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int, std::string > v ;
+    try {
+        std::string s("hello") ;
+        v = s ; // 動的メモリー確保が発生するかもしれない
+    } catch( std::bad_alloc e )
+    {
+        // 動的メモリー確保が失敗するかもしれない
+    }
+
+    // 動的メモリー確保の失敗により
+    // trueになるかもしれない
+    bool b = v.valueless_by_exception() ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.1.8.2
+\vskip 1zw
+\hypersubsubsection{section4-1-8-2}{indexメンバー関数}
+\index{index@\texttt{index}}\index{variant@\texttt{variant}!index@\texttt{index}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+constexpr size_t index() const noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!index!メンバー関数は、\lstinline!variant!に指定したテンプレート実引数のうち、現在\lstinline!variant!が保持している値の型を0ベースのインデックスで返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int, double, std::string > v ;
+
+    auto v0 = v.index() ; // 0
+    v = 0.0 ;
+    auto v1 = v.index() ; // 1
+    v = "hello" ;
+    auto v2 = v.index() ; // 2
+}
+\end{lstlisting}
+
+もし\lstinline!variant!が値を保持しない場合、つまり\lstinline!valueless_by_exception()!が\lstinline!true!を返す場合は、\lstinline!std::variant_npos!を返す。
+
+\begin{lstlisting}[language=C++]
+// variantが値を持っているかどうか確認する関数
+template < typename ... Types  >
+void has_value( std::variant< Types ... > && v )
+{
+    return v.index() != std::variant_npos ;
+
+    // これでもいい
+    // return v.valueless_by_exception() == false ;
+}
+\end{lstlisting}
+
+\lstinline!std::variant_npos!の値は\(-1\)だ。
+
+%
+% SubSection 4.1.9
+\hypersubsection{section4-1-9}{swap}
+\index{swap@\texttt{swap}}\index{variant@\texttt{variant}!swap@\texttt{swap}}
+
+\lstinline!variant!は\lstinline!swap!に対応している。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant<int> a, b ;
+
+    a.swap(b) ;
+    std::swap( a, b ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.10
+\hypersubsection{section4-1-10}{variant\texttt{\_}size\texttt{<}T\texttt{>} : variantが保持できる型の数を取得}
+\index{std::variant\_size<T>@\texttt{std::variant\_size<T>}}\index{variant@\texttt{variant}!std::variant\_size<T>@\texttt{std::variant\_size<T>}}
+
+\lstinline!std::variant_size<T>!は、\lstinline!T!に\lstinline!variant!型を渡すと、\lstinline!variant!が保持できる型の数を返してくれる。
+
+\begin{lstlisting}[language=C++]
+using t1 = std::variant<char> ;
+using t2 = std::variant<char, short> ;
+using t3 = std::variant<char, short, int> ;
+
+// 1
+constexpr std::size_t t1_size = std::variant_size<t1>::size ;
+// 2
+constexpr std::size_t t2_size = std::variant_size<t2>::size ;
+// 3
+constexpr std::size_t t2_size = std::variant_size<t3>::size ;
+\end{lstlisting}
+
+\lstinline!variant_sizeはintegral_constant!を基本クラスに持つクラスなので、デフォルト構築した結果をユーザー定義変換することでも値を取り出せる。
+
+\begin{lstlisting}[language=C++]
+using type = std::variant<char, short, int> ;
+
+constexpr std::size_t size = std::variant_size<type>{} ;
+\end{lstlisting}
+
+\lstinline!variant_size!を以下のようにラップした変数テンプレートも用意されている。
+
+\begin{lstlisting}[language=C++]
+template <class T>
+    inline constexpr size_t variant_size_v = variant_size<T>::value;
+\end{lstlisting}
+
+これを使えば、以下のようにも書ける。
+
+\begin{lstlisting}[language=C++]
+using type = std::variant<char, short, int> ;
+
+constexpr std::size_t size = std::variant_size_v<type> ;
+\end{lstlisting}
+
+%
+% SubSection 4.1.11
+\hypersubsection{section4-1-11}{variant\texttt{\_}alternative\texttt{<}I, T\texttt{>} : インデックスから型を返す}
+\index{std::variant\_alternative<I, T>@\texttt{std::variant\_alternative<I, T>}}\index{variant@\texttt{variant}!std::variant\_alternative<I, T>@\texttt{std::variant\_alternative<I, T>}}
+
+\lstinline!std::variant_alternative<I, T>!~は\lstinline!T!型の\lstinline!variant!の保持できる型のうち、\lstinline!I!番目の型をネストされた型名\lstinline!type!で返す。
+
+\begin{lstlisting}[language=C++]
+using type = std::variant< char, short, int > ;
+
+// char
+using t0 = std::variant_alternative< 0, type >::type ;
+// short
+using t1 = std::variant_alternative< 1, type >::type ;
+// int
+using t2 = std::variant_alternative< 2, type >::type ;
+\end{lstlisting}
+
+\lstinline!variant_alternative_t!というテンプレートエイリアスが以下のように定義されている。
+
+\begin{lstlisting}[language=C++]
+template <size_t I, class T>
+    using variant_alternative_t 
+        = typename variant_alternative<I, T>::type ;
+\end{lstlisting}
+
+これを使えば、以下のようにも書ける。
+
+\begin{lstlisting}[language=C++]
+using type = std::variant< char, short, int > ;
+
+// char
+using t0 = std::variant_alternative_t< 0, type > ;
+// short
+using t1 = std::variant_alternative_t< 1, type > ;
+// int
+using t2 = std::variant_alternative_t< 2, type > ;
+\end{lstlisting}
+
+%
+% SubSection 4.1.12
+\hypersubsection{section4-1-12}{holds\texttt{\_}alternative : variantが指定した型の値を保持しているかどうかの確認}
+\index{holds\_alternative<T>(v)@\texttt{holds\_alternative<T>(v)}}\index{variant@\texttt{variant}!holds\_alternative<T>(v)@\texttt{holds\_alternative<T>(v)}}
+
+\lstinline!holds_alternative<T>(v)!は、\lstinline!variant v!が\lstinline!T!型の値を保持しているかどうかを確認する。保持しているのであれば\lstinline!true!を、そうでなければ\lstinline!false!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // int型の値を構築
+    std::variant< int, double > v ;
+
+    // true
+    bool has_int = std::holds_alternative<int>(v) ;
+    // false
+    bool has_double = std::holds_alternative<double>(v) ;
+}
+\end{lstlisting}
+
+型\lstinline!T!は実引数に与えられた\lstinline!variant!が保持できる型でなければならない。以下のようなコードはエラーとなる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int > v ;
+
+    // エラー
+    std::holds_alternative<double>(v) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.13
+\hypersubsection{section4-1-13}{get\texttt{<}I\texttt{>}(v) : インデックスから値の取得}
+\index{get<I>(v)@\texttt{get<I>(v)}}\index{variant@\texttt{variant}!get<I>(v)@\texttt{get<I>(v)}}
+
+\lstinline!get<I>(v)!は、\lstinline!variant v!の型のインデックスから\lstinline!I!番目の型の値を返す。インデックスは0ベースだ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 0: int
+    // 1: double
+    // 2: std::string
+    std::variant< int, double, std::string > v(42) ;
+
+    // int, 42
+    auto a = std::get<0>(v) ;
+
+    v = 3.14 ;
+    // double, 3.14
+    auto b = std::get<1>(v) ;
+
+    v = "hello" ;
+    // std::string, "hello"
+    auto c = std::get<2>(v) ;
+}
+\end{lstlisting}
+
+\lstinline!I!がインデックスの範囲を超えているとエラーとなる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // インデックスは0, 1, 2まで
+    std::variant< int, double, std::string > v ;
+
+    // エラー、範囲外
+    std::get<3>(v) ;
+}
+\end{lstlisting}
+
+もし、\lstinline!variant!が値を保持していない場合、つまり\lstinline"v.index() != I"の場合は、\lstinline!std::bad_variant_access!が\lstinline!throw!される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // int型の値を保持
+    std::variant< int, double > v( 42 ) ;
+
+    try {
+        // double型の値を要求
+        auto d = std::get<1>(v) ;
+    } catch ( std::bad_variant_access & e )
+    {
+        // doubleは保持していなかった
+    }
+}
+\end{lstlisting}
+
+\lstinline!get!の実引数に渡す\lstinline!variant!が\lstinline!lvalue!の場合は、戻り値は\lstinline!lvalue!リファレンス、\lstinline!rvalue!の場合は戻り値は\lstinline!rvalue!リファレンスになる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int > v ;
+
+    // int &
+    decltype(auto) a = std::get<0>(v) ;
+    // int &&
+    decltype(auto) b = std::get<0>( std::move(v) ) ;
+}
+\end{lstlisting}
+
+\lstinline!get!の実引数に渡す\lstinline!variant!がCV修飾されている場合、戻り値の型も実引数と同じくCV修飾される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int > const cv ;
+    std::variant< int > volatile vv ;
+    std::variant< int > const volatile cvv ;
+
+    // int const &
+    decltype(auto) a = std::get<0>( cv ) ;
+    // int volatile &
+    decltype(auto) b = std::get<0>( vv ) ;
+    // int const volatile &
+    decltype(auto) c = std::get<0>( cvv ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.14
+\hypersubsection{section4-1-14}{get\texttt{<}T\texttt{>}(v) : 型から値の取得}
+\index{get<T>(v)@\texttt{get<T>(v)}}\index{variant@\texttt{variant}!get<T>(v)@\texttt{get<T>(v)}}
+
+\lstinline!get<T>(v)!は、\lstinline!variant v!の保有する型\lstinline!T!の値を返す。型\lstinline!T!の値を保持していない場合、\lstinline!std::bad_variant_access!が\lstinline!throw!される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int, double, std::string > v( 42 ) ;
+
+    // int
+    auto a = std::get<int>( v ) ;
+
+    v = 3.14 ;
+    // double
+    auto b = std::get<double>( v ) ;
+
+    v = "hello" ;
+    // std::string
+    auto c = std::get<std::string>( v ) ;
+}
+\end{lstlisting}
+
+その他はすべて~\lstinline!get<I>!~と同じ。
+
+%
+% SubSection 4.1.15
+\hypersubsection{section4-1-15}{get\texttt{\_}if : 値を保持している場合に取得}
+\index{get\_if<I>(vp)@\texttt{get\_if<I>(vp)}}\index{variant@\texttt{variant}!get\_if<I>(vp)@\texttt{get\_if<I>(vp)}}\index{get\_if<T>(vp)@\texttt{get\_if<T>(vp)}}\index{variant@\texttt{variant}!get\_if<T>(vp)@\texttt{get\_if<T>(vp)}}
+
+\lstinline!get_if<I>(vp)!と\lstinline!get_if<T>(vp)!は、\lstinline!variant!へのポインター\lstinline!vp!を実引数に取り、\lstinline!*vp!がインデックス\lstinline!I!,
+もしくは型\lstinline!T!の値を保持している場合、その値へのポインターを返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int, double, std::string > v( 42 ) ;
+
+    // int *
+    auto a = std::get_if<int>( &v ) ; 
+
+    v = 3.14 ;
+    // double *
+    auto b = std::get_if<1>( &v ) ;
+
+    v = "hello" ;
+    // std::string
+    auto c = std::get_if<2>( &v ) ;
+
+}
+\end{lstlisting}
+
+もし、\lstinline!vp!が\lstinline!nullptr!の場合、もしくは~\lstinline!*vp!~が指定された値を保持していない場合は、\lstinline!nullptr!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // int型の値を保持
+    std::variant< int, double > v( 42 ) ;
+
+    // nullptr
+    auto a = std::get_if<int>( nullptr ) ;
+
+    // nullptr
+    auto a = std::get_if<double>( &v ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.1.16
+\hypersubsection{section4-1-16}{variantの比較}
+
+\lstinline!variant!は比較演算子がオーバーロードされているため比較できる。\lstinline!variant!同士の比較は、一般のプログラマーは自然だと思う結果になるように実装されている。
+
+%
+% SubsubSection 4.1.16.1
+\vskip 1zw
+\hypersubsubsection{section4-1-16-1}{同一性の比較}
+\index{variant@\texttt{variant}!どういつせいのひかく@同一性の比較}
+
+\lstinline!variant!の同一性の比較のためには、\lstinline!variant!のテンプレート実引数に与える型は自分自身と比較可能でなければならない。
+
+つまり、\lstinline!variant v!,
+\lstinline!w!に対して、式\lstinline!get<i>(v) == get<i>(w)!がすべての\lstinline!i!に対して妥当でなければならない。
+
+\lstinline!variant v!,
+\lstinline!w!の同一性の比較は、\lstinline!v == w!の場合、以下のように行われる。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \lstinline"v.index() != w.index()"ならば、\lstinline!false!
+\item
+  それ以外の場合、\lstinline!v.value_less_by_exception()!ならば、\lstinline!true!
+\item
+  それ以外の場合、\lstinline!get<i>(v) == get<i>(w)!。ただし\lstinline!i!は\lstinline!v.index()!
+\end{enumerate}
+
+2つの\lstinline!variant!が別の型を保持している場合は等しくない。ともに値なしの状態であれば等しい。それ以外は保持している値同士が比較される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int, double > a(0), b(0) ;
+
+    // true
+    // 同じ型の同じ値を保持している
+    a == b ;
+
+    a = 1.0 ;
+
+    // false
+    // 型が違う
+    a == b ;
+}
+\end{lstlisting}
+
+たとえば~\lstinline!operator ==!~は以下のような実装になる。
+
+\begin{lstlisting}[language=C++]
+template <class... Types>
+constexpr bool 
+operator == (const variant<Types...>& v, const variant<Types...>& w)
+{
+    if ( v.index() != w.index() )
+        return false ;
+    else if ( v.valueless_by_exception() )
+        return true ;
+    else
+        return std::visit( 
+            []( auto && a, auto && b ){ return a == b ; },
+            v, w ) ;
+}
+\end{lstlisting}
+
+\lstinline"operator !="~はこの逆だと考えてよい。
+
+%
+% SubsubSection 4.1.16.2
+\vskip 1zw
+\hypersubsubsection{section4-1-16-2}{大小比較}
+\index{variant@\texttt{variant}!だいしようひかく@大小比較}
+
+\lstinline!variant!の大小の比較のためには、\lstinline!variant!のテンプレート実引数に与える型は自分自身と比較可能でなければならない。
+
+つまり、\lstinline!operator <!~の場合、\lstinline!variant v!,
+\lstinline!w!に対して、式\lstinline!get<i>(v) < get<i>(w)!がすべての\lstinline!i!に対して妥当でなければならない。
+
+\lstinline!variant v!,
+\lstinline!w!の大小比較は、\lstinline!v < w!の場合、以下のように行われる。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \lstinline!w.valueless_by_exception()!ならば、\lstinline!false!
+\item
+  それ以外の場合、\lstinline!v.valueless_by_exception()!ならば、\lstinline!true!
+\item
+  それ以外の場合、\lstinline!v.index() < w.index()!ならば、\lstinline!true!
+\item
+  それ以外の場合、\lstinline!v.index() > w.index()!ならば、\lstinline!false!
+\item
+  それ以外の場合、\lstinline!get<i>(v) < get<i>(w)!。ただし\lstinline!i!は\lstinline!v.index()!
+\end{enumerate}
+
+値なしの\lstinline!variant!は最も小さいとみなされる。インデックスの小さいほうが小さいとみなされる。どちらも同じ型の値があるのであれば、値同士の比較となる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant< int, double > a(0), b(0) ;
+
+    // false
+    // 同じ型の同じ値を比較
+    a < b ;
+
+    a = 1.0 ;
+
+    // false
+    // インデックスによる比較
+    a < b ;
+    // true
+    // インデックスによる比較
+    b < a ;
+}
+\end{lstlisting}
+
+\lstinline!operator <!~は以下のような実装になる。
+
+\begin{lstlisting}[language=C++]
+template <class... Types>
+constexpr bool 
+operator<(const variant<Types...>& v, const variant<Types...>& w)
+{
+    if ( w.valueless_by_exception() )
+        return false ;
+    else if ( v.valueless_by_exception() )
+        return true ;
+    else if ( v.index() < w.index() )
+        return true ;
+    else if ( v.index() > w.index() )
+        return false ;
+    else
+        return std::visit( 
+            []( auto && a, auto && b ){ return a < b ; },
+            v, w ) ;
+}
+\end{lstlisting}
+
+残りの大小比較も同じ方法で比較される。
+
+%
+% SubSection 4.1.17
+\hypersubsection{section4-1-17}{visit : variantが保持している値を受け取る}
+\index{std::visit@\texttt{std::visit}}\index{variant@\texttt{variant}!std::visit@\texttt{std::visit}}
+
+\lstinline!std::visit!は、\lstinline!variant!の保持している型を実引数に関数オブジェクトを呼んでくれるライブラリだ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    using val = std::variant<int, double> ;
+
+    val v(42) ;
+    val w(3.14) ;
+
+    auto visitor =  []( auto a, auto b ) 
+                    { std::cout << a << b << '\n' ; } ;
+
+    // visitor( 42, 3.14 )が呼ばれる
+    std::visit( visitor, v, w ) ;
+    // visitor( 3.14, 42 ) が呼ばれる
+    std::visit( visitor, w, v ) ;
+}
+\end{lstlisting}
+
+このように、\lstinline!variant!にどの型の値が保持されていても扱うことができる。
+
+\lstinline!std::visit!は以下のように宣言されている。
+
+\begin{lstlisting}[language=C++]
+template < class Visitor, class... Variants >
+constexpr auto visit( Visitor&& vis, Variants&&... vars ) ;
+\end{lstlisting}
+
+第一引数に関数オブジェクトを渡し、第二引数以降に\lstinline!variant!を渡す。すると、\lstinline!vis( get<i>(vars)... )!のように呼ばれる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::variant<int> a(1), b(2), c(3) ;
+
+    // ( 1 ) 
+    std::visit( []( auto x ) {}, a ) ;
+
+    // ( 1, 2, 3 )
+    std::visit( []( auto x, auto y, auto z ) {}, a, b, c ) ;
+}
+\end{lstlisting}
+

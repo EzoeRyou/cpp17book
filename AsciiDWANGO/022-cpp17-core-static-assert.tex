@@ -1,0 +1,23 @@
+%
+% Section 3.8
+\hypersection{section3-8}{文字列なしstatic\texttt{\_}assert}
+\index{もじれつなしstatic\_assert@文字列なし\texttt{static\_assert}}\index{static\_assert@\texttt{static\_assert}!もじれつなし@文字列なし}
+
+C++17では\lstinline!static_assert!に文字列リテラルを取らないものが追加された。
+
+\begin{lstlisting}[language=C++]
+static_assert( true ) ;
+\end{lstlisting}
+
+C++11で追加された\lstinline!static_assert!には、文字列リテラルが必須だった。
+
+\begin{lstlisting}[language=C++]
+static_assert( true, "this shall not be asserted." ) ;
+\end{lstlisting}
+
+特に文字列を指定する必要がない場合もあるので、文字列リテラルを取らない\lstinline!static_assert!が追加された。
+
+機能テストマクロは~\lstinline!__cpp_static_assert!, 値は201411。
+\index{\_\_cpp\_static\_assert@\texttt{\_\_cpp\_static\_assert}}
+
+C++11の時点で~\lstinline!__cpp_static_assert!の値は200410。

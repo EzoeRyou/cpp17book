@@ -1,0 +1,484 @@
+%
+% Section 9.19
+\hypersection{section9-19}{連想コンテナーへのsplice操作}
+
+C++17では、連想コンテナーと非順序連想コンテナーで\lstinline!splice!操作がサポートされた。
+\index{れんそうこんてな@連想コンテナー}\index{ひじゆんじよれんそうこんてな@非順序連想コンテナー}\index{splice@\texttt{splice}}
+
+対象のコンテナーは\lstinline!map!, \lstinline!set!,
+\lstinline!multimap!, \lstinline!multiset!, \lstinline!unordered_map!,
+\lstinline!unordered_set!, \lstinline!unordered_multimap!,
+\lstinline!unordered_multiset!だ。
+\index{map@\texttt{map}}\index{set@\texttt{set}}\index{multimap@\texttt{multimap}}\index{multiset@\texttt{multiset}}\index{unordered\_map@\texttt{unordered\_map}}\index{unordered\_set@\texttt{unordered\_set}}\index{unordered\_multimap@\texttt{unordered\_multimap}}\index{unordered\_multiset@\texttt{unordered\_multiset}}
+
+\lstinline!splice!操作とは\lstinline!list!で提供されている操作で、アロケーター互換の\lstinline!list!のオブジェクトの要素をストレージと所有権ごと別のオブジェクトに移動する機能だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::list<int> a = {1,2,3} ;
+    std::list<int> b = {4,5,6} ;
+
+    a.splice( std::end(a), b, std::begin(b) ) ;
+
+    // aは{1,2,3,4}
+    // bは{5,6}
+
+    b.splice( std::end(b), a ) ;
+
+    // aは{}
+    // bは{5,6,1,2,3,4}
+
+}
+\end{lstlisting}
+
+連想コンテナーでは、ノードハンドルという仕組みを用いて、コンテナーのオブジェクトから要素の所有権をコンテナーの外に出す仕組みで、\lstinline!splice!操作を行う。
+
+%
+% SubSection 9.19.1
+\hypersubsection{section9-19-1}{merge}
+
+すべての連想コンテナーと非順序連想コンテナーは、メンバー関数\lstinline!merge!を持っている。コンテナー\lstinline!a!,
+\lstinline!b!がアロケーター互換のとき、\lstinline!a.merge(b)!は、コンテナー\lstinline!b!の要素の所有権をすべてコンテナー\lstinline!a!に移す。
+\index{れんそうこんてな@連想コンテナー!merge@\texttt{merge}}\index{ひじゆんじよれんそうこんてな@非順序連想コンテナー!merge@\texttt{merge}}\index{merge@\texttt{merge}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> a = {1,2,3} ;
+    std::set<int> b = {4,5,6} ;
+
+    // bの要素をすべてaに移す
+    a.merge(b) ;
+
+    // aは{1,2,3,4,5,6}
+    // bは{}
+}
+\end{lstlisting}
+
+もし、キーの重複を許さないコンテナーの場合で、値が重複した場合、重複した要素は移動しない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> a = {1,2,3} ;
+    std::set<int> b = {1,2,3,4,5,6} ;
+
+    a.merge(b) ;
+
+    // aは{1,2,3,4,5,6}
+    // bは{1,2,3}
+
+}
+\end{lstlisting}
+
+\lstinline!merge!によって移動された要素を指すポインターとイテレーターは、要素の移動後も妥当である。ただし、所属するコンテナーのオブジェクトが変わる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> a = {1,2,3} ;
+    std::set<int> b = {4,5,6} ;
+
+
+    auto iterator = std::begin(b) ;
+    auto pointer = &*iterator ;
+
+    a.merge(b) ;
+
+    // iteratorとpointerはまだ妥当
+    // ただし要素はaに所属する
+}
+\end{lstlisting}
+
+%
+% SubSection 9.19.2
+\hypersubsection{section9-19-2}{ノードハンドル}
+
+ノードハンドルとは、コンテナーオブジェクトから要素を構築したストレージの所有権を切り離す機能だ。
+\index{のどはんどる@ノードハンドル}
+
+ノードハンドルの型は、各コンテナーのネストされた型名\lstinline!node_type!となる。たとえば~\lstinline!std::set<int>!~のノードハンドル型は、\lstinline!std::set<int>::node_type!となる。
+\index{node\_type@\texttt{node\_type}}\index{のどはんどる@ノードハンドル!node\_type@\texttt{node\_type}}
+
+ノードハンドルは以下のようなメンバーを持っている。
+
+\begin{lstlisting}[language=C++]
+class node_handle
+{
+public :
+    // ネストされた型名
+    using value_type = ... ;        // set限定、要素型
+    using key_type = ... ;          // map限定、キー型
+    using mapped_type = ... ;       // map限定、マップ型
+    using allocator_type = ... ;    // アロケーターの型
+
+    // デフォルトコンストラクター
+    // ムーブコンストラクター
+    // ムーブ代入演算子
+
+
+    // 値へのアクセス
+    value_type & value() const ;   // set限定
+    key_type & key() const ;        // map限定
+    mapped_type & mapped() const ;  // map限定
+
+    // アロケーターへのアクセス
+    allocator_type get_allocator() const ;
+
+    // 空かどうかの判定
+    explicit operator bool() const noexcept ;
+    bool empty() const noexcept ;
+
+    void swap( node_handle & ) ;
+} ;
+\end{lstlisting}
+
+\lstinline!set!のノードハンドルはメンバー関数\lstinline!value!で値を得る。
+\index{value@\texttt{value}}\index{set@\texttt{set}!value@\texttt{value}}\index{のどはんどる@ノードハンドル!value@\texttt{value}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+
+    auto n = c.extract(2) ;
+
+    // n.value() == 2
+    // cは{1,3}
+}
+\end{lstlisting}
+
+\lstinline!map!のノードハンドルはメンバー関数\lstinline!key!と\lstinline!mapped!でそれぞれの値を得る。
+\index{key@\texttt{key}}\index{map@\texttt{map}!key@\texttt{key}}\index{のどはんどる@ノードハンドル!key@\texttt{key}}\index{mapped@\texttt{mapped}}\index{map@\texttt{map}!mapped@\texttt{mapped}}\index{のどはんどる@ノードハンドル!mapped@\texttt{mapped}}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::map< int, int > m =
+    {
+        {1,1}, {2,2}, {3,3}
+    } ;
+
+    auto n = m.extract(2) ;
+
+    // n.key() == 2 
+    // n.mapped() == 2
+    // mは{{1,1},{3,3}}
+
+}
+\end{lstlisting}
+
+ノードハンドルはノードをコンテナーから切り離し、所有権を得る。そのため、ノードハンドルによって得たノードは、元のコンテナーから独立し、元のコンテナーオブジェクトの破棄の際にも破棄されない。ノードハンドルのオブジェクトの破棄時に破棄される。このため、ノードハンドルはアロケーターのコピーも持つ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int>::node_type n ;
+
+    {
+        std::set<int> c = { 1,2,3 } ;
+        // 所有権の移動
+        n = c.extract( std::begin(c) ) ;
+        // cが破棄される
+    }
+
+    // OK
+    // ノードハンドルによって所有権が移動している
+    int x = n.value() ;
+
+    // nが破棄される
+}
+\end{lstlisting}
+
+%
+% SubSection 9.19.3
+\hypersubsection{section9-19-3}{extract : ノードハンドルの取得}
+\index{extract@\texttt{extract}}\index{のどはんどる@ノードハンドル!extract@\texttt{extract}}\index{のどはんどる@ノードハンドル!しゆとく@取得}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+node_type extract( const_iterator position ) ;
+node_type extract( const key_type & x ) ;
+\end{lstlisting}
+\egroup
+
+連想コンテナーと非順序連想コンテナーのメンバー関数\lstinline!extract!は、ノードハンドルを取得するためのメンバー関数だ。
+
+メンバー関数\lstinline!extract(position)!は、イテレーターの\lstinline!position!が指す要素を、コンテナーから除去して、その要素を所有するノードハンドルを返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+
+    auto n1 = c.extract( std::begin(c) ) ;
+
+    // cは{2,3}
+
+    auto n2 = c.extract( std::begin(c) ) ;
+
+    // cは{3}
+
+}
+\end{lstlisting}
+
+メンバー関数\lstinline!extract(x)!は、キー\lstinline!x!がコンテナーに存在する場合、その要素をコンテナーから除去して、その要素を所有するノードハンドルを返す。存在しない場合、空のノードハンドルを返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+
+    auto n1 = c.extract( 1 ) ;
+    // cは{2,3}
+
+    auto n2 = c.extract( 2 ) ;
+    // cは{3}
+
+    // キー4は存在しない
+    auto n3 = c.extract( 4 ) ;
+    // cは{3}
+    // n3.empty() == true
+}
+\end{lstlisting}
+
+キーの重複を許すコンテナーの場合、複数あるうちの1つの所有権が解放される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::multiset<int> c = {1,1,1} ;
+    auto n = c.extract(1) ;
+    // cは{1,1}
+}
+\end{lstlisting}
+
+%
+% SubSection 9.19.4
+\hypersubsection{section9-19-4}{insert : ノードハンドルから要素の追加}
+\index{insert@\texttt{insert}}\index{のどはんどる@ノードハンドル!insert@\texttt{insert}}\index{のどはんどる@ノードハンドル!ようそのついか@要素の追加}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+// キーの重複を許さないコンテナーの場合
+insert_return_type  insert(node_type&& nh);
+// キーの重複を許すmultiコンテナーの場合
+iterator  insert(node_type&& nh);
+
+// ヒント付きのinsert
+iterator            insert(const_iterator hint, node_type&& nh);
+\end{lstlisting}
+\egroup
+
+ノードハンドルをコンテナーのメンバー関数\lstinline!insert!の実引数に渡すと、ノードハンドルから所有権をコンテナーに移動する。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> a = {1,2,3} ;
+    std::set<int> b = {4,5,6} ;
+
+    auto n = a.extract(1) ;
+
+    b.insert( std::move(n) ) ;
+
+    // n.empty() == true
+}
+\end{lstlisting}
+
+ノードハンドルが空の場合、何も起こらない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c ;
+    std::set<int>::node_type n ;
+
+    // 何も起こらない
+    c.insert( std::move(n) ) ;
+}
+\end{lstlisting}
+
+キーの重複を許さないコンテナーに、すでにコンテナーに存在するキーと等しい値を所有するノードハンドルを\lstinline!insert!しようとすると、\lstinline!insert!は失敗する。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+
+    auto n = c.extract(1) ;
+    c.insert( 1 ) ;
+
+    // 失敗する
+    c.insert( std::move(n) ) ; 
+}
+\end{lstlisting}
+
+第一引数にイテレーター\lstinline!hint!を受け取る\lstinline!insert!の挙動は、従来の\lstinline!insert!と同じだ。要素が\lstinline!hint!の直前に追加されるのであれば償却定数時間で処理が終わる。
+
+ノードハンドルを実引数に受け取る\lstinline!insert!の戻り値の型は、キーの重複を許す\lstinline!multi!コンテナーの場合\lstinline!iterator!。キーの重複を許さないコンテナーの場合、\lstinline!insert_return_type!となる。
+
+\lstinline!multi!コンテナーの場合、戻り値は追加した要素を指すイテレーターとなる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::multiset<int> c { 1,2,3 } ;
+
+    auto n = c.extract( 1 ) ;
+
+    auto iter = c.insert( n ) ;
+
+    // cは{1,2,3}
+    // iterは1を指す
+}
+\end{lstlisting}
+
+キーの重複を許さないコンテナーの場合、コンテナーにネストされた型名\lstinline!insert_return_type!が戻り値の型となる。たとえば\lstinline!set<int>!の場合、\lstinline!set<int>::insert_return_type!となる。
+
+\lstinline!insert_return_type!の具体的な名前は規格上規定されていない。\lstinline[breaklines=true]!insert_return_ type!は以下のようなデータメンバーを持つ型となっている。
+\index{insert\_return\_type@\texttt{insert\_return\_type}}\index{のどはんどる@ノードハンドル!insert\_return\_type@\texttt{insert\_return\_type}}
+
+\begin{lstlisting}[language=C++]
+struct insert_return_type
+{
+    iterator position ;
+    bool inserted ;
+    node_type node ;
+} ;
+\end{lstlisting}
+
+\lstinline!position!は\lstinline!insert!によってコンテナーに所有権を移動して追加された要素を指すイテレーター、\lstinline!inserted!は要素の追加が行われた場合に\lstinline!true!となる\lstinline!bool!,
+\lstinline!node!は要素の追加が失敗したときにノードハンドルの所有権が移動されるノードハンドルとなる。
+
+\lstinline!insert!に渡したノードハンドルが空のとき、\lstinline!inserted!は\lstinline!false!,
+\lstinline!position!は\lstinline!end()!, \lstinline!node!は空になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+    std::set<int>::node_type n ; // 空
+
+    auto [position, inserted, node] = c.insert( std::move(n) ) ;
+
+    // inserted == false
+    // position == c.end()
+    // node.empty() == true
+}
+\end{lstlisting}
+
+\lstinline!insert!が成功したとき、\lstinline!inserted!は\lstinline!true!,
+\lstinline!position!は追加された要素を指し、\lstinline!node!は空になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+    auto n = c.extract(1) ;
+
+    auto [position, inserted, node] = c.insert( std::move(n) ) ;
+
+    // inserted == true
+    // position == c.find(1)
+    // node.empty() == true
+}
+\end{lstlisting}
+
+\lstinline!insert!が失敗したとき、つまりすでに同一のキーがコンテナーに存在したとき、\lstinline!inserted!は\lstinline!false!,
+\lstinline!node!は\lstinline!insert!を呼び出す前のノードハンドルの値、\lstinline!position!はコンテナーの中の追加しようとしたキーに等しい要素を指す。\lstinline!insert!に渡したノードハンドルは未規定の値になる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> c = {1,2,3} ;
+    auto n = c.extract(1) ;
+    c.insert(1) ;
+
+    auto [position, inserted, node] = c.insert( std::move(n) ) ;
+
+    // nは未規定の値
+    // inserted == false
+    // nodeはinsert( std::move(n) )を呼び出す前のnの値
+    // position == c.find(1)
+}
+\end{lstlisting}
+
+規格はこの場合の\lstinline!n!の値について規定していないが、最もありうる実装としては、\lstinline!n!は\lstinline!node!にムーブされるので、\lstinline!n!は空になり、ムーブ後の状態になる。
+
+%
+% SubSection 9.19.5
+\hypersubsection{section9-19-5}{ノードハンドルの利用例}
+
+ノードハンドルの典型的な使い方は以下のとおり。
+
+%
+% SubsubSection 9.19.5.1
+\noindent
+\hypersubsubsection{section9-19-5-1}{ストレージの再確保なしに、コンテナーの一部の要素だけ別のコンテナーに移す}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int> a = {1,2,3} ;
+    std::set<int> b = {4,5,6} ;
+
+    auto n = a.extract(1) ;
+    b.insert( std::move(n) ) ;
+}
+\end{lstlisting}
+\egroup
+
+%
+% SubsubSection 9.19.5.2
+\noindent
+\hypersubsubsection{section9-19-5-2}{コンテナーの寿命を超えて要素を存続させる}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::set<int>::node_type n ;
+
+    {
+        std::set<int> c = {1,2,3} ;
+        n = c.extract(1) ;
+        // cが破棄される
+    }
+
+    // コンテナーの破棄後も存続する
+    int value = n.value() ;
+}
+\end{lstlisting}
+\egroup
+
+%
+% SubsubSection 9.19.5.3
+\noindent
+\hypersubsubsection{section9-19-5-3}{mapのキーを変更する}
+
+\lstinline!map!ではキーは変更できない。キーを変更したければ、元の要素は削除して、新しい要素を追加する必要がある。これには動的なストレージの解放と確保が必要になる。
+
+ノードハンドルを使えば、既存の要素のストレージに対して、所有権を\lstinline!map!から引き剥がした上で、キーを変更して、もう一度\lstinline!map!に差し戻すことができる。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::map< std::string, std::string > m =
+    {
+        {"cat", "meow"},
+        {"DOG", "bow"}, // キーを間違えたので変更したい
+        {"cow", "moo"}
+    } ;
+
+    // 所有権を引き剥がす
+    auto n = m.extract("DOG") ;
+    // キーを変更
+    n.key() = "dog" ;
+    // 差し戻す
+    m.insert( std::move(n) ) ;
+}
+\end{lstlisting}
+

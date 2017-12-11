@@ -1,0 +1,20 @@
+%
+% Section 9.23
+\hypersection{section9-23}{atomic\texttt{<}T\texttt{>}::is\texttt{\_}always\texttt{\_}lock\texttt{\_}free}
+\index{is\_always\_lock\_free@\texttt{is\_always\_lock\_free}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template < typename T >
+struct atomic
+{
+    static constexpr bool is_always_lock_free = ... ;
+} ;
+\end{lstlisting}
+\egroup
+
+C++17で~\lstinline!<atomic>!~に追加された\lstinline!atomic<T>::is_always_lock_free!は、\lstinline!atomic<T>!~の実装がすべての実行においてロックフリーであるとコンパイル時に保証できる場合、\lstinline!true!になる\lstinline!static constexpr!な\lstinline!bool!型のデータメンバーだ。
+\index{<atomic>@\texttt{<atomic>}}
+
+\lstinline!atomic!には、他にも\lstinline!bool!を返すメンバー関数\lstinline!is_lock_free!があるが、これは実行時にロックフリーであるかどうかを判定できる。\lstinline!is_always_lock_free!はコンパイル時にロックフリーであるかどうかを判定できる。
+\index{is\_lock\_free@\texttt{is\_lock\_free}}

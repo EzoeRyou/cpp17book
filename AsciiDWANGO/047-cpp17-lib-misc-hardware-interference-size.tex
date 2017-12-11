@@ -1,0 +1,54 @@
+%
+% Section 9.1
+\hypersection{section9-1}{ハードウェア干渉サイズ（キャッシュライン）}
+
+C++17にはハードウェアの干渉サイズを取得するライブラリが入った。ハードウェアの干渉サイズとは、俗にキャッシュライン（cache
+line）とも呼ばれている概念だ。
+\index{はどうえあかんしようさいず@ハードウェア干渉サイズ}\index{きやつしゆらいん@キャッシュライン}
+
+残念ながら、この2017年では、メモリーは極めて遅い。そのため、プロセッサーはより高速にアクセスできるキャッシュメモリーを用意している。メモリーに対するキャッシュはある程度のまとまったバイト数単位で行われる。この単位が何バイトであるのかは実装依存だ。C++17にはこのサイズを取得できるライブラリが入った。
+\index{きやつしゆめもり@キャッシュメモリー}
+
+ハードウェア干渉サイズを知りたい理由は2つある。2つのオブジェクトを同一の局所性を持つキャッシュに載せたくない場合と載せたい場合だ。
+
+2つのオブジェクトのうち、一方は頻繁に変更し、もう一方はめったに変更しない場合で、2つのオブジェクトが同じ局所性を持つキャッシュに載っている場合、よく変更するオブジェクトを変更しただけで、めったに変更しないオブジェクトも、メモリーとの同期が発生する。
+
+\begin{lstlisting}[language=C++]
+struct Data
+{
+    int counter ;
+    int status ;
+} ;
+\end{lstlisting}
+
+ここで、\lstinline!counter!は頻繁に変更するが、\lstinline!status!はめったに変更しない場合、\lstinline!counter!と\lstinline!status!の間に適切なパディングを挿入することで、2つのオブジェクトが同じ局所性を持たないようにしたい。
+
+この場合には、\lstinline!std::hardware_destructive_interference_size!が使える。
+\index{std::hardware\_destructive\_interference\_size@\texttt{std::hardware\_destructive\_interference\_ size}}
+
+\begin{lstlisting}[language=C++]
+struct Data
+{
+    int counter ;
+    std::byte padding[
+        std::hardware_destructive_interference_size - sizeof(int)
+    ] ;
+    int status ;
+} ;
+\end{lstlisting}
+
+反対に、2つのオブジェクトを同一の局所性を持つキャッシュに載せたい場合、\lstinline!std::hardware_constructive_interference_size!が使える。
+\index{std::hardware\_constructive\_interference\_size@\texttt{std::hardware\_constructive\_interference\_ size}}
+
+ハードウェア干渉サイズは~\lstinline!<new>!~ヘッダーで以下のように定義されている。
+\index{<new>@\texttt{<new>}}
+
+\begin{lstlisting}[language=C++]
+namespace std {
+    inline constexpr size_t
+        hardware_destructive_interference_size = 実装依存 ;
+    inline constexpr size_t
+        hardware_constructive_interference_size = 実装依存 ;
+}
+\end{lstlisting}
+

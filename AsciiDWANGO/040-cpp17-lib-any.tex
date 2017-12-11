@@ -1,0 +1,346 @@
+%
+% Section 4.2
+\hypersection{section4-2}{any : どんな型の値でも保持できるクラス}
+\index{any@\texttt{any}}
+
+%
+% SubSection 4.2.1
+\hypersubsection{section4-2-1}{使い方}
+
+ヘッダーファイル~\lstinline!<any>!~で定義されている\lstinline!std::any!は、ほとんどどんな型の値でも保持できるクラスだ。
+\index{<any>@\texttt{<any>}}\index{std::any@\texttt{std::any}}
+
+\begin{lstlisting}[language=C++]
+#include <any>
+
+int main()
+{
+    std::any a ;
+
+    a = 0 ; // int
+    a = 1.0 ; // double
+    a = "hello" ; // char const *
+
+    std::vector<int> v ;
+    a = v ; // std::vector<int>
+
+    // 保持しているstd::vector<int>のコピー
+    auto value = std::any_cast< std::vector<int> >( a ) ;
+}
+\end{lstlisting}
+
+\lstinline!any!が保持できない型は、コピー構築できない型だ。
+
+%
+% SubSection 4.2.2
+\hypersubsection{section4-2-2}{anyの構築と破棄}
+\index{any@\texttt{any}!こうちく@構築}\index{any@\texttt{any}!はき@破棄}
+
+クラス\lstinline!any!はテンプレートではない。そのため宣言は単純だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // 値を保持しない
+    std::any a ;
+    // int型の値を保持する
+    std::any b( 0 ) ;
+    // double型の値を保持する
+    std::any c( 0.0 ) ;
+}
+\end{lstlisting}
+
+\lstinline!any!が保持する型を事前に指定する必要はない。
+
+クラス\lstinline!any!を破棄すると、そのとき保持していた値が適切に破棄される。
+
+%
+% SubSection 4.2.3
+\hypersubsection{section4-2-3}{in\texttt{\_}place\texttt{\_}typeコンストラクター}
+\index{emplace@\texttt{emplace}}\index{any@\texttt{any}!emplace@\texttt{emplace}}\index{std::in\_place\_type<T>@\texttt{std::in\_place\_type<T>}}\index{any@\texttt{any}!std::in\_place\_type<T>@\texttt{std::in\_place\_type<T>}}
+
+\lstinline!any!のコンストラクターで\lstinline!emplace!をするために\lstinline!in_place_type!が使える。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int ) { }
+} ;
+
+int main()
+{
+    // 型XをX(1, 2)で構築した結果の値を保持する
+    std::any a( std::in_place_type<X>, 1, 2 ) ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.2.4
+\hypersubsection{section4-2-4}{anyへの代入}
+\index{any@\texttt{any}!だいにゆう@代入}
+
+\lstinline!any!への代入も普通のプログラマーの期待どおりの動きをする。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::any a ;
+    std::any b ;
+
+    // aはint型の値42を保持する
+    a = 42 ;
+    // bはint型の値42を保持する
+    b = a ;
+    
+}
+\end{lstlisting}
+
+%
+% SubSection 4.2.5
+\hypersubsection{section4-2-5}{anyのメンバー関数}
+
+%
+% SubsubSection 4.2.5.1
+\hypersubsubsection{section4-2-5-1}{emplace}
+\index{emplace@\texttt{emplace}}\index{any@\texttt{any}!emplace@\texttt{emplace}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T, class... Args>
+decay_t<T>& emplace(Args&&... args);
+\end{lstlisting}
+\egroup
+
+\lstinline!any!は\lstinline!emplace!メンバー関数をサポートしている。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int ) { }
+} ;
+
+int main()
+{
+    std::any a ;
+
+    // 型XをX(1, 2)で構築した結果の値を保持する
+    a.emplace<X>( 1, 2 ) ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.2.5.2
+\vskip 1zw
+\hypersubsubsection{section4-2-5-2}{reset : 値の破棄}
+\index{reset@\texttt{reset}}\index{any@\texttt{any}!reset@\texttt{reset}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+void reset() noexcept ; 
+\end{lstlisting}
+\egroup
+
+\lstinline!any!の\lstinline!reset!メンバー関数は、\lstinline!any!の保持してある値を破棄する。\lstinline!reset!を呼び出した後の\lstinline!any!は値を保持しない。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // aは値を保持しない
+    std::any a ;
+    // aはint型の値を保持する
+    a = 0 ;
+
+    // aは値を保持しない
+    a.reset() ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.2.5.3
+\vskip 1zw
+\hypersubsubsection{section4-2-5-3}{swap : スワップ}
+\index{swap@\texttt{swap}}\index{any@\texttt{any}!swap@\texttt{swap}}
+
+\lstinline!any!は\lstinline!swap!メンバー関数をサポートしている。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::any a(0) ;
+    std::any b(0.0) ;
+
+    // aはint型の値を保持
+    // bはdouble型の値を保持
+
+    a.swap(b) ;
+
+    // aはdouble型の値を保持
+    // bはint型の値を保持
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.2.5.4
+\vskip 1zw
+\hypersubsubsection{section4-2-5-4}{has\texttt{\_}value : 値を保持しているかどうか調べる}
+\index{has\_value@\texttt{has\_value}}\index{any@\texttt{any}!has\_value@\texttt{has\_value}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+bool has_value() const noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!any!の\lstinline!has_value!メンバー関数は\lstinline!any!が値を保持しているかどうかを調べる。値を保持しているならば\lstinline!true!を、保持していないならば\lstinline!false!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::any a ;
+
+    // false
+    bool b1 = a.has_value() ;
+
+    a = 0 ;
+    // true
+    bool b2 = a.has_value() ;
+
+    a.reset() ;
+    // false
+    bool b3 = a.has_value() ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.2.5.5
+\vskip 1zw
+\hypersubsubsection{section4-2-5-5}{type : 保持している型のtype\texttt{\_}infoを得る}
+\index{type@\texttt{type}}\index{any@\texttt{any}!type@\texttt{type}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+const type_info& type() const noexcept;
+\end{lstlisting}
+\egroup
+
+\lstinline!type!メンバー関数は、保持している型\lstinline!T!の\lstinline!typeid(T)!を返す。値を保持していない場合、\lstinline!typeid(void)!を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::any a ;
+
+    // typeid(void)
+    auto & t1 = a.type() ;
+
+    a = 0 ;
+    // typeid(int)
+    auto & t2 = a.type() ;
+
+    a = 0.0 ;
+    // typeid(double)
+    auto & t3 = a.type() ;
+}
+\end{lstlisting}
+
+%
+% SubSection 4.2.6
+\hypersubsection{section4-2-6}{anyのフリー関数}
+
+%
+% SubsubSection 4.2.6.1
+\hypersubsubsection{section4-2-6-1}{make\texttt{\_}any\texttt{<}T\texttt{>} : T型のanyを作る}
+\index{make\_any<T>@\texttt{make\_any<T>}}\index{any@\texttt{any}!make\_any<T>@\texttt{make\_any<T>}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template <class T, class... Args>
+any make_any(Args&& ...args);
+
+template <class T, class U, class... Args>
+any make_any(initializer_list<U> il, Args&& ...args);
+\end{lstlisting}
+\egroup
+
+\lstinline!make_any<T>( args... )!は\lstinline!T!型をコンストラクター実引数\lstinline!args...!で構築した値を保持する\lstinline!any!を返す。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    X( int, int ) { }
+} ;
+
+int main()
+{
+    // int型の値を保持するany
+    auto a = std::make_any<int>( 0 ) ;
+    // double型の値を保持するany
+    auto b = std::make_any<double>( 0.0 ) ;
+
+    // X型の値を保持するany
+    auto c = std::make_any<X>( 1, 2 ) ;
+}
+\end{lstlisting}
+
+%
+% SubsubSection 4.2.6.2
+\hypersubsubsection{section4-2-6-2}{any\texttt{\_}cast : 保持している値の取り出し}
+\index{any\_cast<T>@\texttt{any\_cast<T>}}\index{any@\texttt{any}!any\_cast<T>@\texttt{any\_cast<T>}}
+
+\bgroup
+\begin{lstlisting}[language=C++]
+template<class T> T any_cast(const any& operand);
+template<class T> T any_cast(any& operand);
+template<class T> T any_cast(any&& operand);
+\end{lstlisting}
+\egroup
+
+\lstinline!any_cast<T>(operand)!は\lstinline!operand!が保持している値を返す。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::any a(0) ;
+
+    int value = std::any_cast<int>(a) ;
+}
+\end{lstlisting}
+
+\lstinline!any_cast<T>!~で指定した\lstinline!T!型が、\lstinline!any!が保持している型ではない場合、\lstinline!std::bad_any_cast!が\lstinline!throw!される。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    try {
+        std::any a ;
+        std::any_cast<int>(a) ;
+    } catch( std::bad_any_cast e )
+    {
+        // 型を保持していなかった
+    }
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++]
+template<class T>
+const T* any_cast(const any* operand) noexcept;
+template<class T>
+T* any_cast(any* operand) noexcept;
+\end{lstlisting}
+
+\lstinline!any_cast<T>!~に\lstinline!any!へのポインターを渡すと、\lstinline!T!へのポインター型が返される。\lstinline!any!が\lstinline!T!型を保持している場合は\lstinline!T!型を参照するポインターが返る。保持していない場合は、\lstinline!nullptr!が返る。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    std::any a(42) ;
+
+    // int型の値を参照するポインター
+    int * p1 = std::any_cast<int>( &a ) ;
+
+    // nullptr
+    double * p2 = std::any_cast<double>( &a ) ;
+}
+\end{lstlisting}
+

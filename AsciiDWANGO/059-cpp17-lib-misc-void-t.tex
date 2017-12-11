@@ -1,0 +1,17 @@
+%
+% Section 9.13
+\hypersection{section9-13}{void\texttt{\_}t}
+
+ヘッダーファイル~\lstinline!<type_traits>!~で定義されている\lstinline!void_t!は以下のように定義されている。
+\index{<type\_traits>@\texttt{<type\_traits>}}\index{void\_t@\texttt{void\_t}}
+
+\begin{lstlisting}[language=C++]
+namespace std {
+
+template < class ... >
+using void_t = void ;
+
+}
+\end{lstlisting}
+
+\lstinline!void_t!は任意個の型をテンプレート実引数として受け取る\lstinline!void!型だ。この性質はテンプレートメタプログラミングにおいてとても便利なので、標準ライブラリに追加された。

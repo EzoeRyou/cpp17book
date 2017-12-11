@@ -1,0 +1,147 @@
+%
+% Section 2.7
+\hypersection{section2-7}{初期化ラムダキャプチャー}
+
+初期化ラムダキャプチャーはラムダキャプチャーする変数の名前と式を書くことができる機能だ。
+\index{しよきからむだきやぷちや@初期化ラムダキャプチャー}\index{らむだきやぷちや@ラムダキャプチャー}
+
+ラムダ式は書かれた場所から見えるスコープの変数をキャプチャーする。
+\index{らむだしき@ラムダ式}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int x = 0 ;
+    auto f = [=]{ return x ; } ;
+    f() ;
+}
+\end{lstlisting}
+
+初期化ラムダキャプチャーはラムダキャプチャーに初期化子を書くことができる機能だ。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int x = 0 ;
+    [ x = x, y = x, &ref = x, x2 = x * 2 ]
+    {// キャプチャーされた変数を使う
+        x ;
+        y ;
+        ref ;
+        x2 ;
+    } ;
+}
+\end{lstlisting}
+
+初期化ラムダキャプチャーは、``識別子 \lstinline!= expr!''という文法でラムダ導入子\lstinline![]!の中に書く。するとあたかも``\lstinline!auto!~識別子~\lstinline!= expr ;!''と書いたかのように変数が作られる。これによりキャプチャーする変数の名前を変えたり、まったく新しい変数を宣言することができる。
+
+初期化ラムダキャプチャーの識別子の前に~\lstinline!&!~を付けると、リファレンスキャプチャー扱いになる。
+\index{りふあれんすきやぷちや@リファレンスキャプチャー}
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    int x = 0 ;
+    [ &ref = x ]()
+    {
+        ref = 1 ;
+    }() ;
+
+    // xは1
+}
+\end{lstlisting}
+
+初期化ラムダキャプチャーが追加された理由には変数の名前を変えたりまったく新しい変数を導入したいという目的の他に、非\lstinline!static!データメンバーをコピーキャプチャーするという目的がある。
+\index{こぴきやぷちや@コピーキャプチャー}
+
+以下のコードには問題があるが、わかるだろうか。
+
+\begin{lstlisting}[language=C++]
+struct X
+{
+    int data = 42 ;
+
+    auto get_closure_object()
+    {
+        return [=]{ return data ; } ;
+    }
+} ;
+
+
+int main()
+{
+    std::function< int() > f ;
+
+    {
+        X x ;
+        f = x.get_closure_object() ;
+    }
+
+    std::cout << f() << std::endl ;
+}
+\end{lstlisting}
+
+\lstinline!X::get_closure_object!は\lstinline!X::data!を返すクロージャーオブジェクトを返す。
+
+\begin{lstlisting}[language=C++]
+auto get_closure_object()
+{
+    return [=]{ return data ; } ;
+}
+\end{lstlisting}
+
+これを見ると、コピーキャプチャーである\lstinline![=]!を使っているので、\lstinline!data!はクロージャーオブジェクト内にコピーされているように思える。しかし、ラムダ式は非\lstinline!static!データメンバーをキャプチャーしてはいない。ラムダ式がキャプチャーしているのは\lstinline!this!ポインターだ。上のコードと下のコードは同じ意味になる。
+
+\begin{lstlisting}[language=C++]
+auto get_closure_object()
+{
+    return [this]{ return this->data ; } ;
+}
+\end{lstlisting}
+
+さて、\lstinline!main!関数をもう一度見てみよう。
+
+\begin{lstlisting}[language=C++]
+int main()
+{
+    // クロージャーオブジェクトを代入するための変数
+    std::function< int() > f ;
+
+    {
+        X x ; // xが構築される
+        f = x.get_closure_object() ;
+        // xが破棄される
+    }
+
+    // すでにxは破棄された
+    // return &x->dataで破棄されたxを参照する
+    std::cout << f() << std::endl ;
+}
+\end{lstlisting}
+
+なんと、すでに破棄されたオブジェクトへのリファレンスを参照してしまっている。これは未定義の動作だ。
+
+初期化ラムダキャプチャーを使えば、非\lstinline!static!データメンバーもコピーキャプチャーできる。
+
+\begin{lstlisting}[language=C++]
+auto get_closure_object()
+{
+    return [data=data]{ return data ; } ;
+}
+\end{lstlisting}
+
+なお、ムーブキャプチャーは存在しない。ムーブというのは特殊なコピーなので初期化ラムダキャプチャーがあれば実現できるからだ。
+\index{むぶきやぷちや@ムーブキャプチャー}
+
+\begin{lstlisting}[language=C++]
+auto f()
+{
+    std::string str ;
+    std::cin >> str ;
+    // ムーブ
+    return [str = std::move(str)]{ return str ; } ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_init_captures!, 値は201304。
+\index{\_\_cpp\_init\_captures@\texttt{\_\_cpp\_init\_captures}}

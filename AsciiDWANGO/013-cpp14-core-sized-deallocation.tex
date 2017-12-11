@@ -1,0 +1,45 @@
+%
+% Section 2.11
+\hypersection{section2-11}{サイズ付き解放関数}
+\index{さいずつきかいほうかんすう@サイズ付き解放関数}
+
+C++14では\lstinline!operator delete!のオーバーロードに、解放すべきストレージのサイズを取得できるオーバーロードが追加された。
+\index{operator delete@\texttt{operator delete}}\index{delete@\texttt{delete}}
+
+\begin{lstlisting}[language=C++]
+void operator delete    ( void *, std::size_t ) noexcept ;
+void operator delete[]  ( void *, std::size_t ) noexcept ;
+\end{lstlisting}
+
+第二引数は\lstinline!std::size_t!型で、第一引数で指定されたポインターが指す解放すべきストレージのサイズが与えられる。
+\index{std::size\_t@\texttt{std::size\_t}}
+
+たとえば以下のように使える。
+
+\begin{lstlisting}[language=C++]
+void * operator new ( std::size_t size )
+{
+    void * ptr =  std::malloc( size ) ;
+
+    if ( ptr == nullptr )
+        throw std::bad_alloc() ;
+
+    std::cout << "allocated storage of size: " << size << '\n' ;
+    return ptr ;
+}
+
+void operator delete ( void * ptr, std::size_t size ) noexcept
+{
+    std::cout << "deallocated storage of size: " << size << '\n' ;
+    std::free( ptr ) ;
+}
+
+int main()
+{
+    auto u1 = std::make_unique<int>(0) ;
+    auto u2 = std::make_unique<double>(0.0) ;
+}
+\end{lstlisting}
+
+機能テストマクロは~\lstinline!__cpp_sized_deallocation!, 値は201309。
+\index{\_\_cpp\_sized\_deallocation@\texttt{\_\_cpp\_sized\_deallocation}}
