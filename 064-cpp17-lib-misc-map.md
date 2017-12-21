@@ -49,8 +49,8 @@ int main()
     m[0] = nullptr ;
 
     auto ptr = std::make_unique<int>(0) ;
-    // emplaceは失敗する
-    auto [iter, is_emplaced] = m.emplace( 0, std::move(ptr) ) ;
+    // try_emplaceは失敗する
+    auto [iter, is_emplaced] = m.try_emplace( 0, std::move(ptr) ) ;
 
     // trueであることが保証される
     // ptrはムーブされていない
