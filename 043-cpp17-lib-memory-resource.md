@@ -64,7 +64,7 @@ void f( std::pmr::memory_resource * mem )
 2つの`memory_resource`のオブジェクト`a`, `b`があるとき、一方のオブジェクトで確保したストレージをもう一方のオブジェクトで解放できるとき、`a.is_equal( b )`は`true`を返す。
 
 ~~~cpp
-void f( std::pmr::memory_resource * a, std::pmr::memory_resouce * b )
+void f( std::pmr::memory_resource * a, std::pmr::memory_resource * b )
 {
     void * ptr = a->allocate( 1 ) ;
 
@@ -92,7 +92,7 @@ void f( std::pmr::memory_resource * a, std::pmr::memory_resource * b )
 
 ### メモリーリソースの作り方
 
-独自のメモリーアロケーターを`memory_resouce`のインターフェースに合わせて作るには、`memory_resource`から派生した上で、`do_allocate`, `do_deallocate`, `do_is_equal`の3つの`private`純粋`virtual`メンバー関数をオーバーライドする。必要に応じてデストラクターもオーバーライドする。
+独自のメモリーアロケーターを`memory_resource`のインターフェースに合わせて作るには、`memory_resource`から派生した上で、`do_allocate`, `do_deallocate`, `do_is_equal`の3つの`private`純粋`virtual`メンバー関数をオーバーライドする。必要に応じてデストラクターもオーバーライドする。
 
 ~~~c++
 class memory_resource {
@@ -117,7 +117,7 @@ private:
 
 `do_is_equal(other)`は、`*thisとother`が互いに一方で確保したストレージをもう一方で解放できる場合に`true`を返す。
 
-たとえば、`malloc`/`free`を使った`memory_resouce`の実装は以下のとおり。
+たとえば、`malloc`/`free`を使った`memory_resource`の実装は以下のとおり。
 
 ~~~cpp
 // malloc/freeを使ったメモリーリソース
@@ -187,7 +187,7 @@ int main()
 
     std::cin >> b ;
 
-    std::pmr::mempry_resource * mem ;
+    std::pmr::memory_resource * mem ;
     std::unique_ptr< memory_resource > mono ;
 
     if ( b )
@@ -483,7 +483,7 @@ class pool_resource : public memory_resource
 
 ### synchronized/unsynchronized_pool_resource
 
-プールリソースには、`synchronized_pool_resource`と`unsynchronized_pool_resource`がある。どちらもクラス名以外は同じように使える。ただし、`synchronized_pool_resource`は複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、`unsynchronized_pool_resource`は同期を行わない。`unsyncrhonized_pool_resource`は複数のスレッドから同時に呼び出すことはできない。
+プールリソースには、`synchronized_pool_resource`と`unsynchronized_pool_resource`がある。どちらもクラス名以外は同じように使える。ただし、`synchronized_pool_resource`は複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、`unsynchronized_pool_resource`は同期を行わない。`unsynchronized_pool_resource`は複数のスレッドから同時に呼び出すことはできない。
 
 ~~~c++
 // 実装イメージ
@@ -769,4 +769,4 @@ int main()
 memory_resource* upstream_resource() const;
 ~~~
 
-メンバー関数`uptream_resource`は、構築時に与えられた上流メモリーリソースへのポインターを返す。
+メンバー関数`upstream_resource`は、構築時に与えられた上流メモリーリソースへのポインターを返す。

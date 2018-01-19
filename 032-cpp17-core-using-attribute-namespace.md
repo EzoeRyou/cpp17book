@@ -4,8 +4,8 @@ C++17では、属性名前空間に`using`ディレクティブのような記�
 
 ~~~c++
 
-// [[extention::foo, extention::bar]]と同じ
-[[ using extention : foo, bar ]] int x ;
+// [[extension::foo, extension::bar]]と同じ
+[[ using extension : foo, bar ]] int x ;
 ~~~
 
 属性トークンには、属性名前空間を付けることができる。これにより、独自拡張の属性トークンの名前の衝突を避けることができる。
@@ -19,7 +19,7 @@ C++17では、属性名前空間に`using`ディレクティブのような記�
 このため、C++には属性名前空間という文法が用意されている。注意深いC++コンパイラーは独自拡張の属性トークンには属性名前空間を設定していることだろう。
 
 ~~~c++
-[[ extention::foo, extention::bar ]] int x ;
+[[ extension::foo, extension::bar ]] int x ;
 ~~~
 
 問題は、これをいちいち記述するのは面倒だということだ。

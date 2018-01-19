@@ -137,7 +137,7 @@ ForwardIterator uninitialized_fill_n(
 `[first, last)`の範囲、もしくは`first`から`n`個の範囲の未初期化のメモリーを、コンストラクターに実引数`x`を与えて構築する。
 
 
-### destory
+### destroy
 
 ~~~c++
 template <class T>
