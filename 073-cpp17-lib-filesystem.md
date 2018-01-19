@@ -169,12 +169,13 @@ int main()
 
 ~~~c++
 namespace std::filesystem {
-class path {
-public:
-    using value_type = see below ;
-    using string_type = basic_string<value_type>;
-    static constexpr value_type preferred_separator = see below ;
-} ;
+    class path {
+    public:
+        using value_type = see below ;
+        using string_type = basic_string<value_type>;
+        static constexpr value_type preferred_separator = see below ;
+    } ;
+}
 ~~~
 
 `value_type`と`string_type`は`path`が内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。`preferred_separator`は、推奨されるディレクトリー区切り文字だ。たとえばPOSIX互換環境では`/`が用いられるが、Microsoft Windowsでは`\`が使われている。
