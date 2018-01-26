@@ -169,12 +169,13 @@ int main()
 
 ~~~c++
 namespace std::filesystem {
-class path {
-public:
-    using value_type = see below ;
-    using string_type = basic_string<value_type>;
-    static constexpr value_type preferred_separator = see below ;
-} ;
+    class path {
+    public:
+        using value_type = see below ;
+        using string_type = basic_string<value_type>;
+        static constexpr value_type preferred_separator = see below ;
+    } ;
+}
 ~~~
 
 `value_type`と`string_type`は`path`が内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。`preferred_separator`は、推奨されるディレクトリー区切り文字だ。たとえばPOSIX互換環境では`/`が用いられるが、Microsoft Windowsでは`\`が使われている。
@@ -387,7 +388,7 @@ int main()
 
     // "/usr"
     p /= "usr" ;
-    // "usr/local/include"
+    // "/usr/local/include"
     p = p / "local" / "include" ;
 }
 ~~~
@@ -448,7 +449,7 @@ int main()
 
 タイプというのは、ファイルが種類を表す`enum`型`file_type`で、通常のファイルやディレクトリーやシンボリックリンクといったファイルの種類を表す。
 
-パーミッションというのは、ファイルの権限を表すビットマスクの`enum`型`perms`で、ファイルの所有者とグループと他人に対す読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
+パーミッションというのは、ファイルの権限を表すビットマスクの`enum`型`perms`で、ファイルの所有者とグループと他人に対する読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
 
 ファイルのタイプとパーミッションを取得するメンバー関数は以下のとおり。
 
@@ -815,7 +816,7 @@ public :
 
 `recursion_pending()`は、直前のイテレーターのインクリメント操作の後に`disable_recursion_pending()`が呼ばれていない場合、`true`を返す。そうでない場合は`false`を返す。
 
-言い換えれば、`disable_recursion_pending()`を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、`recursion_pneding()`は`false`を返す。
+言い換えれば、`disable_recursion_pending()`を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、`recursion_pending()`は`false`を返す。
 
 ~~~cpp
 int main()

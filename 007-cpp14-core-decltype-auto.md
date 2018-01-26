@@ -206,7 +206,7 @@ decltype(auto) f( int & ref )
 
 式の型をそのまま使ってくれる。
 
-ラムダ式に`delctype(auto)`を使う場合は以下のように書く。
+ラムダ式に`decltype(auto)`を使う場合は以下のように書く。
 
 ~~~c++
 []() -> decltype(auto) { return 0 ; } ;

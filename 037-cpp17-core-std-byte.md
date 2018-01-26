@@ -104,7 +104,7 @@ int main()
 
 四則演算などの演算子はサポートしていない。
 
-`std::byteはstd::to_intenger<IntType>(std::byte)`により、`IntType`型の整数型に変換できる。
+`std::byteはstd::to_integer<IntType>(std::byte)`により、`IntType`型の整数型に変換できる。
 
 ~~~cpp
 int main()
