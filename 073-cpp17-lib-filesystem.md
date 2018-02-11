@@ -159,7 +159,7 @@ int main()
 `path`はファイルパス文字列の表現と操作だけを提供するクラスで、物理ファイルシステムへの変更のコミットはしない。
 
 
-ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を`char`型としてUTF-8エンコードで表現するOSが多いが、Microsoft Windowsで本書執筆現在、文字型を`wchar_t`としてUTF-16エンコードで表現する慣習になっている。
+ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を`char`型としてUTF-8エンコードで表現するOSが多いが、Microsoft Windowsでは本書執筆現在、文字型を`wchar_t`としてUTF-16エンコードで表現する慣習になっている。
 
 また、OSによってはラテンアルファベットの大文字小文字を区別しなかったり、区別はするが無視されたりする実装もある。
 
@@ -1470,7 +1470,7 @@ void last_write_time(   const path& p, file_time_type new_time,
 
 ~~~c++
 namespace std::filesystem {
-    using file_time_time = std::chrono::time_point< trivial-clock > ;
+    using file_time_type = std::chrono::time_point< trivial-clock > ;
 }
 ~~~
 

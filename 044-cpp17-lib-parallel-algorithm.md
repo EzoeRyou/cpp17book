@@ -163,7 +163,7 @@ C++17には実行ポリシーを受け取るアルゴリズムのオーバーロ
 
 ### ユーザー提供する関数オブジェクトの制約
 
-並列アルゴリズムのうち、テンプレートパラメーター名が、`Predicate`, `BinaryPredicate`, `Compare`, `UnaryOperation`, `BinaryOperation`, `BinaryOperation1`, `BinaryOperation2`となってるものは、関数オブジェクトとしてユーザーがアルゴリズムに提供するものである。このようなユーザー提供の関数オブジェクトには、並列アルゴリズムに渡す際の制約がある。
+並列アルゴリズムのうち、テンプレートパラメーター名が、`Predicate`, `BinaryPredicate`, `Compare`, `UnaryOperation`, `BinaryOperation`, `BinaryOperation1`, `BinaryOperation2`となっているものは、関数オブジェクトとしてユーザーがアルゴリズムに提供するものである。このようなユーザー提供の関数オブジェクトには、並列アルゴリズムに渡す際の制約がある。
 
 + 実引数で与えられたオブジェクトを直接、間接に変更してはならない
 + 実引数で与えられたオブジェクトの一意性に依存してはならない
