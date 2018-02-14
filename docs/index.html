@@ -239,8 +239,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#デフォルト構築">デフォルト構築</a></li>
 <li><a href="#null終端された文字型の配列へのポインター">null終端された文字型の配列へのポインター</a></li>
 <li><a href="#文字型へのポインターと文字数">文字型へのポインターと文字数</a></li>
-</ul></li>
 <li><a href="#文字列クラスからの変換関数">文字列クラスからの変換関数</a></li>
+</ul></li>
 <li><a href="#string_viewの操作">string_viewの操作</a><ul>
 <li><a href="#remove_prefixremove_suffix-先頭末尾の要素の削除">remove_prefix/remove_suffix : 先頭、末尾の要素の削除</a></li>
 </ul></li>
@@ -350,7 +350,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#uninitialized_copy">uninitialized_copy</a></li>
 <li><a href="#uninitialized_move">uninitialized_move</a></li>
 <li><a href="#uninitialized_fill">uninitialized_fill</a></li>
-<li><a href="#destory">destory</a></li>
+<li><a href="#destroy">destroy</a></li>
 </ul></li>
 <li><a href="#shared_ptrweak_type">shared_ptr::weak_type</a></li>
 <li><a href="#void_t">void_t</a></li>
@@ -823,7 +823,7 @@ enumerator_name [[<span class="at">deprecated</span>]] = <span class="dv">42</sp
 <span class="kw">decltype</span>(<span class="kw">auto</span>) f( <span class="dt">int</span> &amp; ref )
 { <span class="cf">return</span> ref ; }</code></pre></div>
 <p>式の型をそのまま使ってくれる。</p>
-<p>ラムダ式に<code>delctype(auto)</code>を使う場合は以下のように書く。</p>
+<p>ラムダ式に<code>decltype(auto)</code>を使う場合は以下のように書く。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[]() -&gt; <span class="kw">decltype</span>(<span class="kw">auto</span>) { <span class="cf">return</span> <span class="dv">0</span> ; } ;</code></pre></div>
 <p><code>decltype(auto)</code>は主に関数の戻り値の型推定で式の型をそのまま推定してくれるようにするために追加された機能だ。その利用にはC++の型システムの深い理解が必要になる。</p>
 <p>機能テストマクロは<code>__cpp_decltype_auto</code>, 値は201304。</p>
@@ -1369,7 +1369,7 @@ T f( T x ) { <span class="cf">return</span> x ; }
     <span class="co">// (((((0+1)+2)+3)+4)+5)</span>
     <span class="kw">auto</span> left = ( <span class="dv">0</span> + ... + args ) ;
     <span class="co">// 右fold</span>
-    <span class="co">// (0+(1+(2+(3+(4+5)))))</span>
+    <span class="co">// (1+(2+(3+(4+(5+0)))))</span>
     <span class="kw">auto</span> right = ( args + ... + <span class="dv">0</span> ) ;
 }
 
@@ -2268,13 +2268,13 @@ Container( <span class="bu">std::</span>initializer_list&lt;T&gt; ) -&gt; Contai
 <h2 id="using属性名前空間">using属性名前空間</h2>
 <p>C++17では、属性名前空間に<code>using</code>ディレクティブのような記述ができるようになった。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">
-<span class="co">// [[extention::foo, extention::bar]]と同じ</span>
-[[ <span class="at">using</span> <span class="at">extention</span> <span class="at">:</span> <span class="at">foo</span>, <span class="at">bar</span> ]] <span class="dt">int</span> x ;</code></pre></div>
+<span class="co">// [[extension::foo, extension::bar]]と同じ</span>
+[[ <span class="at">using</span> <span class="at">extension</span> <span class="at">:</span> <span class="at">foo</span>, <span class="at">bar</span> ]] <span class="dt">int</span> x ;</code></pre></div>
 <p>属性トークンには、属性名前空間を付けることができる。これにより、独自拡張の属性トークンの名前の衝突を避けることができる。</p>
 <p>たとえば、あるC++コンパイラーには独自拡張として<code>foo</code>, <code>bar</code>という属性トークンがあり、別のC++コンパイラーも同じく独自拡張として<code>foo</code>, <code>bar</code>という属性トークンを持っているが、それぞれ意味が違っている場合、コードの意味も違ってしまう。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[ <span class="at">foo</span>, <span class="at">bar</span> ]] <span class="dt">int</span> x ;</code></pre></div>
 <p>このため、C++には属性名前空間という文法が用意されている。注意深いC++コンパイラーは独自拡張の属性トークンには属性名前空間を設定していることだろう。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[ <span class="at">extention::foo</span>, <span class="at">extention::bar</span> ]] <span class="dt">int</span> x ;</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">[[ <span class="at">extension::foo</span>, <span class="at">extension::bar</span> ]] <span class="dt">int</span> x ;</code></pre></div>
 <p>問題は、これをいちいち記述するのは面倒だということだ。</p>
 <p>C++17では、<code>using</code>属性名前空間という機能により、<code>using</code>ディレクティブのような名前空間の省略が可能になった。文法は<code>using</code>ディレクティブと似ていて、属性の中で<code>using name : ...</code>と書くことで、コロンに続く属性トークンに、属性名前空間<code>name</code>を付けたものと同じ効果が得られる。</p>
 <h2 id="非標準属性の無視">非標準属性の無視</h2>
@@ -2921,7 +2921,7 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
 ^=  ^
 ~</code></pre>
 <p>四則演算などの演算子はサポートしていない。</p>
-<p><code>std::byteはstd::to_intenger&lt;IntType&gt;(std::byte)</code>により、<code>IntType</code>型の整数型に変換できる。</p>
+<p><code>std::byteはstd::to_integer&lt;IntType&gt;(std::byte)</code>により、<code>IntType</code>型の整数型に変換できる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>byte b{<span class="dv">42</span>} ;
@@ -4233,7 +4233,7 @@ T* any_cast(any* operand) <span class="kw">noexcept</span>;</code></pre></div>
 
     <span class="bu">std::</span>string_view s( str, <span class="dv">5</span> ) ;
 }</code></pre></div>
-<h2 id="文字列クラスからの変換関数">文字列クラスからの変換関数</h2>
+<h3 id="文字列クラスからの変換関数">文字列クラスからの変換関数</h3>
 <p>他の文字列クラスから<code>string_view</code>を作るには、変換関数を使う。<code>string_view</code>のコンストラクターは使わない。</p>
 <p><code>std::string</code>は<code>string_view</code>への変換関数をサポートしている。独自の文字列クラスを<code>string_view</code>に対応させるにも変換関数を使う。たとえば以下のように実装する。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> string
@@ -4416,7 +4416,7 @@ operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <sp
     mem-&gt;deallocate( ptr, <span class="dv">100</span> ) ;
 }</code></pre></div>
 <p>2つの<code>memory_resource</code>のオブジェクト<code>a</code>, <code>b</code>があるとき、一方のオブジェクトで確保したストレージをもう一方のオブジェクトで解放できるとき、<code>a.is_equal( b )</code>は<code>true</code>を返す。</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> f( <span class="bu">std::</span>pmr<span class="bu">::</span>memory_resource * a, <span class="bu">std::</span>pmr<span class="bu">::</span>memory_resouce * b )
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> f( <span class="bu">std::</span>pmr<span class="bu">::</span>memory_resource * a, <span class="bu">std::</span>pmr<span class="bu">::</span>memory_resource * b )
 {
     <span class="dt">void</span> * ptr = a-&gt;allocate( <span class="dv">1</span> ) ;
 
@@ -4437,7 +4437,7 @@ operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <sp
     <span class="dt">bool</span> b2 = ( *a != *b ) ;
 }</code></pre></div>
 <h3 id="メモリーリソースの作り方">メモリーリソースの作り方</h3>
-<p>独自のメモリーアロケーターを<code>memory_resouce</code>のインターフェースに合わせて作るには、<code>memory_resource</code>から派生した上で、<code>do_allocate</code>, <code>do_deallocate</code>, <code>do_is_equal</code>の3つの<code>private</code>純粋<code>virtual</code>メンバー関数をオーバーライドする。必要に応じてデストラクターもオーバーライドする。</p>
+<p>独自のメモリーアロケーターを<code>memory_resource</code>のインターフェースに合わせて作るには、<code>memory_resource</code>から派生した上で、<code>do_allocate</code>, <code>do_deallocate</code>, <code>do_is_equal</code>の3つの<code>private</code>純粋<code>virtual</code>メンバー関数をオーバーライドする。必要に応じてデストラクターもオーバーライドする。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> memory_resource {
     <span class="co">// 非公開</span>
     <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">size_t</span> max_align = <span class="kw">alignof</span>(<span class="dt">max_align_t</span>);
@@ -4455,7 +4455,7 @@ operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <sp
 <p><code>do_allocate(bytes, alignment)</code>は少なくとも<code>alignment</code>バイトでアライメントされた<code>bytes</code>バイトのストレージへのポインターを返す。ストレージが確保できなかった場合は、適切な例外を<code>throw</code>する。</p>
 <p><code>do_deallocate(p, bytes, alignment)</code>は事前に同じ<code>*this</code>から呼び出された<code>allocate( bytes, alignment )</code>で返されたポインター<code>p</code>を解放する。すでに解放されたポインター<code>p</code>を渡してはならない。例外は投げない。</p>
 <p><code>do_is_equal(other)</code>は、<code>*thisとother</code>が互いに一方で確保したストレージをもう一方で解放できる場合に<code>true</code>を返す。</p>
-<p>たとえば、<code>malloc</code>/<code>free</code>を使った<code>memory_resouce</code>の実装は以下のとおり。</p>
+<p>たとえば、<code>malloc</code>/<code>free</code>を使った<code>memory_resource</code>の実装は以下のとおり。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// malloc/freeを使ったメモリーリソース</span>
 <span class="kw">class</span> malloc_resource : <span class="kw">public</span> <span class="bu">std::</span>pmr<span class="bu">::</span>memory_resource
 {
@@ -4507,7 +4507,7 @@ operator<span class="st">&quot;&quot;</span>sv(<span class="at">const</span> <sp
 
     <span class="bu">std::</span>cin &gt;&gt; b ;
 
-    <span class="bu">std::</span>pmr<span class="bu">::</span>mempry_resource * mem ;
+    <span class="bu">std::</span>pmr<span class="bu">::</span>memory_resource * mem ;
     <span class="bu">std::</span>unique_ptr&lt; memory_resource &gt; mono ;
 
     <span class="cf">if</span> ( b )
@@ -4724,7 +4724,7 @@ memory_resource* get_default_resource() <span class="kw">noexcept</span> ;</code
 <li><p>マルチスレッドから呼び出しても安全な同期を取る<code>synchronized_pool_resource</code>と、同期を取らない<code>unsynchronized_pool_resource</code>がある。</p></li>
 </ul>
 <h3 id="synchronizedunsynchronized_pool_resource">synchronized/unsynchronized_pool_resource</h3>
-<p>プールリソースには、<code>synchronized_pool_resource</code>と<code>unsynchronized_pool_resource</code>がある。どちらもクラス名以外は同じように使える。ただし、<code>synchronized_pool_resource</code>は複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、<code>unsynchronized_pool_resource</code>は同期を行わない。<code>unsyncrhonized_pool_resource</code>は複数のスレッドから同時に呼び出すことはできない。</p>
+<p>プールリソースには、<code>synchronized_pool_resource</code>と<code>unsynchronized_pool_resource</code>がある。どちらもクラス名以外は同じように使える。ただし、<code>synchronized_pool_resource</code>は複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、<code>unsynchronized_pool_resource</code>は同期を行わない。<code>unsynchronized_pool_resource</code>は複数のスレッドから同時に呼び出すことはできない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 実装イメージ</span>
 
 <span class="kw">namespace</span> <span class="bu">std::</span>pmr {
@@ -4925,7 +4925,7 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 }</code></pre></div>
 <h4 id="upstream_resource-1">upstream_resource()</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">memory_resource* upstream_resource() <span class="at">const</span>;</code></pre></div>
-<p>メンバー関数<code>uptream_resource</code>は、構築時に与えられた上流メモリーリソースへのポインターを返す。</p>
+<p>メンバー関数<code>upstream_resource</code>は、構築時に与えられた上流メモリーリソースへのポインターを返す。</p>
 <h1 id="並列アルゴリズム">並列アルゴリズム</h1>
 <p>並列アルゴリズムはC++17で追加された新しいライブラリだ。このライブラリは既存の<code>&lt;algorithm&gt;</code>に、並列実行版を追加する。</p>
 <h2 id="並列実行について">並列実行について</h2>
@@ -5045,7 +5045,7 @@ monotonic_buffer_resource(<span class="dt">void</span> *buffer, <span class="dt"
 </ul>
 <p>並列アルゴリズムが使う要素アクセス関数は、並列実行に伴うさまざまな制約を満たさなければならない。</p>
 <h3 id="ユーザー提供する関数オブジェクトの制約">ユーザー提供する関数オブジェクトの制約</h3>
-<p>並列アルゴリズムのうち、テンプレートパラメーター名が、<code>Predicate</code>, <code>BinaryPredicate</code>, <code>Compare</code>, <code>UnaryOperation</code>, <code>BinaryOperation</code>, <code>BinaryOperation1</code>, <code>BinaryOperation2</code>となってるものは、関数オブジェクトとしてユーザーがアルゴリズムに提供するものである。このようなユーザー提供の関数オブジェクトには、並列アルゴリズムに渡す際の制約がある。</p>
+<p>並列アルゴリズムのうち、テンプレートパラメーター名が、<code>Predicate</code>, <code>BinaryPredicate</code>, <code>Compare</code>, <code>UnaryOperation</code>, <code>BinaryOperation</code>, <code>BinaryOperation1</code>, <code>BinaryOperation2</code>となっているものは、関数オブジェクトとしてユーザーがアルゴリズムに提供するものである。このようなユーザー提供の関数オブジェクトには、並列アルゴリズムに渡す際の制約がある。</p>
 <ul>
 <li>実引数で与えられたオブジェクトを直接、間接に変更してはならない</li>
 <li>実引数で与えられたオブジェクトの一意性に依存してはならない</li>
@@ -5803,7 +5803,7 @@ spherical_harmonics(<span class="dt">unsigned</span> l, <span class="dt">unsigne
     <span class="kw">operator</span>()( RandomAccessIterator2 first,
                 RandomAccessIterator2 last) <span class="at">const</span>;
 } ;</code></pre></div>
-<p>使い方は<code>boyer_moore__searcher</code>と変わらない。</p>
+<p>使い方は<code>boyer_moore_searcher</code>と変わらない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="bu">std::</span>string pattern(<span class="st">&quot;fox&quot;</span>) ;
@@ -5828,7 +5828,7 @@ SampleIterator sample(
 <p><code>[first, last)</code>は標本を選択する先の集合を指すイテレーター。<code>out</code>は標本を出力する先のイテレーター。<code>n</code>は選択する標本の個数。<code>g</code>は標本を選択するのに使う乱数生成器。戻り値は<code>out</code>。</p>
 <p>ある要素の集合から、<code>n</code>個の要素を確率的に公平に選択したい場合に使うことができる。</p>
 <h3 id="乱択アルゴリズム">乱択アルゴリズム</h3>
-<p><code>std::sample</code>を使う前に、まず正しい乱択アルゴリズムについて学ぶ必要がある。乱択アルゴリズムについて詳しくは、Donald E. Knuthの <em>The Arf of Computer Programming</em> （以下TAOCP、邦訳はアスキードワンゴから同名の書名で出版されている）を参照。</p>
+<p><code>std::sample</code>を使う前に、まず正しい乱択アルゴリズムについて学ぶ必要がある。乱択アルゴリズムについて詳しくは、Donald E. Knuthの <em>The Art of Computer Programming</em> （以下TAOCP、邦訳はアスキードワンゴから同名の書名で出版されている）を参照。</p>
 <p>ユーザーからの入力、計測した気象情報のデータ、サーバーへのアクセスログなど、世の中には膨大な量のデータが存在する。これらの膨大なデータをすべて処理するのではなく、標本を採取することによって、統計的にそれなりに信頼できる確率で正しい全体のデータを推定することができる。そのためには<span class="math inline">\(n\)</span>個の標本をバイアスがかからない方法で選択する必要がある。バイアスのかからない方法で<span class="math inline">\(n\)</span>個の標本を取り出すには、集合の先頭から<span class="math inline">\(n\)</span>個とか、1つおきに<span class="math inline">\(n\)</span>個といった方法で選択してはならない。それはバイアスがかかっている。</p>
 <p>ある値の集合から、バイアスのかかっていない<span class="math inline">\(n\)</span>個の標本を得るには、集合のすべての値が等しい確率で選ばれた上で<span class="math inline">\(n\)</span>個を選択しなければならない。いったいどうすればいいのだろうか。</p>
 <p><code>std::sample</code>を使えば、100個の値から10個の標本を得るのは、以下のように書くことが可能だ。</p>
@@ -5952,7 +5952,7 @@ sample_s(
 <p>しかし、1段階の要素の巡回だけで済ませたい。要素数のわからない入力を処理して、その時点で公平に選択された標本を得たい。</p>
 <p>アルゴリズムRはそのような状況で使えるアルゴリズムだ。</p>
 <p>アルゴリズムRでは、要素数のわからない要素の集合から<span class="math inline">\(n\)</span>個の標本を選択する。そのために標本として選択した要素を保管しておき、新しい入力が与えられるたびに、標本として選択するかどうかの判断をし、選択をするのであれば、保管しておいた既存の標本と置き換える。</p>
-<p>アルゴリズムRは以下のとおり（このアルゴリズムはKnuth本とは違う）</p>
+<p>アルゴリズムRは以下のとおり（このアルゴリズムはKnuth本とは違う）。</p>
 <p><span class="math inline">\(n &gt; 0\)</span>のとき、<span class="math inline">\(size \geq n\)</span>である未確定の<span class="math inline">\(size\)</span>個の要素数を持つ入力から、<span class="math inline">\(n\)</span>個の標本をランダムに選択する。標本の候補は<span class="math inline">\(n\)</span>個まで保管される。<span class="math inline">\(1 \leq j \leq n\)</span>のとき<span class="math inline">\(I[j]\)</span>は保管された標本を指す。</p>
 <ol style="list-style-type: decimal">
 <li>入力から最初の<span class="math inline">\(n\)</span>個を標本として選択し、保管する。<span class="math inline">\(1 \leq j \leq n\)</span>の範囲で<span class="math inline">\(I[j]\)</span>に<span class="math inline">\(j\)</span>番目の標本を保管する。<span class="math inline">\(t\)</span>の値を<span class="math inline">\(n\)</span>とする。<span class="math inline">\(I[1]\)</span>, ..., <span class="math inline">\(I[n]\)</span>は現在の標本を指す。<span class="math inline">\(t\)</span>は現在処理した入力の個数を指す。</li>
@@ -6042,7 +6042,7 @@ sample(
         <span class="bu">std::</span>begin(sample), <span class="dv">100</span>, g ) ;
 
 }</code></pre></div>
-<p>注意が必要なこととして、C++の<code>sample</code>は入力元の<code>PopulationIterator</code>が前方イテレーター以上を満たす場合は、かならずアルゴリズムS（選択標本）を使うということだ。これはつまり、要素数を得るために<code>std::distance(first, last)</code>が行われるということを意味する。もしこの処理が非効率的なイテレーターを渡した場合、必要以上に非効率的なコードになってしまう。</p>
+<p>注意が必要なこととして、C++の<code>sample</code>は入力元の<code>PopulationIterator</code>が前方イテレーター以上を満たす場合は、必ずアルゴリズムS（選択標本）を使うということだ。これはつまり、要素数を得るために<code>std::distance(first, last)</code>が行われるということを意味する。もしこの処理が非効率的なイテレーターを渡した場合、必要以上に非効率的なコードになってしまう。</p>
 <p>たとえば以下のコードは、</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -6318,7 +6318,7 @@ ForwardIterator uninitialized_fill_n(
     ForwardIterator first, Size n,
     <span class="at">const</span> T&amp; x);</code></pre></div>
 <p><code>[first, last)</code>の範囲、もしくは<code>first</code>から<code>n</code>個の範囲の未初期化のメモリーを、コンストラクターに実引数<code>x</code>を与えて構築する。</p>
-<h3 id="destory">destory</h3>
+<h3 id="destroy">destroy</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span> &lt;<span class="kw">class</span> T&gt;
 <span class="dt">void</span> destroy_at(T* location);</code></pre></div>
 <p><code>location-&gt;~T()</code>を呼び出す。</p>
@@ -6569,8 +6569,8 @@ try_emplace(
     m[<span class="dv">0</span>] = <span class="kw">nullptr</span> ;
 
     <span class="kw">auto</span> ptr = <span class="bu">std::</span>make_unique&lt;<span class="dt">int</span>&gt;(<span class="dv">0</span>) ;
-    <span class="co">// emplaceは失敗する</span>
-    <span class="kw">auto</span> [iter, is_emplaced] = m.emplace( <span class="dv">0</span>, <span class="bu">std::</span>move(ptr) ) ;
+    <span class="co">// try_emplaceは失敗する</span>
+    <span class="kw">auto</span> [iter, is_emplaced] = m.try_emplace( <span class="dv">0</span>, <span class="bu">std::</span>move(ptr) ) ;
 
     <span class="co">// trueであることが保証される</span>
     <span class="co">// ptrはムーブされていない</span>
@@ -7147,17 +7147,18 @@ clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&am
 <li>ファイルパス文字列の操作</li>
 </ul>
 <p><code>path</code>はファイルパス文字列の表現と操作だけを提供するクラスで、物理ファイルシステムへの変更のコミットはしない。</p>
-<p>ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を<code>char</code>型としてUTF-8エンコードで表現するOSが多いが、Microsoft Windowsで本書執筆現在、文字型を<code>wchar_t</code>としてUTF-16エンコードで表現する慣習になっている。</p>
+<p>ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を<code>char</code>型としてUTF-8エンコードで表現するOSが多いが、Microsoft Windowsでは本書執筆現在、文字型を<code>wchar_t</code>としてUTF-16エンコードで表現する慣習になっている。</p>
 <p>また、OSによってはラテンアルファベットの大文字小文字を区別しなかったり、区別はするが無視されたりする実装もある。</p>
 <p>クラス<code>path</code>はそのようなファイルパス文字列の差異を吸収してくれる。</p>
 <p>クラス<code>path</code>には以下のようなネストされた型名がある。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> <span class="bu">std::</span>filesystem {
-<span class="kw">class</span> path {
-<span class="kw">public</span>:
-    <span class="kw">using</span> <span class="dt">value_type</span> = see below ;
-    <span class="kw">using</span> <span class="dt">string_type</span> = basic_string&lt;<span class="dt">value_type</span>&gt;;
-    <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">value_type</span> preferred_separator = see below ;
-} ;</code></pre></div>
+    <span class="kw">class</span> path {
+    <span class="kw">public</span>:
+        <span class="kw">using</span> <span class="dt">value_type</span> = see below ;
+        <span class="kw">using</span> <span class="dt">string_type</span> = basic_string&lt;<span class="dt">value_type</span>&gt;;
+        <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">value_type</span> preferred_separator = see below ;
+    } ;
+}</code></pre></div>
 <p><code>value_type</code>と<code>string_type</code>は<code>path</code>が内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。<code>preferred_separator</code>は、推奨されるディレクトリー区切り文字だ。たとえばPOSIX互換環境では<code>/</code>が用いられるが、Microsoft Windowsでは<code>\</code>が使われている。</p>
 <h3 id="ファイルパスの文字列">ファイルパスの文字列</h3>
 <p>ファイルパスは文字列で表現する。C++の文字列のエンコードには以下のものがある。</p>
@@ -7303,7 +7304,7 @@ clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&am
 
     <span class="co">// &quot;/usr&quot;</span>
     p /= <span class="st">&quot;usr&quot;</span> ;
-    <span class="co">// &quot;usr/local/include&quot;</span>
+    <span class="co">// &quot;/usr/local/include&quot;</span>
     p = p / <span class="st">&quot;local&quot;</span> / <span class="st">&quot;include&quot;</span> ;
 }</code></pre></div>
 <p><code>operator +=</code>は単なる文字列の結合を行う。</p>
@@ -7346,7 +7347,7 @@ clamp(<span class="at">const</span> T&amp; v, <span class="at">const</span> T&am
 <p><code>file_status</code>は物理ファイルシステムへの変更のコミットはしない。</p>
 <p><code>file_status</code>クラスは<code>status(path)</code>もしくは<code>status(path, error_code)</code>で取得できる。あるいは、<code>directory_entry</code>のメンバー関数<code>status()</code>から取得できる。</p>
 <p>タイプというのは、ファイルが種類を表す<code>enum</code>型<code>file_type</code>で、通常のファイルやディレクトリーやシンボリックリンクといったファイルの種類を表す。</p>
-<p>パーミッションというのは、ファイルの権限を表すビットマスクの<code>enum</code>型<code>perms</code>で、ファイルの所有者とグループと他人に対す読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。</p>
+<p>パーミッションというのは、ファイルの権限を表すビットマスクの<code>enum</code>型<code>perms</code>で、ファイルの所有者とグループと他人に対する読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。</p>
 <p>ファイルのタイプとパーミッションを取得するメンバー関数は以下のとおり。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> <span class="dt">file_type</span> {
 <span class="kw">public</span> :
@@ -7622,7 +7623,7 @@ d</code></pre>
     <span class="dt">void</span> disable_recursion_pending() ;
 } ;</code></pre></div>
 <p><code>recursion_pending()</code>は、直前のイテレーターのインクリメント操作の後に<code>disable_recursion_pending()</code>が呼ばれていない場合、<code>true</code>を返す。そうでない場合は<code>false</code>を返す。</p>
-<p>言い換えれば、<code>disable_recursion_pending()</code>を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、<code>recursion_pneding()</code>は<code>false</code>を返す。</p>
+<p>言い換えれば、<code>disable_recursion_pending()</code>を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、<code>recursion_pending()</code>は<code>false</code>を返す。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
     <span class="kw">using</span> <span class="kw">namespace</span> std ;
@@ -8182,7 +8183,7 @@ file_status symlink_status(<span class="at">const</span> path&amp; p, error_code
 <p><code>last_write_time(p, new_time)</code>を呼び出した後に、<code>last_write_time(p) == new_time</code>である保証はない。なぜならば、物理ファイルシステムの実装に起因する時刻の分解能や品質の問題があるからだ。</p>
 <p><code>file_time_type</code>は、<code>std::chrono_time_point</code>の特殊化で以下のように定義されている。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">namespace</span> <span class="bu">std::</span>filesystem {
-    <span class="kw">using</span> file_time_time = <span class="bu">std::</span>chrono<span class="bu">::</span>time_point&lt; trivial-clock &gt; ;
+    <span class="kw">using</span> <span class="dt">file_time_type</span> = <span class="bu">std::</span>chrono<span class="bu">::</span>time_point&lt; trivial-clock &gt; ;
 }</code></pre></div>
 <p><code>trivial-clock</code>とは、クロック（より正確にはTrivialClock）の要件を満たすクロックで、ファイルシステムのタイムスタンプの値を正確に表現できるものとされている。クロックの具体的な型は実装依存なので、完全にポータブルなコードではファイルシステムで時間を扱うのは極めて困難になる。せいぜい現在時刻を設定するとか、差分の時間を設定するぐらいしかできない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
