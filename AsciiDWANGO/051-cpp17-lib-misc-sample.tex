@@ -26,9 +26,9 @@ C++17で~\lstinline!<algorithm>!~に追加された\lstinline!std::sample!は、
 \hypersubsection{section9-5-1}{乱択アルゴリズム}
 
 \lstinline!std::sample!を使う前に、まず正しい乱択アルゴリズムについて学ぶ必要がある。乱択アルゴリズムについて詳しくは、Donald
-E. Knuthの \emph{The Arf of Computer Programming}
+E. Knuthの \emph{The Art of Computer Programming}
 （以下TAOCP、邦訳はアスキードワンゴから同名の書名で出版されている）を参照。
-\index{The Arf of Computer Programming@\textit{The Arf of Computer Programming}}
+\index{Art of Computer Programming@\textit{The Art of Computer Programming}}
 
 ユーザーからの入力、計測した気象情報のデータ、サーバーへのアクセスログなど、世の中には膨大な量のデータが存在する。これらの膨大なデータをすべて処理するのではなく、標本を採取することによって、統計的にそれなりに信頼できる確率で正しい全体のデータを推定することができる。そのためには\(n\)個の標本をバイアスがかからない方法で選択する必要がある。バイアスのかからない方法で\(n\)個の標本を取り出すには、集合の先頭から\(n\)個とか、1つおきに\(n\)個といった方法で選択してはならない。それはバイアスがかかっている。
 
@@ -212,7 +212,7 @@ sample_s(
 
 アルゴリズムRでは、要素数のわからない要素の集合から\(n\)個の標本を選択する。そのために標本として選択した要素を保管しておき、新しい入力が与えられるたびに、標本として選択するかどうかの判断をし、選択をするのであれば、保管しておいた既存の標本と置き換える。
 
-アルゴリズムRは以下のとおり（このアルゴリズムはKnuth本とは違う）
+アルゴリズムRは以下のとおり（このアルゴリズムはKnuth本とは違う）。
 
 \(n > 0\)のとき、\(size \geq n\)である未確定の\(size\)個の要素数を持つ入力から、\(n\)個の標本をランダムに選択する。標本の候補は\(n\)個まで保管される。\(1 \leq j \leq n\)のとき\(I[j]\)は保管された標本を指す。
 
@@ -336,7 +336,7 @@ int main()
 }
 \end{lstlisting}
 
-注意が必要なこととして、C++の\lstinline!sample!は入力元の\lstinline!PopulationIterator!が前方イテレーター以上を満たす場合は、かならずアルゴリズムS（選択標本）を使うということだ。これはつまり、要素数を得るために\lstinline!std::distance(first, last)!が行われるということを意味する。もしこの処理が非効率的なイテレーターを渡した場合、必要以上に非効率的なコードになってしまう。
+注意が必要なこととして、C++の\lstinline!sample!は入力元の\lstinline!PopulationIterator!が前方イテレーター以上を満たす場合は、必ずアルゴリズムS（選択標本）を使うということだ。これはつまり、要素数を得るために\lstinline!std::distance(first, last)!が行われるということを意味する。もしこの処理が非効率的なイテレーターを渡した場合、必要以上に非効率的なコードになってしまう。
 
 たとえば以下のコードは、
 \begin{lstlisting}[language=C++]

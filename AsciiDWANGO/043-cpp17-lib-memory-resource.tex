@@ -81,7 +81,7 @@ void f( std::pmr::memory_resource * mem )
 \index{is\_equal@\texttt{is\_equal}}\index{memory\_resource@\texttt{memory\_resource}!is\_equal@\texttt{is\_equal}}
 
 \begin{lstlisting}[language=C++]
-void f( std::pmr::memory_resource * a, std::pmr::memory_resouce * b )
+void f( std::pmr::memory_resource * a, std::pmr::memory_resource * b )
 {
     void * ptr = a->allocate( 1 ) ;
 
@@ -111,7 +111,7 @@ void f( std::pmr::memory_resource * a, std::pmr::memory_resource * b )
 % SubSection 6.1.2
 \hypersubsection{section6-1-2}{メモリーリソースの作り方}
 
-独自のメモリーアロケーターを\lstinline!memory_resouce!のインターフェースに合わせて作るには、\lstinline!memory_resource!から派生した上で、\lstinline!do_allocate!,
+独自のメモリーアロケーターを\lstinline!memory_resource!のインターフェースに合わせて作るには、\lstinline!memory_resource!から派生した上で、\lstinline!do_allocate!,
 \lstinline!do_deallocate!,
 \lstinline!do_is_equal!の3つの\lstinline!private!純粋\lstinline!virtual!メンバー関数をオーバーライドする。必要に応じてデストラクターもオーバーライドする。
 \index{do\_allocate@\texttt{do\_allocate}}\index{memory\_resource@\texttt{memory\_resource}!do\_allocate@\texttt{do\_allocate}}\index{do\_deallocate@\texttt{do\_deallocate}}\index{memory\_resource@\texttt{memory\_resource}!do\_deallocate@\texttt{do\_deallocate}}\index{do\_is\_equal@\texttt{do\_is\_equal}}\index{memory\_resource@\texttt{memory\_resource}!do\_is\_equal@\texttt{do\_is\_equal}}
@@ -139,7 +139,7 @@ private:
 
 \lstinline!do_is_equal(other)!は、\lstinline!*thisとother!が互いに一方で確保したストレージをもう一方で解放できる場合に\lstinline!true!を返す。
 
-たとえば、\lstinline!malloc!/\lstinline!free!を使った\lstinline!memory_resouce!の実装は以下のとおり。
+たとえば、\lstinline!malloc!/\lstinline!free!を使った\lstinline!memory_resource!の実装は以下のとおり。
 \index{malloc@\texttt{malloc}}\index{memory\_resource@\texttt{memory\_resource}!malloc@\texttt{malloc}}\index{free@\texttt{free}}\index{memory\_resource@\texttt{memory\_resource}!free@\texttt{free}}
 
 \begin{lstlisting}[language=C++]
@@ -212,7 +212,7 @@ int main()
 
     std::cin >> b ;
 
-    std::pmr::mempry_resource * mem ;
+    std::pmr::memory_resource * mem ;
     std::unique_ptr< memory_resource > mono ;
 
     if ( b )
@@ -546,7 +546,7 @@ class pool_resource : public memory_resource
 % SubSection 6.5.2
 \hypersubsection{section6-5-2}{synchronized/unsynchronized\texttt{\_}pool\texttt{\_}resource}
 
-プールリソースには、\lstinline!synchronized_pool_resource!と\lstinline[breaklines=true]!unsynchronized_pool _resource!がある。どちらもクラス名以外は同じように使える。ただし、\lstinline!synchronized_pool_resource!は複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、\lstinline!unsynchronized_pool_resource!は同期を行わない。\lstinline!unsyncrhonized_pool_resource!は複数のスレッドから同時に呼び出すことはできない。
+プールリソースには、\lstinline!synchronized_pool_resource!と\lstinline[breaklines=true]!unsynchronized_pool _resource!がある。どちらもクラス名以外は同じように使える。ただし、\lstinline!synchronized_pool_resource!は複数のスレッドから同時に実行しても使えるように内部で同期が取られているのに対し、\lstinline!unsynchronized_pool_resource!は同期を行わない。\lstinline!unsynchronized_pool_resource!は複数のスレッドから同時に呼び出すことはできない。
 \index{synchronized\_pool\_resource@\texttt{synchronized\_pool\_resource}}\index{ぷるりそす@プールリソース!synchronized\_pool\_resource@\texttt{synchronized\_pool\_resource}}\index{unsynchronized\_pool\_resource@\texttt{unsynchronized\_pool\_resource}}\index{ぷるりそす@プールリソース!unsynchronized\_pool\_resource@\texttt{unsynchronized\_pool\_resource}}
 
 \begin{lstlisting}[language=C++]
@@ -889,4 +889,4 @@ memory_resource* upstream_resource() const;
 \end{lstlisting}
 \egroup
 
-メンバー関数\lstinline!uptream_resource!は、構築時に与えられた上流メモリーリソースへのポインターを返す。
+メンバー関数\lstinline!upstream_resource!は、構築時に与えられた上流メモリーリソースへのポインターを返す。

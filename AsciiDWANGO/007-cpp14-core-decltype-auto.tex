@@ -191,16 +191,14 @@ auto f( int & ref )
 \end{lstlisting}
 
 なぜならば、戻り値の型は式の型から変化して\lstinline!int!になってしまうからだ。ここで\lstinline!decltype(auto)!を使うと、
-
 \begin{lstlisting}[language=C++]
 // int & ( int & )
 decltype(auto) f( int & ref )
 { return ref ; }
 \end{lstlisting}
-
 式の型をそのまま使ってくれる。
 
-ラムダ式に\lstinline!delctype(auto)!を使う場合は以下のように書く。
+ラムダ式に\lstinline!decltype(auto)!を使う場合は以下のように書く。
 
 \begin{lstlisting}[language=C++]
 []() -> decltype(auto) { return 0 ; } ;

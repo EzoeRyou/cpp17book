@@ -3,26 +3,26 @@
 \hypersection{section3-21}{inline変数}
 
 C++17では変数に\lstinline!inline!キーワードを指定できるようになった。
-\index{inlineへんすう@\texttt{inline}変数}
+\index{inline@\texttt{inline}!へんすう@変数}
 
 \begin{lstlisting}[language=C++]
 inline int variable ;
 \end{lstlisting}
 
 このような変数を\lstinline!inline!変数と呼ぶ。その意味は\lstinline!inline!関数と同じだ。
-\index{inlineかんすう@\texttt{inline}関数}
+\index{inline@\texttt{inline}!かんすう@関数}
 
 %
 % SubSection 3.21.1
 \hypersubsection{section3-21-1}{inlineの歴史的な意味}
-\index{inlineきわど@\texttt{inline}キーワード}
+\index{inline@\texttt{inline}!きわど@キーワード}
 
 今は昔、本書執筆から30年以上は昔に、\lstinline!inline!キーワードがC++に追加された。
 
 \lstinline!inline!の現在の意味は誤解されている。
 
 \lstinline!inline!関数の意味は、「関数を強制的にインライン展開させるための機能」\textsf{ではない}。
-\index{inlineてんかい@\texttt{inline}展開}
+\index{inline@\texttt{inline}!てんかい@展開}
 
 大事なことなのでもう一度書くが、\lstinline!inline!関数の意味は、「関数を強制的にインライン展開させるための機能」\textbf{ではない}。
 
@@ -156,7 +156,7 @@ void b()
 \hypersubsection{section3-21-3}{inline変数の意味}
 
 \lstinline!inline!変数は、ODRに違反せず変数の定義の重複を認める。同じ名前の\lstinline!inline!変数は同じ変数を指す。
-\index{inlineへんすう@\texttt{inline}変数}
+\index{inline@\texttt{inline}!へんすう@変数}
 
 \begin{lstlisting}[language=C++]
 // a.cpp
