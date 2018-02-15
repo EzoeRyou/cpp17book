@@ -3,7 +3,7 @@
 \hyperchapter{chapter10}{ファイルシステム}{ファイルシステム}
 
 ヘッダーファイル~\lstinline!<filesystem>!~で定義されている標準ライブラリのファイルシステムは、ファイルやディレクトリーとその属性を扱うためのライブラリだ。
-\index{<filesystem>@\<filesystem>}\index{ふあいるしすてむ@ファイルシステム}
+\index{<filesystem>@\texttt{<filesystem>}}\index{ふあいるしすてむ@ファイルシステム}
 
 一般に「ファイルシステム」といった場合、たとえばLinuxのext4, Microsoft
 WindowsのFATやNTFS, Apple
@@ -204,7 +204,7 @@ int main()
 \lstinline!path!はファイルパス文字列の表現と操作だけを提供するクラスで、物理ファイルシステムへの変更のコミットはしない。
 
 ファイルパス文字列がどのように表現されているかは実装により異なる。POSIX環境では文字型を\lstinline!char!型としてUTF-8エンコードで表現するOSが多いが、Microsoft
-Windowsで本書執筆現在、文字型を\lstinline!wchar_t!としてUTF-16エンコードで表現する慣習になっている。
+Windowsでは本書執筆現在、文字型を\lstinline!wchar_t!としてUTF-16エンコードで表現する慣習になっている。
 
 また、OSによってはラテンアルファベットの大文字小文字を区別しなかったり、区別はするが無視されたりする実装もある。
 
@@ -214,12 +214,13 @@ Windowsで本書執筆現在、文字型を\lstinline!wchar_t!としてUTF-16エ
 
 \begin{lstlisting}[language=C++]
 namespace std::filesystem {
-class path {
-public:
-    using value_type = see below ;
-    using string_type = basic_string<value_type>;
-    static constexpr value_type preferred_separator = see below ;
-} ;
+    class path {
+    public:
+        using value_type = see below ;
+        using string_type = basic_string<value_type>;
+        static constexpr value_type preferred_separator = see below ;
+    } ;
+}
 \end{lstlisting}
 
 \lstinline!value_type!と\lstinline!string_type!は\lstinline!path!が内部でファイルパス文字列を表現するのに使う文字と文字列の型だ。\lstinline!preferred_separator!は、推奨されるディレクトリー区切り文字だ。たとえばPOSIX互換環境では~\lstinline!/!~が用いられるが、Microsoft
@@ -471,7 +472,7 @@ int main()
 
     // "/usr"
     p /= "usr" ;
-    // "usr/local/include"
+    // "/usr/local/include"
     p = p / "local" / "include" ;
 }
 \end{lstlisting}
@@ -537,7 +538,7 @@ int main()
 タイプというのは、ファイルが種類を表す\lstinline!enum!型\lstinline!file_type!で、通常のファイルやディレクトリーやシンボリックリンクといったファイルの種類を表す。
 \index{file\_type@\texttt{file\_type}}
 
-パーミッションというのは、ファイルの権限を表すビットマスクの\lstinline!enum!型\lstinline!perms!で、ファイルの所有者とグループと他人に対す読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
+パーミッションというのは、ファイルの権限を表すビットマスクの\lstinline!enum!型\lstinline!perms!で、ファイルの所有者とグループと他人に対する読み込み、書き込み、実行のそれぞれの権限を表している。この値はPOSIXの値と同じになっている。
 \index{perms@\texttt{perms}}
 
 ファイルのタイプとパーミッションを取得するメンバー関数は以下のとおり。
@@ -946,7 +947,7 @@ public :
 \lstinline!recursion_pending()!は、直前のイテレーターのインクリメント操作の後に\lstinline!disable_recursion_pending()!が呼ばれていない場合、\lstinline!true!を返す。そうでない場合は\lstinline!false!を返す。
 \index{recursion\_pending@\texttt{recursion\_pending}}\index{recursive\_directory\_iterator@\texttt{recursive\_directory\_iterator}!recursion\_pending@\texttt{recursion\_pending}}
 
-言い換えれば、\lstinline!disable_recursion_pending()!を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、\lstinline!recursion_pneding()!は\lstinline!false!を返す。
+言い換えれば、\lstinline!disable_recursion_pending()!を呼んだ直後で、まだイテレーターのインクリメント操作をしていない場合、\lstinline!recursion_pending()!は\lstinline!false!を返す。
 
 \begin{lstlisting}[language=C++]
 int main()
@@ -1874,7 +1875,7 @@ void last_write_time(   const path& p, file_time_type new_time,
 
 \begin{lstlisting}[language=C++]
 namespace std::filesystem {
-    using file_time_time = std::chrono::time_point< trivial-clock > ;
+    using file_time_type = std::chrono::time_point< trivial-clock > ;
 }
 \end{lstlisting}
 

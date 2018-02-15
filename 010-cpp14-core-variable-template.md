@@ -144,7 +144,7 @@ constexpr float pi_f = 3.1415 ;
 constexpr double pi_d = 3.1415926535 ;
 constexpr int pi_i = 3 ;
 // 任意の精度の実数を表現できるクラスとする
-const Real pi_r("3. 141592653589793238462643383279") ;
+const Real pi_r("3.141592653589793238462643383279") ;
 ~~~
 
 しかしこれは、使う側で型によって名前を変えなければならない。
@@ -173,7 +173,7 @@ constexpr T pi()
 template < >
 Real pi()
 {
-    return Real("3. 141592653589793238462643383279") ;
+    return Real("3.141592653589793238462643383279") ;
 }
 
 
@@ -194,7 +194,7 @@ template < typename T >
 constexpr T pi = static_cast<T>(3.1415926535) ;
 
 template < >
-Real pi<Real>("3. 141592653589793238462643383279") ;
+Real pi<Real>("3.141592653589793238462643383279") ;
 
 template < typename T >
 T calc_area( T r )

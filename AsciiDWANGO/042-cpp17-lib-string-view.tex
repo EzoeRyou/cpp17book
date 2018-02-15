@@ -12,7 +12,7 @@
 \hypersection{section5-1}{使い方}
 
 連続した文字型の配列を使った文字列の表現方法にはさまざまある。C++では最も基本的な文字列の表現方法として、\lstinline!null!終端された文字型の配列がある。
-\index{nullしゆうたん@\texttt{null}終端}\index{もじがたのはいれつ@文字型の配列}
+\index{nullしゆうたん@\texttt{null}終端}\index{もじがた@文字型!のはいれつ@〜の配列}
 
 \begin{lstlisting}[language=C++]
 char str[6] = { 'h', 'e', 'l', 'l', 'o', '\0' } ;
@@ -283,8 +283,8 @@ int main()
 \end{lstlisting}
 
 %
-% Section 5.5
-\hypersection{section5-5}{文字列クラスからの変換関数}
+% Section 5.4.4
+\hypersubsection{section5-4-4}{文字列クラスからの変換関数}
 \index{string\_view@\texttt{string\_view}!へんかんかんすう@変換関数}
 
 他の文字列クラスから\lstinline!string_view!を作るには、変換関数を使う。\lstinline!string_view!のコンストラクターは使わない。
@@ -329,8 +329,8 @@ int main()
 \end{lstlisting}
 
 %
-% Section 5.6
-\hypersection{section5-6}{string\texttt{\_}viewの操作}
+% Section 5.5
+\hypersection{section5-5}{string\texttt{\_}viewの操作}
 \index{string\_view@\texttt{string\_view}!そうさ@操作}
 
 \lstinline!string_view!は既存の標準ライブラリの\lstinline!string!とほぼ同じ操作性を提供している。たとえばイテレーターを取ることができるし、\lstinline!operator []!で要素にアクセスできるし、\lstinline!size()!で要素数が返るし、\lstinline!find()!で検索もできる。

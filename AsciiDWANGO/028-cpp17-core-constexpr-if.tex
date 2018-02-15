@@ -248,7 +248,7 @@ distance( Iterator first, Iterator last )
 \begin{lstlisting}[language=C++]
 if ( is_random_access_iterator<Iterator> )
 \end{lstlisting}
-という部分について、\lstinline!is_random_access_iterator<Iterator>!の値はコンパイル時に計算できるので、最終的なコード生成の結果としては、\lstinline!if (true)!か\lstinline!if (false)!になると判断できる。したがってコンパイラーは選択されない分岐のコード生成を行わないことはできる。しかしコンパイルはするので、コンパイルエラーになる。
+という部分について、\lstinline!is_random_access_iterator<Iterator>!\ の値はコンパイル時に計算できるので、最終的なコード生成の結果としては、\lstinline!if (true)!か\lstinline!if (false)!になると判断できる。したがってコンパイラーは選択されない分岐のコード生成を行わないことはできる。しかしコンパイルはするので、コンパイルエラーになる。
 
 \lstinline!constexpr if!を使うと、選択されない部分の分岐はコンパイルエラーであってもコンパイルエラーとはならなくなる。
 
