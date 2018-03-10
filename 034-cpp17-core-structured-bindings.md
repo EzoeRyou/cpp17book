@@ -433,9 +433,9 @@ int main()
     
     using E = decltype(e) ;
 
-    std::tuple_element<0, E>::type & a = std::get<0>(e) ;
-    std::tuple_element<1, E>::type & b = std::get<1>(e) ;
-    std::tuple_element<2, E>::type & c = std::get<2>(e) ;
+    std::tuple_element<0, E>::type a = std::get<0>(e) ;
+    std::tuple_element<1, E>::type b = std::get<1>(e) ;
+    std::tuple_element<2, E>::type c = std::get<2>(e) ;
 }
 ~~~~
 
