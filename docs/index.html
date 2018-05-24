@@ -601,7 +601,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
     <span class="dt">double</span> x5 = <span class="fl">3.14159</span><span class="st">&#39;26535&#39;</span><span class="dv">89793</span> ;
 }</code></pre></div>
-<p>大きな数値を扱うとき、ソースファイルに<code>100000000</code>と<code>1000000000</code>と書かれていた場合、どちらが大きいのか人間の目にはわかりにくい。人間が読んでわかりにくいコードは間違いの元だ。数値区切りを使うと、<code>100'000'000と1'000'000'000</code>のように書くことができる。これはわかりやすい。</p>
+<p>大きな数値を扱うとき、ソースファイルに<code>100000000</code>と<code>1000000000</code>と書かれていた場合、どちらが大きいのか人間の目にはわかりにくい。人間が読んでわかりにくいコードは間違いの元だ。数値区切りを使うと、<code>100'000'000</code>と<code>1'000'000'000</code>のように書くことができる。これはわかりやすい。</p>
 <p>他には、1バイト単位で見やすいように区切ることもできる。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
 {
@@ -1044,7 +1044,7 @@ T variable { } ;
 <span class="kw">constexpr</span> <span class="dt">double</span> pi_d = <span class="fl">3.1415926535</span> ;
 <span class="kw">constexpr</span> <span class="dt">int</span> pi_i = <span class="dv">3</span> ;
 <span class="co">// 任意の精度の実数を表現できるクラスとする</span>
-<span class="at">const</span> Real pi_r(<span class="st">&quot;3. 141592653589793238462643383279&quot;</span>) ;</code></pre></div>
+<span class="at">const</span> Real pi_r(<span class="st">&quot;3.141592653589793238462643383279&quot;</span>) ;</code></pre></div>
 <p>しかしこれは、使う側で型によって名前を変えなければならない。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// 円の面積を計算する関数</span>
 <span class="kw">template</span> &lt; <span class="kw">typename</span> T &gt;
@@ -1063,7 +1063,7 @@ T calc_area( T r )
 <span class="kw">template</span> &lt; &gt;
 Real pi()
 {
-    <span class="cf">return</span> Real(<span class="st">&quot;3. 141592653589793238462643383279&quot;</span>) ;
+    <span class="cf">return</span> Real(<span class="st">&quot;3.141592653589793238462643383279&quot;</span>) ;
 }
 
 
@@ -1078,7 +1078,7 @@ T calc_area( T r )
 <span class="kw">constexpr</span> T pi = <span class="kw">static_cast</span>&lt;T&gt;(<span class="fl">3.1415926535</span>) ;
 
 <span class="kw">template</span> &lt; &gt;
-Real pi&lt;Real&gt;(<span class="st">&quot;3. 141592653589793238462643383279&quot;</span>) ;
+Real pi&lt;Real&gt;(<span class="st">&quot;3.141592653589793238462643383279&quot;</span>) ;
 
 <span class="kw">template</span> &lt; <span class="kw">typename</span> T &gt;
 T calc_area( T r )
@@ -2581,9 +2581,9 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     
     <span class="kw">using</span> E = <span class="kw">decltype</span>(e) ;
 
-    <span class="bu">std::</span>tuple_element&lt;<span class="dv">0</span>, E&gt;::type &amp; a = <span class="bu">std::</span>get&lt;<span class="dv">0</span>&gt;(e) ;
-    <span class="bu">std::</span>tuple_element&lt;<span class="dv">1</span>, E&gt;::type &amp; b = <span class="bu">std::</span>get&lt;<span class="dv">1</span>&gt;(e) ;
-    <span class="bu">std::</span>tuple_element&lt;<span class="dv">2</span>, E&gt;::type &amp; c = <span class="bu">std::</span>get&lt;<span class="dv">2</span>&gt;(e) ;
+    <span class="bu">std::</span>tuple_element&lt;<span class="dv">0</span>, E&gt;::type a = <span class="bu">std::</span>get&lt;<span class="dv">0</span>&gt;(e) ;
+    <span class="bu">std::</span>tuple_element&lt;<span class="dv">1</span>, E&gt;::type b = <span class="bu">std::</span>get&lt;<span class="dv">1</span>&gt;(e) ;
+    <span class="bu">std::</span>tuple_element&lt;<span class="dv">2</span>, E&gt;::type c = <span class="bu">std::</span>get&lt;<span class="dv">2</span>&gt;(e) ;
 }</code></pre></div>
 <p>以下のコードは、</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> main()
@@ -2765,7 +2765,7 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
 {
     f() ;
 }</code></pre></div>
-<p>これは例のために同一の<code>inline</code>関数を直接記述しているが、<code>inline</code>関数は定義を同一性を保証させるため、通常はヘッダーファイルに書いて<code>#include</code>して使う。</p>
+<p>これは例のために同一の<code>inline</code>関数を直接記述しているが、<code>inline</code>関数は定義の同一性を保証させるため、通常はヘッダーファイルに書いて<code>#include</code>して使う。</p>
 <h3 id="inline変数の意味">inline変数の意味</h3>
 <p><code>inline</code>変数は、ODRに違反せず変数の定義の重複を認める。同じ名前の<code>inline</code>変数は同じ変数を指す。</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// a.cpp</span>
@@ -2792,7 +2792,7 @@ type c = get&lt;<span class="dv">2</span>&gt;(e) ;</code></pre></div>
     data ; <span class="co">// 2</span>
 }</code></pre></div>
 <p>この例で関数<code>a</code>, <code>b</code>の中の変数<code>data</code>は同じ変数を指している。変数<code>data</code>は<code>static</code>ストレージ上に構築された変数なのでプログラムの開始時にゼロで初期化される。2回インクリメントされるので値は2となる。</p>
-<p>これにより、クラスの非<code>static</code>データメンバーの定義を書かなくてすむようになる。</p>
+<p>これにより、クラスの<code>static</code>データメンバーの定義を書かなくてすむようになる。</p>
 <p>C++17以前のC++では、以下のように書かなければならなかったが、</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// S.h</span>
 
