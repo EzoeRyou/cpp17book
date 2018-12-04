@@ -51,7 +51,7 @@ if ( file != nullptr )
 // これ以降fileは使わない
 
 auto int_ptr = std::make_unique<int>(42) ;
-if ( ptr )
+if ( int_ptr )
 {
     // 処理
 }

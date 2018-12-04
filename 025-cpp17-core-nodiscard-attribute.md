@@ -18,7 +18,7 @@ int main()
 
     // OK、戻り値は無視されていない
     int result = f() ;
-    g( f ) ;
+    g( f() ) ;
     f() + 1 ;
     (void) f() ;
 }
